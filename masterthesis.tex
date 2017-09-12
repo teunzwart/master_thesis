@@ -1,0 +1,103 @@
+\RequirePackage[l2tabu, orthodox]{nag} % Warn about outdated commands/packages.
+% The report class uses some outdated commands, about which nag will complain.
+% You can just ignore these warnings.
+
+\documentclass[11pt, a4paper]{report} % Sets font and paper size.
+
+%%% General formatting packages (order is important, so don't sort) %%%
+\usepackage{amsmath} % More equation formatting.
+\usepackage[english]{babel} % Language specific quirks.
+\usepackage{epigraph}
+\usepackage{booktabs} % Improved tables.
+\usepackage[font=small]{caption} % Better caption formatting.
+\usepackage{fancyhdr} % Modification of headers and footers.
+\usepackage[T1]{fontenc} % Makes one unicode character of special input (e.g. ö).
+\usepackage[margin=1.25in]{geometry} % Control page layout.
+\usepackage{float} % More control over image positions.
+\usepackage{graphicx} % Include graphics. Use '\graphicspath' to locate files in a different folder.
+\usepackage[utf8]{inputenc} % Special characters (e.g. trema) can be entered directly: .tex file has to be saved using UTF-8 encoding.
+\usepackage{lmodern} % Alternative font because 'fontenc' package does not work with default.
+\usepackage{microtype} % Improves character spacing.
+\usepackage{natbib} % Provides (author, year) references. \citet: textual, \citep: parenthetical
+\usepackage{physics} % Provides physics macros such as Dirac notation.
+\usepackage{tikz} % Draw diagrams and figures.
+\usepackage{url} % Allow inclusion of urls in text.
+\usepackage{siunitx} % SI unit formatting and scientific notation.
+\usepackage{subcaption} % Allow subcaptions.
+\usepackage[nottoc]{tocbibind} % Include references in table of contents.
+\usepackage[colorinlistoftodos]{todonotes} % Add todo notes.
+\usepackage{varioref} % Automatically put reference to page in reference. Use \vref.
+\usepackage{cleveref} % Automate "equation (...)" reference. Use \vref.
+
+%%% Additional options %%%
+\pagestyle{fancy} % Set header style.
+\setlength{\headheight}{14pt}
+
+%%% Personal Information %%%
+\newcommand\TITLE{The rise of SkyNet}
+\newcommand\THESISFORM{Master Thesis}
+\newcommand\AUTHOR{Teun Zwart}
+\newcommand\SUPERVISOR{Prof. dr Jean-Sébastien Caux}
+\newcommand\UNIVERSITYLOGO{} % Uncomment line below and add name of logo file.
+
+
+\begin{document}
+
+\begin{titlepage}
+	\begin{center}
+		% \includegraphics[width=\textwidth]{\UNIVERSITYLOGO}
+		\rule{\textwidth}{0.4mm}\\[0.5cm]
+		\huge{\textbf{\TITLE}}
+		\rule{\textwidth}{0.4mm}\\[0.5cm]
+		\Large{\THESISFORM}\\[0.5cm]
+		\begin{minipage}[t]{0.4\textwidth}
+			\begin{flushleft}
+				\large\emph{Author:}\\{\AUTHOR}
+			\end{flushleft}
+		\end{minipage}
+		\begin{minipage}[t]{0.4\textwidth}
+			\begin{flushright}
+				\large\emph{Supervisor:}\\{\SUPERVISOR}
+			\end{flushright}
+		\end{minipage}
+		\vfill
+		\large \today\\
+	\end{center}
+\end{titlepage}
+
+\newpage
+\thispagestyle{empty}
+
+\ 
+\vspace{4cm}
+
+\epigraph{\itshape Science is just magic that works.}{Kurt Vonnegut}
+
+\epigraph{\itshape All sufficiently advanced technology is indistinguishable from magic.}{Arthur C. Clark}
+
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\chapter{Integrable systems}
+
+
+
+
+\chapter{The ABACUS algorithm}
+
+
+
+\chapter{Machine learning in the ABACUS algorithm}
+
+\chapter{Results}
+
+\chapter{Discussion and conclusion}
+
+
+% Set style to abbrv to get Vancouver style citations.
+\bibliographystyle{abbrv}
+% \bibliography{}
+
+\end{document}
