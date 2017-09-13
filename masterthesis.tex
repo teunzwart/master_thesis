@@ -9,6 +9,7 @@
 \usepackage[english]{babel} % Language specific quirks.
 \usepackage{epigraph}
 \usepackage{booktabs} % Improved tables.
+\usepackage{doi}
 \usepackage[font=small]{caption} % Better caption formatting.
 \usepackage{fancyhdr} % Modification of headers and footers.
 \usepackage[T1]{fontenc} % Makes one unicode character of special input (e.g. ö).
@@ -18,27 +19,31 @@
 \usepackage[utf8]{inputenc} % Special characters (e.g. trema) can be entered directly: .tex file has to be saved using UTF-8 encoding.
 \usepackage{lmodern} % Alternative font because 'fontenc' package does not work with default.
 \usepackage{microtype} % Improves character spacing.
-\usepackage{natbib} % Provides (author, year) references. \citet: textual, \citep: parenthetical
 \usepackage{physics} % Provides physics macros such as Dirac notation.
 \usepackage{tikz} % Draw diagrams and figures.
 \usepackage{url} % Allow inclusion of urls in text.
 \usepackage{siunitx} % SI unit formatting and scientific notation.
 \usepackage{subcaption} % Allow subcaptions.
 \usepackage[nottoc]{tocbibind} % Include references in table of contents.
-\usepackage[colorinlistoftodos]{todonotes} % Add todo notes.
-\usepackage{varioref} % Automatically put reference to page in reference. Use \vref.
-\usepackage{cleveref} % Automate "equation (...)" reference. Use \vref.
+\usepackage[colorinlistoftodos,textsize=tiny]{todonotes} % Add todo notes.
+\usepackage[noabbrev]{cleveref} % Automate "equation (...)" reference. Use \cref.
 
 %%% Additional options %%%
 \pagestyle{fancy} % Set header style.
 \setlength{\headheight}{14pt}
 
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
 %%% Personal Information %%%
 \newcommand\TITLE{The rise of SkyNet}
 \newcommand\THESISFORM{Master Thesis}
 \newcommand\AUTHOR{Teun Zwart}
-\newcommand\SUPERVISOR{Prof. dr Jean-Sébastien Caux}
+\newcommand\SUPERVISOR{Prof. dr. Jean-Sébastien Caux}
 \newcommand\UNIVERSITYLOGO{} % Uncomment line below and add name of logo file.
+
+\newcommand{\bea}{\begin{align}}
+\newcommand{\ena}{\end{align}}
 
 
 \begin{document}
@@ -80,24 +85,116 @@
 
 \chapter{Introduction}
 
-\chapter{Integrable systems}
+\chapter{The Bethe Ansatz}
+
+The Bethe Ansatz allows for a way to solve certain one-dimensional systems exactly.
+It was put forth by Bethe in 1931 to solve the Heisenberg model, refining and correcting the earlier work of Bloch \cite{Bethe1931}.
+
+\section{The Lieb-Liniger model}
+
+Here, to introduce and understand the Bethe Ansatz, we focus on the Lieb-Liniger model, finding its eigenfunctions and excitation spectrum.
+The Lieb-Liniger model, first introduced by Lieb and Liniger in 1963 \cite{Lieb1963, Lieb1963a}, consists of bosons interaction through a delta-function potential, described by the Hamiltonian
+\begin{equation}
+	H = - \sum_{j=1}^{N} \frac{\partial^2}{\partial x_j^2} + 2c \sum_{j<l} \delta(x_j - x_l).
+\end{equation}
+Here \(c\) is the interaction strength of the model, \(\hbar=1\) and we set \(2m=1\).
+In the limit \(c\to0\) particles behave as free bosons, while \(c\to\infty\) yields fermionic behaviour and is known as the Tonks-Girardeau model \cite{Lieb1963, Franchini2017}.
+
+We will only solve the repulsive case (\(c > 0\)) here. \todo{Why not the attractive case, what does saturation for that mean? See super Tonks-Girardeau model.}
+
+\subsection{The ground state}
+
+We will start solving the Lieb-Liniger model in the two-particle case. This later readily generalizes to many particles.
+
+\subsubsection{Two-particle states}
+
+For two particles, the Hamiltonian becomes
+\begin{equation}
+	H =  - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2).
+\end{equation}
+We can write this in a more convenient form without the delta-function by integrating the Schrödinger equation over a small interfal \([-\epsilon,\epsilon]\).
+This yields the condition \cite{Lieb1963}\todo{Do this explicitly.}\footnote{This operation is relatively simple but does contain a few subleties. Let us therefore do it explicitly:
+the Hamiltonian is
+\begin{equation}
+	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2)\right] \psi(x_1, x_2) = E \psi(x_1,x_2).
+\end{equation} 
+Integrating \cite{Griffiths1993}
+}
+\begin{equation}\label{eq:lieblinigerboundary}
+	\left[\frac{\partial}{\partial x_2} - \frac{\partial}{\partial x_1} - c\right] \psi(x_1, x_2)\bigg\rvert_{x_1 = x_2} = 0.
+\end{equation}
+Since particles only interact with each other when their positions coincide, this allows us to simplify the Schrödinger equation to
+\begin{equation}\label{eq:lieblinigersimple}
+	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2}\right] \psi(x_1, x_2) = E \psi(x_1,x_2),
+\end{equation}
+with \cref{eq:lieblinigerboundary} as a boundary condition \cite{Lieb1963}.
+Since we deal with bosons, we also require the wavefunction to be symmetric: \(\psi(x_1,x_2) = \psi(x_2,x_1)\).
+
+We can now conjecture a solution for the Lieb-Liniger model based on \cref{eq:lieblinigersimple}.
+This equation can be solved in terms of a superposition of plane waves:
+\begin{equation}
+	\psi(x_1,x_2) = A_{12} e^{i(\lambda_1x_1 + \lambda_2 x_2)} + A_{21} e^{i(\lambda_2 x_1 + \lambda_1 x_2)},
+\end{equation}
+where the \(\lambda\)'s are pseudo-momenta, called so because they are unobservable \cite{Franchini2017}.
+The \(A\)'s are the amplitudes of the planewaves making up the wavefunction.
+Since \cref{eq:lieblinigerboundary} has to be fulfilled we require the amplitudes be related to each other by
+\begin{align}
+	\frac{A_{12}}{A_{21}} = -\frac{i(c-\lambda_1 - \lambda_2) }{i(c+\lambda_1 - \lambda_2)}.
+\end{align}
+The righthand side of this equation has modulus 1, meaning it can be written as a phase:
+\begin{align}
+	\frac{A_{12}}{A_{21}} = -e^{i\phi(\lambda_1-\lambda_2)},
+\end{align}
+where
+\begin{align}
+	\phi(\lambda_1-\lambda_2) = -2\arctan\left(\frac{\lambda_1-\lambda_2}{c}\right),
+\end{align}
+and we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
+
+
+
+\subsubsection{Many-particle states}
+- uniqueness of the solutions
+- Norms of the eigenstates: Gaudin matrices
+
+\subsubsection{Quantization}
+
+\subsection{The thermodynamic limit}
+
+\subsection{Excited states}
+
+\subsubsection{Type I excitations}
+
+\subsubsection{Type II excitations}
+
+\subsection{Thermodynamic properties}
+
+\subsubsection{Various limit cases}
+
+
 
 
 
 
 \chapter{The ABACUS algorithm}
 
+-DSF\\
+-Scanning over Hilbert space\\
+
+
+
 
 
 \chapter{Machine learning in the ABACUS algorithm}
+
+-use Monte Carlo to produce data sets for training
 
 \chapter{Results}
 
 \chapter{Discussion and conclusion}
 
 
-% Set style to abbrv to get Vancouver style citations.
-\bibliographystyle{abbrv}
-% \bibliography{}
+\bibliographystyle{SciPost_bibstyle}
+\bibliography{master_thesis_references.bib}
 
 \end{document}
