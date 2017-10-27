@@ -36,7 +36,7 @@
 \setcounter{secnumdepth}{3}
 
 %%% Personal Information %%%
-\newcommand\TITLE{The rise of SkyNet}
+\newcommand\TITLE{Thinking through problems thinking computers pose to future thinkers}
 \newcommand\THESISFORM{Master Thesis}
 \newcommand\AUTHOR{Teun Zwart}
 \newcommand\SUPERVISOR{Prof. dr. Jean-Sébastien Caux}
@@ -44,6 +44,10 @@
 
 \newcommand{\bea}{\begin{align}}
 \newcommand{\ena}{\end{align}}
+
+\newcommand{\inversetruncc}{\mathcal{L}}
+\newcommand{\kernel}{\mathcal{C}}
+
 
 
 \begin{document}
@@ -102,19 +106,17 @@ In the limit \(c\to0\) particles behave as free bosons, while \(c\to\infty\) yie
 
 We will only solve the repulsive case (\(c > 0\)) here. \todo{Why not the attractive case, what does saturation for that mean? See super Tonks-Girardeau model.}
 
-\subsection{The ground state}
+\subsection{A solution for the Schrödinger equation}
 
 We will start solving the Lieb-Liniger model in the two-particle case. This later readily generalizes to many particles.
-
-\subsubsection{Two-particle states}
 
 For two particles, the Hamiltonian becomes
 \begin{equation}
 	H =  - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2).
 \end{equation}
 We can write this in a more convenient form without the delta-function by integrating the Schrödinger equation over a small interfal \([-\epsilon,\epsilon]\).
-This yields the condition \cite{Lieb1963}\todo{Do this explicitly.}\footnote{This operation is relatively simple but does contain a few subleties. Let us therefore do it explicitly:
-the Hamiltonian is
+This yields the condition \cite{Lieb1963}\todo{Do this explicitly.}\footnote{This operation is relatively simple but does contain a few subtleties. Let us therefore do it explicitly:
+the Schrödinger equation is
 \begin{equation}
 	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2)\right] \psi(x_1, x_2) = E \psi(x_1,x_2).
 \end{equation} 
@@ -128,20 +130,20 @@ Since particles only interact with each other when their positions coincide, thi
 	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2}\right] \psi(x_1, x_2) = E \psi(x_1,x_2),
 \end{equation}
 with \cref{eq:lieblinigerboundary} as a boundary condition \cite{Lieb1963}.
-Since we deal with bosons, we also require the wavefunction to be symmetric: \(\psi(x_1,x_2) = \psi(x_2,x_1)\).
+Since we are dealing with bosons, we also require the wavefunction to be symmetric: \(\psi(x_1,x_2) = \psi(x_2,x_1)\).
 
 We can now conjecture a solution for the Lieb-Liniger model based on \cref{eq:lieblinigersimple}.
 This equation can be solved in terms of a superposition of plane waves:
 \begin{equation}
 	\psi(x_1,x_2) = A_{12} e^{i(\lambda_1x_1 + \lambda_2 x_2)} + A_{21} e^{i(\lambda_2 x_1 + \lambda_1 x_2)},
 \end{equation}
-where the \(\lambda\)'s are pseudo-momenta, called so because they are unobservable \cite{Franchini2017}.
+where the \(\lambda\)'s are pseudo-momenta, so-called because they are unobservable \cite{Franchini2017}.
 The \(A\)'s are the amplitudes of the planewaves making up the wavefunction.
 Since \cref{eq:lieblinigerboundary} has to be fulfilled we require the amplitudes be related to each other by
 \begin{align}
-	\frac{A_{12}}{A_{21}} = -\frac{i(c-\lambda_1 - \lambda_2) }{i(c+\lambda_1 - \lambda_2)}.
+	\frac{A_{12}}{A_{21}} = -\frac{c-i(\lambda_1 - \lambda_2) }{c+i(\lambda_1 - \lambda_2)}.
 \end{align}
-The righthand side of this equation has modulus 1, meaning it can be written as a phase:
+The right-hand side of this equation has modulus 1, meaning it can be written as a phase:
 \begin{align}
 	\frac{A_{12}}{A_{21}} = -e^{i\phi(\lambda_1-\lambda_2)},
 \end{align}
@@ -151,17 +153,31 @@ where
 \end{align}
 and we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
 
+We can now write the two-particle wavefunction by setting \(A_{21}=1\) (and ignoring normalization for the moment) to get\todo{Is the distribution of the phase allowed because arbitrary phases don't count?}
+\begin{equation}
+	\psi(x_1,x_2) = - e^{-i\phi(\lambda_1-\lambda_2)+i(\lambda_1x_1 + \lambda_2 x_2)} + e^{i(\lambda_2 x_1 + \lambda_1 x_2)}
+\end{equation}
 
+~\\
+- full wavefunction for this case\\
+- many particle state\\
 
-\subsubsection{Many-particle states}
-- uniqueness of the solutions
-- Norms of the eigenstates: Gaudin matrices
+Going to the many-particle state is now a fairly straightforward generalization of the two-particle case.
+The wavefunction in this case becomes \cite{Franchini2017}
+\begin{equation}
+	\psi(x_1,\ldots,x_N) = \sum_{\mathcal{P}} A(\mathcal{P}) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}.
+\end{equation}
 
 \subsubsection{Quantization}
 
-\subsection{The thermodynamic limit}
+- two particles \\
+- many particles\\
+- Bethe equations\\
+- uniqueness of the solutions for the quantum numbers\\
+- Norms of the eigenstates: Gaudin matrices
+- ground state
 
-\subsection{Excited states}
+\subsection{The thermodynamic limit}
 
 \subsubsection{Type I excitations}
 
@@ -180,6 +196,7 @@ and we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
 
 -DSF\\
 -Scanning over Hilbert space\\
+-current implementation of finding rapidities\\
 
 
 
@@ -187,8 +204,69 @@ and we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
 
 \chapter{Machine learning in the ABACUS algorithm}
 
--use Monte Carlo to produce data sets for training
+-use Monte Carlo to produce data sets for training\\
+-neural networks\\
+--basics: training, validation, testing\\
+--feedforward\\
+--convolutional\\
+-- continuous, online learning
 
+
+\section{Summing 1/L terms}
+
+When updating we have to take care to not update in place but rather update into a new list, since otherwise we will use a different set of lambdas to calculate each new lambda.
+
+For the displacement of the particle-like excitations we get the expression
+\begin{equation}
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'(1 + \inversetruncc^{(F)}) * \left(\theta(\lambda_F-\lvert\lambda\rvert) \kernel(\lambda-\lambda')\right) 
+\end{equation}
+or
+\begin{equation}
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \left(\delta(\lambda-\lambda''\right) + \inversetruncc^{(F)}) \kernel(\lambda-\lambda')
+\end{equation}
+
+\begin{multline}
+	\frac{1}{2} e^{-i s} \left(\pi +e^{2 i s} \pi -i \text{Gamma}[0,(-i-b) s]+i \text{Gamma}[0,(-i+b) s]-i \text{Gamma}[0,(-i-b-k) s]+i \text{Gamma}[0,(-i-b+k)\right.\\
+s]-i \text{Log}[-i+b]+i \text{Log}[i+b]+i \text{Log}[-i-b-k]-i \text{Log}[-i-b+k]-i \text{Log}[(-i-b) s]+i \text{Log}[(-i+b) s]-i \text{Log}[(-i-b-k)\\
+s]+i \text{Log}[(-i-b+k) s]+i e^{2 i s} (\text{Gamma}[0,(i-b) s]-\text{Gamma}[0,(i+b) s]+\\\left.\text{Gamma}[0,(i-b-k) s]-\text{Gamma}[0,(i-b+k) s]-\text{Log}[-i+b]+\text{Log}[i+b]-\text{Log}[i-b-k]+\text{Log}[i-b+k]+\text{Log}[(i-b)
+s]-\text{Log}[(i+b) s]+\text{Log}[(i-b-k) s]-\text{Log}[(i-b+k) s])\right)
+\end{multline}
+
+\newpage
+
+\section{Displacement functions for excitations}
+We now calculate the displacement function for particle-like (type I) and hole-like (type~II) excitations.
+
+\subsection{Type I}
+For type I excitations the displacement function is 
+\begin{equation}
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
+\end{equation}
+valid for all \(\lambda_p\) (if \(\lvert \lambda_p \rvert\ > \lambda_F\)) and all \(\lambda\).
+
+Lets first focus on the part involving the \(\delta\)-function, which we can rewrite, using a Heaviside step function, as
+\begin{align}
+	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') \\
+	&=- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{-\infty}^{\infty} \textrm{d} \lambda'' \theta(\lambda_F - \lvert \lambda'' \rvert)  \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda')\\
+	&= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'     \kernel(\lambda-\lambda').
+\end{align}
+The kernel is symmetric, so we can define the change of variable \(-a=\lambda-\lambda'\) (where the sign in front of the \(a\) is immaterial, but gives a more intuitive result\todo{sign wrong?}):
+\begin{equation}
+	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'     \kernel(\lambda-\lambda')=
+	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p-\lambda}^{\textrm{sgn}(\lambda_p-\lambda)\infty} \mathrm{d}a\,\kernel(a).
+\end{equation}
+This expression is 0 if \(\lvert \lambda\rvert > \lambda_F\), so the only \(\lambda\)'s we have to consider in the integral are \(\lvert\lambda\rvert< \lambda_F\), but from the definition of the displacement we know \(\lvert\lambda_p\rvert >\lambda_F\), meaning \(\lvert\lambda_p\rvert > \lvert\lambda\rvert\) for all \(\lambda\) in the integral.
+Therefore \(\lambda_p-\lambda\) always has the same sign as \(\lambda_p\), and the upper limit of the integral reduces to \(\mathrm{sgn}(\lambda_p)\infty\), while the lower bound also always has the same sign as \(\lambda_p\).
+
+Since the kernel is symmetric, for the value of the integral it does not matter whether \(\mathrm{sgn}(\lambda_p)\) is \(+1\) or \(-1\). 
+It only adds a sign-function in front of the integral:
+\begin{align}
+	-  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p-\lambda}^{\textrm{sgn}(\lambda_p-\lambda)\infty} \mathrm{d}a\,\kernel(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lvert\lambda_p-\lambda\rvert}^{\infty} \mathrm{d}a\,\kernel(a)\\
+	&= - \frac{c}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \int_{\lvert\lambda_p-\lambda\rvert}^{\infty} \mathrm{d}a\,\frac{1}{c^2 + a^2}\\
+	&= - \frac{1}{2\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \left( \pi - \atan(\frac{\lvert \lambda_p - \lambda\rvert}{c})\right)
+\end{align}
+
+It is important to remark that the above expression would not be valid without the Heaviside function, since the integral is only correct for \(\lvert\lambda\rvert< \lambda_F\).
 \chapter{Results}
 
 \chapter{Discussion and conclusion}
