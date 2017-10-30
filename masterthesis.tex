@@ -2,7 +2,7 @@
 % The report class uses some outdated commands, about which nag will complain.
 % You can just ignore these warnings.
 
-\documentclass[11pt, a4paper]{report} % Sets font and paper size.
+\documentclass[11pt, a4paper,draft]{report} % Sets font and paper size.
 
 %%% General formatting packages (order is important, so don't sort) %%%
 \usepackage{amsmath} % More equation formatting.
@@ -30,6 +30,8 @@
 
 %%% Additional options %%%
 \pagestyle{fancy} % Set header style.
+\fancyhead[L]{\rightmark}
+\fancyhead[R]{}
 \setlength{\headheight}{14pt}
 
 \setcounter{tocdepth}{3}
@@ -250,23 +252,68 @@ Lets first focus on the part involving the \(\delta\)-function, which we can rew
 	&=- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{-\infty}^{\infty} \textrm{d} \lambda'' \theta(\lambda_F - \lvert \lambda'' \rvert)  \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda')\\
 	&= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'     \kernel(\lambda-\lambda').
 \end{align}
-The kernel is symmetric, so we can define the change of variable \(-a=\lambda-\lambda'\) (where the sign in front of the \(a\) is immaterial, but gives a more intuitive result\todo{sign wrong?}):
-\begin{equation}
+We change variables \(a=\lambda-\lambda'\):
+\begin{equation}\label{eq:integratedkerneldeltapart}
 	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'     \kernel(\lambda-\lambda')=
-	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p-\lambda}^{\textrm{sgn}(\lambda_p-\lambda)\infty} \mathrm{d}a\,\kernel(a).
+	 \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a).
 \end{equation}
-This expression is 0 if \(\lvert \lambda\rvert > \lambda_F\), so the only \(\lambda\)'s we have to consider in the integral are \(\lvert\lambda\rvert< \lambda_F\), but from the definition of the displacement we know \(\lvert\lambda_p\rvert >\lambda_F\), meaning \(\lvert\lambda_p\rvert > \lvert\lambda\rvert\) for all \(\lambda\) in the integral.
-Therefore \(\lambda_p-\lambda\) always has the same sign as \(\lambda_p\), and the upper limit of the integral reduces to \(\mathrm{sgn}(\lambda_p)\infty\), while the lower bound also always has the same sign as \(\lambda_p\).
+We assume \(\lambda\) to be finite, meaning the upper bound of the integral reduces to \(-\textrm{sgn}(\lambda_p)\).
 
-Since the kernel is symmetric, for the value of the integral it does not matter whether \(\mathrm{sgn}(\lambda_p)\) is \(+1\) or \(-1\). 
-It only adds a sign-function in front of the integral:
+\Cref{eq:integratedkerneldeltapart} is 0 if \(\lvert \lambda\rvert > \lambda_F\), so the only \(\lambda\)'s we have to consider in the integral are \(\lvert\lambda\rvert< \lambda_F\), but from the definition of the displacement we know \(\lvert\lambda_p\rvert >\lambda_F\), meaning \(\lvert\lambda_p\rvert > \lvert\lambda\rvert\) for all \(\lambda\) in the integral.
+Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
+Thus we can rewrite \cref{eq:integratedkerneldeltapart} as
 \begin{align}
-	-  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p-\lambda}^{\textrm{sgn}(\lambda_p-\lambda)\infty} \mathrm{d}a\,\kernel(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lvert\lambda_p-\lambda\rvert}^{\infty} \mathrm{d}a\,\kernel(a)\\
-	&= - \frac{c}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \int_{\lvert\lambda_p-\lambda\rvert}^{\infty} \mathrm{d}a\,\frac{1}{c^2 + a^2}\\
-	&= - \frac{1}{2\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \left( \pi - \atan(\frac{\lvert \lambda_p - \lambda\rvert}{c})\right)
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a) &=
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a).
 \end{align}
 
-It is important to remark that the above expression would not be valid without the Heaviside function, since the integral is only correct for \(\lvert\lambda\rvert< \lambda_F\).
+Since the kernel is symmetric, for the value of the integral it does not matter whether \(\mathrm{sgn}(\lambda_p)\) is \(+1\) or \(-1\).\footnote{Because both boundaries of the integral have the same sign, we are always wholly on either the left or right side of \(x=0\) in the integral.} 
+It only adds a sign-function in front of the integral:
+\begin{align}
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \mathrm{d}a\,\kernel(a)\\
+	&= - \frac{c}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \mathrm{d}a\,\frac{1}{c^2 + a^2}\\
+	&= - \frac{1}{2\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \left( \pi - 2\atan(\frac{\lvert \lambda - \lambda_p\rvert}{c})\right)\\
+	&= - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right),
+\end{align}
+where the last equality is only valid since the argument of the arctangent is strictly positive.
+
+It is important to remark that the above expression would not be valid without the Heaviside function, since the integral is only applicable when \(\lvert\lambda\rvert< \lambda_F\).
+
+The displacement for type I excitations becomes 
+\begin{equation}
+	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right) - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda'),
+\end{equation}
+
+\subsection{Type II}
+For type II excitations the idea is much the same as type I. The displacement is
+\begin{equation}
+	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
+\end{equation}
+valid for all \(\lambda_h\) (if \(\lvert \lambda_h \rvert\ < \lambda_F\)) and all \(\lambda\).
+The \(\delta\)-function part of this equation becomes
+\begin{align}
+	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') 
+		= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda'     \kernel(\lambda-\lambda').
+\end{align}
+A change of variables \(a=\lambda-\lambda'\) results in:
+\begin{align}
+	 - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda'     \kernel(\lambda-\lambda') = 
+	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda+\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \mathrm{d}a \, \kernel(a).
+\end{align}
+Since we again assume \(\lambda\) to be finite, the lower bound of the integral reduces to \(\textrm{sgn}(\lambda_h)\infty\).
+Because both \(\lvert \lambda_h \rvert\ < \lambda_F\) and \(\lvert\lambda\rvert < \lambda_F\) (due to the Heaviside function), we can no longer make statements about the sign of \(\lambda-\lambda_h\), and have to be a little bit more general in our expression.
+We get
+\begin{align}
+	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \mathrm{d}a \, \kernel(a) &=
+	  \frac{c}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \mathrm{d}a \frac{1}{c^2 + a^2}\\
+	  &= \frac{1}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
+\end{align}
+
+The expression for the displacement of type II excitations becomes
+\begin{equation}
+	D_h(\lambda, \lambda_h) = \frac{1}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right] - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\kernel(\lambda''-\lambda'),
+\end{equation}
+
 \chapter{Results}
 
 \chapter{Discussion and conclusion}
