@@ -6,6 +6,7 @@
 
 %%% General formatting packages (order is important, so don't sort) %%%
 \usepackage{amsmath} % More equation formatting.
+\usepackage{amssymb}
 \usepackage[english]{babel} % Language specific quirks.
 \usepackage{epigraph}
 \usepackage{booktabs} % Improved tables.
@@ -220,11 +221,11 @@ When updating we have to take care to not update in place but rather update into
 
 For the displacement of the particle-like excitations we get the expression
 \begin{equation}
-	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'(1 + \inversetruncc^{(F)}) * \left(\theta(\lambda_F-\lvert\lambda\rvert) \kernel(\lambda-\lambda')\right) 
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'(1 + \inversetruncc^{(F)}) * \left(\theta(\lambda_F-\lvert\lambda\rvert) \kernel(\lambda-\lambda')\right) 
 \end{equation}
 or
 \begin{equation}
-	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \left(\delta(\lambda-\lambda''\right) + \inversetruncc^{(F)}) \kernel(\lambda-\lambda')
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta(\lambda-\lambda''\right) + \inversetruncc^{(F)}) \kernel(\lambda-\lambda')
 \end{equation}
 
 \begin{multline}
@@ -242,20 +243,20 @@ We now calculate the displacement function for particle-like (type I) and hole-l
 \subsection{Type I}
 For type I excitations the displacement function is 
 \begin{equation}\label{eq:particledisplacement}
-	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
 \end{equation}
 valid for all \(\lambda_p\) (if \(\lvert \lambda_p \rvert\ > \lambda_F\)) and all \(\lambda\).
 
 Lets first focus on the part involving the \(\delta\)-function, which we can rewrite, using a Heaviside step function, as
 \begin{align}
-	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') \\
-	&=- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{-\infty}^{\infty} \textrm{d} \lambda'' \theta(\lambda_F - \lvert \lambda'' \rvert)  \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda')\\
-	&= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'     \kernel(\lambda-\lambda').
+	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') \\
+	&=- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \theta(\lambda_F - \lvert \lambda'' \rvert)  \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda')\\
+	&= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \kernel(\lambda-\lambda').
 \end{align}
 We change variables \(a=\lambda-\lambda'\):
 \begin{equation}\label{eq:integratedkerneldeltapart}
-	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'     \kernel(\lambda-\lambda')=
-	 \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a).
+	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \kernel(\lambda-\lambda')=
+	 \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a).
 \end{equation}
 We assume \(\lambda\) to be finite, meaning the upper bound of the integral reduces to \(-\textrm{sgn}(\lambda_p)\).
 
@@ -263,15 +264,15 @@ We assume \(\lambda\) to be finite, meaning the upper bound of the integral redu
 Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
 Thus we can rewrite \cref{eq:integratedkerneldeltapart} as
 \begin{align}
-	\theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a) &=
-	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a).
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a) &=
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a).
 \end{align}
 
 Since the kernel is symmetric, for the value of the integral it does not matter whether \(\mathrm{sgn}(\lambda_p)\) is \(+1\) or \(-1\).\footnote{Because both boundaries of the integral have the same sign, we are always wholly on either the left or right side of \(x=0\) in the integral.} 
 It only adds a sign-function in front of the integral:
 \begin{align}
-	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \mathrm{d}a\,\kernel(a)\\
-	&= - \frac{c}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \mathrm{d}a\,\frac{1}{c^2 + a^2}\\
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \dd a\,\kernel(a)\\
+	&= - \frac{c}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \dd a\,\frac{1}{c^2 + a^2}\\
 	&= - \frac{1}{2\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \left( \pi - 2\atan(\frac{\lvert \lambda - \lambda_p\rvert}{c})\right)\label{eq:dpdeltanonsimplified}\\
 	&= - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right),
 \end{align}
@@ -283,58 +284,76 @@ The second part of \cref{eq:particledisplacement}, which involves \(\inversetrun
 We can however rewrite it to get rid of the improper integral, which will help in numerical evaluation of the expression.
 We have
 \begin{align}
-	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda')
-	&= -  \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \mathrm{d}\lambda'\kernel(\lambda''-\lambda') \right]\\
-	&=   \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lambda''-\lambda_p}^{\lambda''-\textrm{sgn}(\lambda_p)\infty} \mathrm{d}a\,\kernel(a) \right]\\
-	&= -\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lvert\lambda''-\lambda_p\rvert}^{\infty} \mathrm{d}a\,\kernel(a) \right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\frac{\pi}{2} - \atan(\frac{\lvert\lambda''-\lambda_p\rvert}{c})\right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
+	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda')
+	&= -  \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'\kernel(\lambda''-\lambda') \right]\\
+	&=   \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lambda''-\lambda_p}^{\lambda''-\textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a) \right]\\
+	&= -\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lvert\lambda''-\lambda_p\rvert}^{\infty} \dd a\,\kernel(a) \right]\\
+	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\frac{\pi}{2} - \atan(\frac{\lvert\lambda''-\lambda_p\rvert}{c})\right]\\
+	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
 \end{align}
 where, as before, we argued that \(\lvert\lambda''\rvert < \lvert\lambda_p\rvert\) and thus that \(\lambda'' - \lambda_p\) always has the opposite sign from \(\lambda_p\).
 
 The displacement for type I excitations becomes 
 \begin{multline}
-	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right) \\-\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
+	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right) \\-\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
 \end{multline}
 
 \subsection{Type II}
 For type II excitations the idea is much the same as type I. The displacement is
 \begin{equation}
-	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
+	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
 \end{equation}
 valid for all \(\lambda_h\) (if \(\lvert \lambda_h \rvert\ < \lambda_F\)) and all \(\lambda\).
 The \(\delta\)-function part of this equation becomes
 \begin{align}
-	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') 
-		= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda'     \kernel(\lambda-\lambda').
+	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') 
+		= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \kernel(\lambda-\lambda').
 \end{align}
 A change of variables \(a=\lambda-\lambda'\) results in:
 \begin{align}
-	 - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda'     \kernel(\lambda-\lambda') = 
-	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda+\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \mathrm{d}a \, \kernel(a).
+	 - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \kernel(\lambda-\lambda') = 
+	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda+\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \kernel(a).
 \end{align}
 Since we again assume \(\lambda\) to be finite, the lower bound of the integral reduces to \(\textrm{sgn}(\lambda_h)\infty\).
 Because both \(\lvert \lambda_h \rvert\ < \lambda_F\) and \(\lvert\lambda\rvert < \lambda_F\) (due to the Heaviside function), we can no longer make statements about the sign of \(\lambda-\lambda_h\), and have to be a bit more general in our expression.
 We get\todo{Check whether particle and hole expressions are the same.}
 \begin{align}
-	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \mathrm{d}a \, \kernel(a) &=
-	  \frac{c}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \mathrm{d}a \frac{1}{c^2 + a^2}\\
+	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \kernel(a) &=
+	  \frac{c}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \frac{1}{c^2 + a^2}\\
 	  &= \frac{1}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
 \end{align}
 
 For hole-like excitations the part of the displacement function involving \(\inversetruncc(\lambda,\lambda')\) becomes
 \begin{align}
-	 - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda' \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda')
-	 &= - \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \mathrm{d}\lambda' \kernel(\lambda''-\lambda')\right]\\
-	 &= \int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \mathrm{d}a \, \kernel(a)\right]\\
-	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right]
+	 - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda')
+	 &= - \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \kernel(\lambda''-\lambda')\right]\\
+	 &= \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \dd a \, \kernel(a)\right]\\
+	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right]
 \end{align}
 
 The expression for the displacement of type II excitations becomes
 \begin{multline}
 	D_h(\lambda, \lambda_h) = \frac{1}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right] \\+
-	\frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \textrm{d} \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right],
+	\frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right],
 \end{multline}
+
+\section{Calculating \(\inversetruncc^{(F)}\)}
+There is no closed form solution for \(\inversetruncc^{(F)}\).
+Therefore we have to resort to numerical evaluation.
+
+The definition of \(\inversetruncc^{(F)}\) is
+\begin{equation}
+	\left(1 + \inversetruncc^{(F)}\right) * \left(1 - \kernel^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R}
+\end{equation}
+or explictitly
+\begin{equation}
+	\int_{-\infty}^{\infty} \dd \lambda'' ( \delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda''))(\delta(\lambda''-\lambda') - \kernel^{(F)}(\lambda'',\lambda')) = \delta(\lambda-\lambda'), \quad \lambda, \lambda', \lambda'' \in \mathbb{R}.
+\end{equation}
+If we perform the integration, cancel common terms and rearrange, we get the integral equation
+\begin{align}
+	\inversetruncc^{(F)}(\lambda,\lambda') &= \int_{-\infty}^{\infty} \inversetruncc^{(F)}(\lambda,\lambda'') \kernel^{(F)}(\lambda'',\lambda') + \kernel^{(F)}(\lambda,\lambda')\\
+	&= \theta(\lambda_F - \lvert\lambda'\rvert) \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda') + \kernel^{(F)}(\lambda,\lambda')
+\end{align}
 
 \chapter{Results}
 
