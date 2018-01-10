@@ -7,7 +7,9 @@
 %%% General formatting packages (order is important, so don't sort) %%%
 \usepackage{amsmath} % More equation formatting.
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage[english]{babel} % Language specific quirks.
+\usepackage{cite}
 \usepackage{epigraph}
 \usepackage{booktabs} % Improved tables.
 \usepackage{doi}
@@ -27,8 +29,9 @@
 \usepackage{subcaption} % Allow subcaptions.
 \usepackage[nottoc]{tocbibind} % Include references in table of contents.
 \usepackage[colorinlistoftodos,textsize=tiny]{todonotes} % Add todo notes.
-\usepackage[noabbrev]{cleveref} % Automate "equation (...)" reference. Use \cref.
 \usepackage{hyperref}
+\usepackage[noabbrev]{cleveref} % Automate "equation (...)" reference. Use \cref.
+
 
 %%% Additional options %%%
 \pagestyle{fancy} % Set header style.
@@ -53,6 +56,11 @@
 \newcommand{\kernel}{\mathcal{C}}
 \newcommand{\operator}{\mathcal{O}}
 
+% Prevent all line breaks in inline equations.
+\binoppenalty=10000
+\relpenalty=10000
+
+\newtheorem{theorem}{Theorem}
 
 
 \begin{document}
@@ -175,12 +183,47 @@ The wavefunction in this case becomes \cite{Franchini2017}
 
 \subsubsection{Quantization}
 
+Since we would like to study the thermodynamics of the system, it is convenient to confine the system to a finite length \(L\).
+This translates into a periodicity requirement for the wave function.
+For two particles this means
+\begin{align}
+	\psi(x_1+L,x_2|\lambda_1,\lambda_2) = \psi(x_1,x_2+L|\lambda_1,\lambda_2) = \psi(x_1,x_2|\lambda_1,\lambda_2).
+\end{align}
+Imposing this condition on the wave function
+
+\begin{theorem}
+The solutions of the Bethe equations are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textrm{\cite{Yang1969}}.
+\end{theorem}
+
+\begin{proof}
+
+\begin{align}
+	S= \frac{L}{2} \sum_{j=1}^{N} \lambda_j^2 - 2\pi\sum_{j=1}^{N} \lambda n_j \lambda_j + \frac{1}{2} \sum_{j=1}^N \sum_{k=1}^{N} \theta_1(\lambda_j - \lambda_k),
+\end{align}
+where \(\theta_1(\lambda) = \int_0^{\lambda} \theta(\mu)\dd\mu\).
+
+\begin{align}
+	\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} = \delta_{jl} \left[L + \sum_{m=1}^{N} K(\lambda_j,\lambda_m)\right] - K(\lambda_j, \lambda_l),
+\end{align}
+where 
+\begin{align}
+	K(\lambda, \mu) = \frac{2c}{c^2 + (\lambda - \mu)^2}.
+\end{align}
+
+\end{proof}
+
 - two particles \\
 - many particles\\
 - Bethe equations\\
 - uniqueness of the solutions for the quantum numbers\\
 - Norms of the eigenstates: Gaudin matrices
 - ground state
+- groundstate density (iterative scheme for density)\cite{Zemyan2012}
+
+\subsection{Correlation functions}
+Some success at exact form \cite{Nardis2016}
+\cite{slavnov89_calcul_scalar_produc_wave_funct}
+\cite{slavnov90_noneq_time_curren_correl_funct}
 
 \subsection{The thermodynamic limit}
 
@@ -370,8 +413,12 @@ This quantity is often more useful than \cref{eq:expval} because it is related t
 -DSF\\
 -Scanning over Hilbert space\\
 -current implementation of finding rapidities\\
+- sumrules
+- expressions for the different matrix elements
 
+- exact results for correlation functions\cite{Lang2017}, compare with this to find saturation?
 
+numerical Bethe ansatz \cite{Gu2005}
 \section{Numerically solving the Bethe equations}
 
 Convergence is reached when \cite{Caux2009}
@@ -384,21 +431,47 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmat
 
 \chapter{Machine learning in the ABACUS algorithm}
 
+
 -use Monte Carlo to produce data sets for training\\
 -neural networks\\
 --basics: training, validation, testing\\
 --feedforward\\
 -- continuous, online learning
 
+\section{Machine learing in physics}
+-- CERN
+-- Condensed matter\cite{Nieuwenburg2017}\cite{dunjko17_machin_learn_artif_intel_quant_domain}
+-- Astronomy
+-- Go \cite{Silver2017a}, unsupervised \cite{Silver2017}
+-- Autonomous cars
+-- genome \cite{Poplin2016}
+-- health from retinal images \cite{poplin17_predic_cardiov_risk_factor_from}
+--  Variational Renormalization Group and Deep Learning \cite{Mehta2014}
+-- groundstate estimation \cite{cai17_approx_quant_many_body_wave}\cite{Saito2017}
+
 \section{Stochastic gradient descent}
 Impact of data normalization on performance
 
-Having only a 
-
 \section{Generative adverserial net}
+See \cite{Liu2017}, \cite{Kratzwald2017}
 
 Rapidities are not sensitive to the absolute size of the bethe numbers (addititive scale invariance), only their relative structure.
 Therefore a vector encoding only the changed rapidities should in principle be enough to get the delta lambdas.
+
+\section{Decision tree}
+
+\subsection{Gradient boosting}
+
+GBM
+XGBoost
+LightGBM
+CatBoost
+
+\subsection{Random forest}
+
+\section{Reinforcement learning}
+Have go like learning of appropriate states by considering a given state and determinging whether it is a good "close" state.
+This requires some way to determine the value of a "move", a move being a mutation of a given vector of Bethe numbers\cite{Silver2017}
 
 \section{Summing 1/L terms}
 
@@ -411,10 +484,19 @@ When updating we have to take care to not update in place but rather update into
 
 \chapter{Results}
 
+verification with f-sum rule \cite{Caux2007a}
+\begin{equation}
+    \int \frac{\dd \omega}{2\pi} \omega S(k, \omega) = \frac{N}{L} k^2
+\end{equation}
+
 \chapter{Discussion and conclusion}
 
 
 In ABACUS the learning may work better since we are descending along threads, which means that similar states are together.
+
+Transfer learning ay be used to generalize from different states.
+
+Inadmissable states may be ignored.
 
 \appendix
 \chapter{LU decomposition}\label{app:LUdecomp}

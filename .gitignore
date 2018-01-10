@@ -8,3 +8,5 @@ masterthesis.pdf
 *.toc
 *.bbl
 *.blg
+*.fls
+*.fdb_latexmk
