@@ -117,7 +117,7 @@ The Lieb-Liniger model, first introduced by Lieb and Liniger in 1963 \cite{Lieb1
 Here \(c\) is the interaction strength of the model, \(\hbar=1\) and we set \(2m=1\).
 In the limit \(c\to0\) particles behave as free bosons, while \(c\to\infty\) yields fermionic behaviour and is known as the Tonks-Girardeau model \cite{Lieb1963, Franchini2017}.
 
-We will only solve the repulsive case (\(c > 0\)) here. \todo{Why not the attractive case, what does saturation for that mean? See super Tonks-Girardeau model.}
+We will only solve the repulsive case (\(c > 0\)) here.
 
 \subsection{A solution for the Schrödinger equation}
 
@@ -144,6 +144,9 @@ Since particles only interact with each other when their positions coincide, thi
 \end{equation}
 with \cref{eq:lieblinigerboundary} as a boundary condition \cite{Lieb1963}.
 Since we are dealing with bosons, we also require the wavefunction to be symmetric: \(\psi(x_1,x_2) = \psi(x_2,x_1)\).
+Effectively we have rewritten the Schrödinger equation such that we only consider the wave function away from the delta-function interaction points.
+The boundary condition then reintroduces the interaction terms.
+We also assume an ordering of the positions \(x_1 < x_2\).
 
 We can now conjecture a solution for the Lieb-Liniger model based on \cref{eq:lieblinigersimple}.
 This equation can be solved in terms of a superposition of plane waves:
@@ -166,20 +169,26 @@ where
 \end{align}
 and we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
 
-We can now write the two-particle wavefunction by setting \(A_{21}=1\) (and ignoring normalization for the moment) to get\todo{Is the distribution of the phase allowed because arbitrary phases don't count?}
+We can now write the two-particle wavefunction by setting \(A_{21}=1\) (and ignoring normalization for the moment) to get
 \begin{equation}
-	\psi(x_1,x_2) = - e^{-i\phi(\lambda_1-\lambda_2)+i(\lambda_1x_1 + \lambda_2 x_2)} + e^{i(\lambda_2 x_1 + \lambda_1 x_2)}
+	\psi(x_1,x_2) = - e^{-\frac{i}{2}\phi(\lambda_1-\lambda_2)+i(\lambda_1x_1 + \lambda_2 x_2)} + e^{\frac{i}{2}\phi(\lambda_1-\lambda_2)+i(\lambda_2 x_1 + \lambda_1 x_2)}.
 \end{equation}
+Generalization to the whole domain (not just where \(x_1 < x_2\)) can be achieved by requiring the wavefunction to be fully symmetric under coordinate exchange,
+yielding
+\begin{equation}
+  \psi(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} (-1)^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
+\end{equation}
+This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
+This points to a Pauli principle like phenomenon \cite{findreference}.
 
-~\\
-- full wavefunction for this case\\
-- many particle state\\
 
 Going to the many-particle state is now a fairly straightforward generalization of the two-particle case.
 The wavefunction in this case becomes \cite{Franchini2017}
 \begin{equation}
 	\psi(x_1,\ldots,x_N) = \sum_{\mathcal{P}} A(\mathcal{P}) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}.
 \end{equation}
+- many particle state\\
+
 
 \subsubsection{Quantization}
 
@@ -191,17 +200,25 @@ For two particles this means
 \end{align}
 Imposing this condition on the wave function
 
+\begin{align}\label{eq:bethe_equations}
+\end{align}
+
 \begin{theorem}
-The solutions of the Bethe equations are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textrm{\cite{Yang1969}}.
+\begin{sloppypar}
+\noindent
+The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textrm{\cite{Yang1969}}.
+\end{sloppypar}
 \end{theorem}
 
 \begin{proof}
-
+This can be proven with a variational argument, where the Bethe equations are the extremum of an action.
+The Yang-Yang action for the Lieb-Liniger model is
 \begin{align}
-	S= \frac{L}{2} \sum_{j=1}^{N} \lambda_j^2 - 2\pi\sum_{j=1}^{N} \lambda n_j \lambda_j + \frac{1}{2} \sum_{j=1}^N \sum_{k=1}^{N} \theta_1(\lambda_j - \lambda_k),
+	S= \frac{L}{2} \sum_{j=1}^{N} \lambda_j^2 - 2\pi\sum_{j=1}^{N} n_j \lambda_j + \frac{1}{2} \sum_{j=1}^N \sum_{k=1}^{N} \theta_1(\lambda_j - \lambda_k),
 \end{align}
 where \(\theta_1(\lambda) = \int_0^{\lambda} \theta(\mu)\dd\mu\).
-
+The Bethe equations follow from this by setting \(\frac{\partial S}{\partial \lambda_j} = 0\), which corresponds to a minimum.
+To show this we need to have a positive definite matrix of second derivatives:
 \begin{align}
 	\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} = \delta_{jl} \left[L + \sum_{m=1}^{N} K(\lambda_j,\lambda_m)\right] - K(\lambda_j, \lambda_l),
 \end{align}
@@ -210,14 +227,20 @@ where
 	K(\lambda, \mu) = \frac{2c}{c^2 + (\lambda - \mu)^2}.
 \end{align}
 
+Introducing a vector \(v_j\) with real components we get \cite{Korepin1993}
+\begin{align}
+  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_j^2 + \sum_{j>l=1}^{N} K(\lambda_j,\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^2 > 0,
+\end{align}
+meaning that the action is convex and the minimum defining the Bethe equations is unique.
 \end{proof}
 
+\subsection{Gaudin norm}
+The n
 - two particles \\
 - many particles\\
 - Bethe equations\\
-- uniqueness of the solutions for the quantum numbers\\
-- Norms of the eigenstates: Gaudin matrices
-- ground state
+- Norms of the eigenstates: Gaudin matrices\\
+- ground state\\
 - groundstate density (iterative scheme for density)\cite{Zemyan2012}
 
 \subsection{Correlation functions}
@@ -247,6 +270,7 @@ For type I excitations the ground state displacement function is
 \end{equation}
 valid for all \(\lambda_p\) (if \(\lvert \lambda_p \rvert\ > \lambda_F\)) and all \(\lambda\) \cite{tofind}.
 
+\begin{sloppypar}
 We can rewrite this in a more explicit way.
 Lets first focus on the part involving the \(\delta\)-function, which we can rewrite, using a Heaviside step function, as
 \begin{align}
@@ -260,6 +284,7 @@ We change variables \(a=\lambda-\lambda'\):
 	 \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a).
 \end{equation}
 We assume \(\lambda\) to be finite, meaning the upper bound of the integral reduces to \(-\textrm{sgn}(\lambda_p)\infty\).
+\end{sloppypar}
 
 \Cref{eq:integratedkerneldeltapart} is 0 if \(\lvert \lambda\rvert > \lambda_F\), so the only \(\lambda\)'s we have to consider in the integral are \(\lvert\lambda\rvert< \lambda_F\), but from the definition of the displacement we know \(\lvert\lambda_p\rvert >\lambda_F\), meaning \(\lvert\lambda_p\rvert > \lvert\lambda\rvert\) for all \(\lambda\) in the integral.
 Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
@@ -316,7 +341,7 @@ A change of variables \(a=\lambda-\lambda'\) results in:
 \end{align}
 Since we again assume \(\lambda\) to be finite, the lower bound of the integral reduces to \(\textrm{sgn}(\lambda_h)\infty\).
 Because both \({\lvert \lambda_h \rvert\ < \lambda_F}\) and \({\lvert\lambda\rvert < \lambda_F}\) (due to the Heaviside function), we can no longer make statements about the sign of \(\lambda-\lambda_h\), and have to be a bit more general in our expression.
-We get\todo{Check whether particle and hole expressions are the same.}
+We get
 \begin{align}
 	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \kernel(a) &=
 	  \frac{c}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \frac{1}{c^2 + a^2}\\
@@ -439,6 +464,9 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmat
 -- continuous, online learning
 
 \section{Machine learing in physics}
+
+In the past decade machine learning has emerged as an important tool.
+The field, which 
 -- CERN
 -- Condensed matter\cite{Nieuwenburg2017}\cite{dunjko17_machin_learn_artif_intel_quant_domain}
 -- Astronomy
@@ -506,6 +534,6 @@ Here we briefly outline this method for solving systems of equation.
 \chapter{Test}	
 
 \bibliographystyle{SciPost_bibstyle}
-\bibliography{master_thesis_references.bib}
+\bibliography{master_thesis_references}
 
 \end{document}
