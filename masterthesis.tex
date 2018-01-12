@@ -202,10 +202,41 @@ For two particles this means
 \begin{align}
 	\psi(x_1+L,x_2|\lambda_1,\lambda_2) = \psi(x_1,x_2+L|\lambda_1,\lambda_2) = \psi(x_1,x_2|\lambda_1,\lambda_2).
 \end{align}
-Imposing this condition on the wave function
-
-\begin{align}\label{eq:bethe_equations}
+Imposing this condition on the wave function yields
+\begin{align}
+  e^{i\lambda_1L} = - e^{-i\phi(\lambda_1 - \lambda2)}, \qquad e^{i\lambda_2L} = - e^{i\phi(\lambda_1 - \lambda2)},
 \end{align}
+or explicitly \cite{tofind}
+\begin{align}
+  e^{i\lambda_1L} = \frac{\lambda_1-\lambda_2 + ic}{\lambda_1-\lambda_2-ic}, \qquad e^{i\lambda_2L} = \frac{\lambda_2-\lambda_1 + ic}{\lambda_2-\lambda_1-ic}.
+\end{align}
+
+These are known as the Bethe equations.
+In logarithmic form this becomes 
+\begin{align}\label{eq:bethe_equations}
+  \lambda_1 + \frac{1}{L} \phi(\lambda_1-\lambda_2) = \frac{2\pi}{L} I_1, \qquad \lambda_2 + \frac{1}{L} \phi(\lambda_2-\lambda_1) = \frac{2\pi}{L} I_2.
+\end{align}
+The numbers \(I_1, I_2\) uniquelly label the quasimomenta and are hald-odd integers. 
+They act as the quantum numbers of the theory \cite{tofind}.
+
+In the many particle case the bethe equations generalise to
+\begin{equation}
+  e^{i\lambda_jL} = \prod_{l\neq j} \frac{\lambda_j-\lambda_l + ic}{\lambda_j - \lambda_l - ic}
+\end{equation}
+or in logarithmic form
+\begin{align}
+  \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
+\end{align}
+where \cite{tofind}
+\begin{align}
+I_j \in 
+\begin{cases}
+  \mathbb{Z} + \frac{1}{2}, \qquad &N \textrm{ even}\\
+  \mathbb{Z}  &N \textrm{ odd}
+\end{cases}
+\end{align}
+
+The Bethe equations and Bethe numbers have a number of different properties:
 
 \begin{theorem}
 \begin{sloppypar}
