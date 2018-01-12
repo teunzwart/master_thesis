@@ -163,11 +163,15 @@ The right-hand side of this equation has modulus 1, meaning it can be written as
 \begin{align}
 	\frac{A_{12}}{A_{21}} = -e^{i\phi(\lambda_1-\lambda_2)},
 \end{align}
-where
+where \cite{Korepin1993}
+\begin{align}
+  \phi(\lambda_1-\lambda_2) = i \log(\frac{\lambda_1-\lambda_2 + ic}{\lambda_1-\lambda_2-ic})
+\end{align}
+or
 \begin{align}
 	\phi(\lambda_1-\lambda_2) = -2\arctan\left(\frac{\lambda_1-\lambda_2}{c}\right),
 \end{align}
-and we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
+if we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
 
 We can now write the two-particle wavefunction by setting \(A_{21}=1\) (and ignoring normalization for the moment) to get
 \begin{equation}
@@ -178,16 +182,16 @@ yielding
 \begin{equation}
   \psi(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} (-1)^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
 \end{equation}
+The sum runs over the permutations of the set \((1,2)\).
 This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
-This points to a Pauli principle like phenomenon \cite{findreference}.
+This points to a Pauli principle like phenomenon \cite{tofind}.
 
 
 Going to the many-particle state is now a fairly straightforward generalization of the two-particle case.
-The wavefunction in this case becomes \cite{Franchini2017}
+The wavefunction in this case becomes \cite{Franchini2017}\todo{Bring the presentation of this in line with the two particle case.}
 \begin{equation}
 	\psi(x_1,\ldots,x_N) = \sum_{\mathcal{P}} A(\mathcal{P}) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}.
 \end{equation}
-- many particle state\\
 
 
 \subsubsection{Quantization}
@@ -209,7 +213,6 @@ Imposing this condition on the wave function
 The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textrm{\cite{Yang1969}}.
 \end{sloppypar}
 \end{theorem}
-
 \begin{proof}
 This can be proven with a variational argument, where the Bethe equations are the extremum of an action.
 The Yang-Yang action for the Lieb-Liniger model is
@@ -232,6 +235,39 @@ Introducing a vector \(v_j\) with real components we get \cite{Korepin1993}
   	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_j^2 + \sum_{j>l=1}^{N} K(\lambda_j,\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^2 > 0,
 \end{align}
 meaning that the action is convex and the minimum defining the Bethe equations is unique.
+\end{proof}
+
+\begin{theorem}
+All solutions of the Bethe equations for the Lieb-Liniger model are real.
+\end{theorem}
+
+\begin{proof}
+We consider the set of complex solutions to the Bethe equations \(\{\lambda_j\}\), where we call the value with the largest complex part in this set \(\lambda_{\textrm{max}}\):
+\begin{align}
+\textrm{Im} \, \lambda_{\textrm{max}} \geq \textrm{Im} \, \lambda_j.
+\end{align}
+If we put this into the non-logarithmic form of the Bethe equations and take the modulus we get
+\begin{align}
+  \left| e^{i\lambda_{\textrm{max}} L} \right|= \left| \prod_k \frac{\lambda_{\textrm{max}} - \lambda_k + ic}{\lambda_{\textrm{max}} - \lambda_k - ic} \right|\geq 1,
+\end{align}
+since
+\begin{align}
+\left|\frac{\lambda+ic}{\lambda-ic} \right| \geq 1 \qquad \textrm{if Im}\, \lambda \geq 0.
+\end{align}
+This however means that \(\textrm{Im}\, \lambda_{\textrm{max}} \leq 0\) since only then \(e^{i\lambda_{\textrm{max}}L} \geq 1\).
+Taking these statements together we see that \(\textrm{Im}\, \lambda_{\textrm{max}}=0\), and hence all other \(\lambda\)'s are also real \cite{Korepin1993}.
+\end{proof}
+
+\begin{theorem}
+If \(I_j >I_k\), then \(\lambda_j > \lambda_k\). If \(I_j=I_k\) then \(\lambda_j=\lambda_k\).
+\end{theorem}
+
+\begin{proof}
+Subtracting the relevant Bethe equations from eachother we get
+\begin{align}
+  \lambda_j - \lambda_k + \frac{1}{L}\sum_{l=1}^N \left[\phi(\lambda_j - \lambda_l) - \phi(\lambda_k - \lambda_l)\right] = \frac{2\pi}{L} (I_j - I_k).
+\end{align}
+Because \(\phi(\lambda)\) is a monotonically increasing function, the first term in the sum is larger than the second term, hence showing the theorem to be true \cite{Korepin1993}.
 \end{proof}
 
 \subsection{Gaudin norm}
