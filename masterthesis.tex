@@ -523,6 +523,32 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmat
 
 \chapter{Machine learning in the ABACUS algorithm}
 
+\section{Machine learing in physics}
+
+In the past decade machine learning has emerged as an important tool in many areas.
+The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commerical and academic side.
+Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) \todo{Cite this somehow?} and the development of AlphaGo, which beat the world champion in the Japanes boardgame of Go by learning from both human professional games and playing against itself \cite{Silver2017a,Silver2017}.
+In the life sciences machine learning uses include detecting risk factors for cardivasular diseases from pictures of the retina \cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than hand crafted sequencers) \cite{Poplin2016}.
+
+In physics applications have also been found in a variety of fields.
+CERN is exploring ways of tagging particles in LHC collisions using deep learning \cite{paganini17_machin_learn_algor_jet_taggin}.
+In astronomy machine learning is used to classify objects in images and determine redshifts, which have to be automated due to the often large data sets resulting from even a single night of observations \cite{ball10_data_minin_and_machin_learn_in_astron}.
+
+Condensed matter physics is now also benefitting from this field.
+Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wavefunction of various spin systems by approximatly encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy. While avoiding the exponential number of parameters encountered when representing the Hilbert space.
+This technique has been extended to different systems such as the Hubbard model \cite{Saito2017}.
+Phase transitions and order parameters have also been succesfully extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins \cite{Nieuwenburg2017}.
+
+-- Condensed matter\cite{dunjko17_machin_learn_artif_intel_quant_domain}
+There are also interesting links between deep learning and physics on a more fundamental level.
+For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similair way to the renormalization group \cite{Mehta2014}. 
+
+In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers.}
+
+\section{Stochastic gradient descent}
+Impact of data normalization on performance
+
+
 
 -use Monte Carlo to produce data sets for training\\
 -neural networks\\
@@ -530,22 +556,6 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmat
 --feedforward\\
 -- continuous, online learning
 
-\section{Machine learing in physics}
-
-In the past decade machine learning has emerged as an important tool.
-The field, which 
--- CERN
--- Condensed matter\cite{Nieuwenburg2017}\cite{dunjko17_machin_learn_artif_intel_quant_domain}
--- Astronomy
--- Go \cite{Silver2017a}, unsupervised \cite{Silver2017}
--- Autonomous cars
--- genome \cite{Poplin2016}
--- health from retinal images \cite{poplin17_predic_cardiov_risk_factor_from}
---  Variational Renormalization Group and Deep Learning \cite{Mehta2014}
--- groundstate estimation \cite{cai17_approx_quant_many_body_wave}\cite{Saito2017}
-
-\section{Stochastic gradient descent}
-Impact of data normalization on performance
 
 \section{Generative adverserial net}
 See \cite{Liu2017}, \cite{Kratzwald2017}
