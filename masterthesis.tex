@@ -2,7 +2,7 @@
 % The report class uses some outdated commands, about which nag will complain.
 % You can just ignore these warnings.
 
-\documentclass[11pt, a4paper,draft]{report} % Sets font and paper size.
+\documentclass[11pt, a4paper]{report} % Sets font and paper size.
 
 %%% General formatting packages (order is important, so don't sort) %%%
 \usepackage{amsmath} % More equation formatting.
@@ -12,7 +12,6 @@
 \usepackage{cite}
 \usepackage{epigraph}
 \usepackage{booktabs} % Improved tables.
-\usepackage{doi}
 \usepackage[font=small]{caption} % Better caption formatting.
 \usepackage{fancyhdr} % Modification of headers and footers.
 \usepackage[T1]{fontenc} % Makes one unicode character of special input (e.g. ö).
@@ -31,6 +30,10 @@
 \usepackage[colorinlistoftodos,textsize=tiny]{todonotes} % Add todo notes.
 \usepackage{hyperref}
 \usepackage[noabbrev]{cleveref} % Automate "equation (...)" reference. Use \cref.
+\usepackage{doi}
+
+\hypersetup{colorlinks, citecolor=blue, filecolor=black, linkcolor=blue, urlcolor=blue } 
+
 
 
 %%% Additional options %%%
@@ -39,11 +42,11 @@
 \fancyhead[R]{}
 \setlength{\headheight}{14pt}
 
-\setcounter{tocdepth}{3}
-\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{10}
+\setcounter{secnumdepth}{10}
 
 %%% Personal Information %%%
-\newcommand\TITLE{Thinking through problems thinking computers pose to future thinkers}
+\newcommand\TITLE{Exploring the intermediate state space of the Lieb-Liniger model with machine learning}
 \newcommand\THESISFORM{Master Thesis}
 \newcommand\AUTHOR{Teun Zwart}
 \newcommand\SUPERVISOR{Prof. dr. Jean-Sébastien Caux}
@@ -100,9 +103,43 @@
 
 \tableofcontents
 
+\newpage
+
+\section*{Abstract}
+
 \chapter{Introduction}
 
-\chapter{The Bethe Ansatz}
+Currently, in the ABACUS algorithm, dynamic structure factors for various Bethe-ansatz integrable models are calculated.
+This is done by summing over intermediate states to get the Lehmann series representation of the Fourier transform of the DSF.
+
+The order of summation determines how quickly saturation of the f-sum rule occurs.
+To maximize efficiency we only want to sum those state that contribute significantly to the DSF.
+This may be done by efficiently scanning through the state space of the model.
+There is an optimum way to do this, but it is not clear what this is.
+Currently heuristics are used to select states.
+This is already efficient since only very small fractions of the state space are used to reach saturations in excess of 99\%.
+However, a more efficient summation is still desirable.
+
+In this work we consider reinforcement learning as a way to sum the state space in an efficient way.
+Inspired by computers playing both 1980's video games \cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the boardgame Go\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which state sare the most promising to sum when scanning the state space of a model.
+
+This may also generalize to models beyond the Lieb-Liniger model.
+Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
+
+It is also possible that transfer learning may be used to map the experience gained in smaller systems to larger systems.
+This may be done with either convuloutional downsampling or restricted Boltzmann machines.
+
+This thesis is laid out as follows:
+in \cref{chap:bethe_ansatz} we review some of the basics of the Bethe ansatz and its application in the Lieb-Liniger model.
+\Cref{chap:abacus} describes the ABACUS algorithm; its use and current implementation of the state scanning algorithm.
+In \cref{chap:machine_learning} an introduction to machine learning and specifically reinforcement learning is given.
+We describe our approach and results in \cref{chap:results}.
+Finally \cref{chap:conclusion} summarizes our results and makes recommendations for future research directions.
+
+
+
+
+\chapter{The Bethe Ansatz}\label{chap:bethe_ansatz}
 
 The Bethe Ansatz allows for a way to solve certain one-dimensional systems exactly.
 It was put forth by Bethe in 1931 to solve the Heisenberg model, refining and correcting the earlier work of Bloch \cite{Bethe1931}.
@@ -241,7 +278,7 @@ The Bethe equations and Bethe numbers have a number of different properties:
 \begin{theorem}
 \begin{sloppypar}
 \noindent
-The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textrm{\cite{Yang1969}}.
+The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textup{\cite{Yang1969}}.
 \end{sloppypar}
 \end{theorem}
 \begin{proof}
@@ -286,7 +323,8 @@ since
 \left|\frac{\lambda+ic}{\lambda-ic} \right| \geq 1 \qquad \textrm{if Im}\, \lambda \geq 0.
 \end{align}
 This however means that \(\textrm{Im}\, \lambda_{\textrm{max}} \leq 0\) since only then \(e^{i\lambda_{\textrm{max}}L} \geq 1\).
-Taking these statements together we see that \(\textrm{Im}\, \lambda_{\textrm{max}}=0\), and hence all other \(\lambda\)'s are also real \cite{Korepin1993}.
+Defining \(\textrm{Im}\,\lambda_{\min}\leq \lambda_j\) as the smallest imaginary part of a rapidity we can in the same way prove that \(\textrm{Im}\,\lambda_{\min} \geq 0\).
+Taking these statements together we see that \(\textrm{Im}\, \lambda_{j}=0\textrm{\,}\forall\textrm{\,} j\), and hence all  \(\lambda\)'s are real \cite{Korepin1993}.
 \end{proof}
 
 \begin{theorem}
@@ -301,19 +339,82 @@ Subtracting the relevant Bethe equations from eachother we get
 Because \(\phi(\lambda)\) is a monotonically increasing function, the first term in the sum is larger than the second term, hence showing the theorem to be true \cite{Korepin1993}.
 \end{proof}
 
+\subsection{Momentum and energy}
+The momentum of the Lieb-Liniger model is given by
+\begin{align}
+  P = \sum_{j=1}^N \lambda_j = \frac{2\pi}{L}\sum_{j=1}^N I_j,
+\end{align}
+where the last step can be made because we sum an odd function over an even interval \cite{Korepin1993}.
+
 \subsection{Gaudin norm}
-The n
+The norm of a Bethe eigenstate is \cite{Caux2007}
+\begin{align}
+  \braket{\{\lambda\}_N}{\{\lambda\}_N} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det(\mathcal{G}(\{\lambda\})),
+\end{align}
+where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with elements
+\begin{align}
+  \mathcal{G}(\{\lambda\})_{jk} = \delta_{jk} \left(L + \sum_{m=1}^NK(\lambda_j-\lambda_m)\right) - K(\lambda_j, \lambda_k)
+\end{align}
+
+
 - two particles \\
 - many particles\\
 - Bethe equations\\
-- Norms of the eigenstates: Gaudin matrices\\
 - ground state\\
 - groundstate density (iterative scheme for density)\cite{Zemyan2012}
 
-\subsection{Correlation functions}
+
+
+
+\section{Correlation functions}
 Some success at exact form \cite{Nardis2016}
 \cite{slavnov89_calcul_scalar_produc_wave_funct}
-\cite{slavnov90_noneq_time_curren_correl_funct}
+
+
+\subsection{Form factor for $\rho(x=0)$}
+For the density operator
+\begin{align}
+  \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
+\end{align}
+with \(\{x_k\}_{j=1}^N\) the positions of the particles in the gas, the form factor is \cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
+\begin{multline}
+  \matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
+  \left(\sum_{j=1}^N(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+(\lambda_j) - V^-(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
+\end{multline}
+with element of the matrix \(U\) given by
+\begin{align}
+  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}} \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right).
+\end{align}
+If two states have the same momentum, the matrix element is 0, while if $\mu = \lambda$ we have $\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}=\frac{N}{L}$.
+
+\subsection{Form factor for ${(\Psi^{\dag}(0))}^2{\Psi(0)}^2$}
+We are interested in the numerical values of form factors.
+The form factor for $(\Psi^{\dag}(0))^2\Psi(0)^2$ has a closed form determint solution and is easy to work with because both states under consideration have the same number of particles.\todo{What does it measure? What is it?}
+Given two states represented by sets of rapidities \(\{\mu_j\}^N_{j=1}\), \(\{\lambda_j\}^N_{j=1}\) satisfying the Bethe equations and satisfying \(\mu_k\neq \lambda_j \forall j,k=1\ldots N\) the form factor is \cite{Piroli2015}
+\begin{multline}\label{eq:psi_sq_form_factor}
+  \matrixel{0}{\prod_{j=1}^{N}\mathcal{C}(\mu_j) (\Psi^{\dag}(0))^2{\Psi(0)}^2 \prod_{j=1}^N\mathcal{B}(\lambda_j)}{0} =
+  (-1)^N \frac{\mathcal{J}}{6c} \prod_{j=1}^{N}\prod_{k=1}^N (\lambda_{jk}+ic)\\ \times \prod_{j=1}^{N}\prod_{k=1}^N \frac{1}{\lambda_j - \mu_k}
+  \times \prod_{j=1}^N(V(\lambda_j)^+ - V(\lambda_j)^-) \frac{\det(I_N + U)}{(V(p)^+ - V(p)^-)(V(s)^+ - V(s)^-)},
+\end{multline}
+where \(\mathcal{B}\) and \(\mathcal{C}\) are defined in\todo{Write about ABA}, \(\lambda_{jk} = \lambda_j-\lambda_k\), \(I_N\) is the \(N\)-dimensional identity matrix,
+\begin{align}
+  V(\lambda_j)^{\pm} = \prod_{m=1}^N \frac{\mu_m - \lambda_j \pm ic}{\lambda_m -\lambda_j \pm ic},
+\end{align}
+the elements of the matrix \(U\) are given by
+\begin{align}
+  U_{jk} = \frac{i}{V(\lambda_j)^+ - V(\lambda_j)^-} \frac{\prod_{m=1}^N (\mu_m - \lambda_j)}{\prod_{\substack{m=1\\m\neq j}}^N (\lambda_m-\lambda_j)} \left[K(\lambda_j,\lambda_k) - K(p,\lambda_k)K(s,\lambda_j)\right]
+\end{align}
+and
+\begin{align}
+  \mathcal{J} = (P_{\lambda} - P_{\mu})^4 - 4 (P_{\lambda} - P_{\mu})(Q_{\lambda}-Q_{\mu}) + 3 (E_{\lambda} - E_{\mu})^2,
+\end{align}
+with
+\begin{align}
+  P_{\lambda} = \sum_{j=1}^N \lambda_j, \qquad E_{\lambda} = \sum_{j=1}^N \lambda_j^2, \qquad Q_{\lambda} = \sum_{j=1}^N \lambda_j^3.
+\end{align}
+The parameters \(s\) and \(p\) are arbitrary complex numbers which are not necessarily in the set of rapidities of the states.
+We will generally set them to 0, since that simplifies numerical evaluation of \cref{eq:psi_sq_form_factor} and the form factor does not depend on their values.
+Note that for the Lieb-Liniger model \(V(\lambda_j)^{-} = (V(\lambda_j)^{+})^{*}\), since all rapidities are real in this case.
 
 \subsection{The thermodynamic limit}
 
@@ -489,7 +590,7 @@ A very similair derivation for type II excitations leads to
 
 
 
-\chapter{The ABACUS algorithm}
+\chapter{The ABACUS algorithm}\label{chap:abacus}
 
 We are interested in calculating two-point zero temperature equilibrium correlation function:
 \begin{equation}\label{eq:expval}
@@ -502,7 +603,7 @@ The equivalent Fourier transformed quantity is the dynamical structure factor (D
 \end{equation}
 This quantity is often more useful than \cref{eq:expval} because it is related to experimental linear response measurements \cite{Caux2009}.
 
--DSF\\
+-DSF\cite{Cherny2008}\\
 -Scanning over Hilbert space\\
 -current implementation of finding rapidities\\
 - sumrules
@@ -520,8 +621,12 @@ Convergence is reached when \cite{Caux2009}
 where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable'' \cite{cppstandard2016}.
 On machines implementing IEEE 754-2008 (the standard for floating-point arithmatic) \cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
 
+\section{Ordering of matrix element magnitudes}
 
-\chapter{Machine learning in the ABACUS algorithm}
+
+
+
+\chapter{Machine learning in the ABACUS algorithm}\label{chap:machine_learning}
 
 \section{Machine learing in physics}
 
@@ -535,15 +640,17 @@ CERN is exploring ways of tagging particles in LHC collisions using deep learnin
 In astronomy machine learning is used to classify objects in images and determine redshifts, which have to be automated due to the often large data sets resulting from even a single night of observations \cite{ball10_data_minin_and_machin_learn_in_astron}.
 
 Condensed matter physics is now also benefitting from this field.
-Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wavefunction of various spin systems by approximatly encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy. While avoiding the exponential number of parameters encountered when representing the Hilbert space.
+Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wavefunction of various spin systems by approximatly encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy while avoiding the exponential number of parameters encountered when representing the Hilbert space.
 This technique has been extended to different systems such as the Hubbard model \cite{Saito2017}.
 Phase transitions and order parameters have also been succesfully extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins \cite{Nieuwenburg2017}.
 
--- Condensed matter\cite{dunjko17_machin_learn_artif_intel_quant_domain}
+Reinforcement learning has been used to design setups for optical experiments in which complex entangled states are needed.
+Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if an `interesting' state is created \cite{dunjko17_machin_learn_artif_intel_quant_domain}.
+
 There are also interesting links between deep learning and physics on a more fundamental level.
 For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similair way to the renormalization group \cite{Mehta2014}. 
 
-In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers.}
+In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see \cite{Dunjko2017}).}
 
 \section{Stochastic gradient descent}
 Impact of data normalization on performance
@@ -565,7 +672,7 @@ Therefore a vector encoding only the changed rapidities should in principle be e
 
 \section{Decision tree}
 
-\subsection{Gradient boosting}
+subsection{Gradient boosting}
 
 GBM
 XGBoost
@@ -578,23 +685,72 @@ CatBoost
 Have go like learning of appropriate states by considering a given state and determinging whether it is a good "close" state.
 This requires some way to determine the value of a "move", a move being a mutation of a given vector of Bethe numbers\cite{Silver2017}
 
-\section{Summing 1/L terms}
+\subsection{Q-learning}
 
-When updating we have to take care to not update in place but rather update into a new list, since otherwise we will use a different set of lambdas to calculate each new lambda.
+\subsubsection{Deep Q networks}
+
+interesting\cite{mnih13_playin_atari_with_deep_reinf_learn,lillicrap15_contin_contr_with_deep_reinf_learn}
+
+\subsubsection{Recurrent Q learning}
+
+\chapter{Methods and results}\label{chap:results}
 
 
 
-\newpage
+As an initial step, before exploring the intermediate state space, we create a neural network that predicts the \textit{best} or \textit{closest} state to a given base state.
+In this respect we follow the approach of the Deepmind team, which first based AlphaGo on expert data and only later used tabula rase reinforcement learning.
+
+We create a `expert' dataset by generating 10000 states represented in Bethe number space for $N=10$.
+To constrain the required computation we implement a UV-cutoff in Bethe number space, with $\lvert I_{\max}\rvert=15$.\footnote{Note that, since $N$ is even, the effective maximum is $\lvert I_{\max}\rvert=14.5$.}
+Every possible legal state \textit{close} to this state was than generated, where closest meant that a state has a single change in a Bethe number, with size $\Delta I = 1$.
+For every adjacent state the matrix element for X\todo{Select an operator.} is calculated.
+The adjacent state associated with the largest matrix element was then selected as the target state in the dataset.
+
+Predicting the best next state is done by using two convolutional neural networks. \todo{Expand on the architecture.}
+One convolutional net predicts the best place to take a Bethe number from, while the other predicts the best place to deposite the particle.
 
 
-\chapter{Results}
+We use two approaches, one in which the tree of possible adjecent states is evaluated and traversed, and one in which only the predictions of the neural net are used for evaluation.
+
+Simple neural net
+
+
+Convolutional neural net
+Pooling or no pooling (zero padding) 
+
+
+If a move is illegal the probability is set to zero and the probabilities are renormalized~\cite{pmlr-v37-clark15}.
+Illegal moves are those that try to remove a particle from a position where there is none, or placing a particle on an already occupied position.
+Also illegal are those moves that place particles too far away from other particles \todo{Is this necessary? Maybe it is intereseting to see what the neural net does on its own, since maybe it will come up with good states based on the training set anyway.}
 
 verification with f-sum rule \cite{Caux2007a}
 \begin{equation}
     \int \frac{\dd \omega}{2\pi} \omega S(k, \omega) = \frac{N}{L} k^2
 \end{equation}
 
-\chapter{Discussion and conclusion}
+static correlator \cite{Nardis2016}
+\begin{equation}
+  S(k) = \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi}S(k,\omega)
+\end{equation}
+
+
+sumrule for one-body correlation function \cite{Caux2007}
+\begin{equation}
+  \frac{1}{2\pi L} \int_{\infty}^{\infty}\sum_k G_2(k,\omega) = n
+\end{equation}
+
+\section{Results}
+
+If $c = n  x$ and $L = y$, than the ideal ordening of matrix elements for this setup translates to the case where $c = x$ and $L = n y$, for $n \in \mathbb{R}$.
+In other words, making the interaction strength $n$ times larger maps to the same system in matrix element ordering space as make the system size $n$ times smaller.
+
+If one of the parameters is perturbed by a factor $1+k$ with $k$ small, than the difference between the matrix elements is of order $k$.
+
+In general matrix elements for the different parameter families mentioned above differ only by a factor $n$, meaning that you can calculate the matrix elements for the different systems by a simple rescaling.
+
+PROBLEM: We never reward in the experience replay because we never reach a terminal state. The reward function has to be edited to take this into account.
+
+\chapter{Discussion and conclusion}\label{chap:conclusion}
 
 
 In ABACUS the learning may work better since we are descending along threads, which means that similar states are together.
@@ -607,8 +763,6 @@ Inadmissable states may be ignored.
 \chapter{LU decomposition}\label{app:LUdecomp}
 In the current implementation of ABACUS the Bethe equations are solved using an LU decomposition. 
 Here we briefly outline this method for solving systems of equation.
-
-\chapter{Test}	
 
 \bibliographystyle{SciPost_bibstyle}
 \bibliography{master_thesis_references}
