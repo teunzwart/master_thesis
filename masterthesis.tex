@@ -46,7 +46,7 @@
 \setcounter{secnumdepth}{10}
 
 %%% Personal Information %%%
-\newcommand\TITLE{Exploring the intermediate state space of the Lieb-Liniger model with machine learning}
+\newcommand\TITLE{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}
 \newcommand\THESISFORM{Master Thesis}
 \newcommand\AUTHOR{Teun Zwart}
 \newcommand\SUPERVISOR{Prof. dr. Jean-Sébastien Caux}
@@ -108,6 +108,8 @@
 \section*{Abstract}
 
 \chapter{Introduction}
+
+\epigraph{\itshape The future is already here -- it's just not very evenly distributed.}{William Gibson}
 
 Currently, in the ABACUS algorithm, dynamic structure factors for various Bethe-ansatz integrable models are calculated.
 This is done by summing over intermediate states to get the Lehmann series representation of the Fourier transform of the DSF.
@@ -592,6 +594,8 @@ A very similair derivation for type II excitations leads to
 
 \chapter{The ABACUS algorithm}\label{chap:abacus}
 
+\epigraph{That's the thing about people who think they hate computers... What they really hate are lousy programmers.}{Larry Niven}
+
 We are interested in calculating two-point zero temperature equilibrium correlation function:
 \begin{equation}\label{eq:expval}
 	\expval{\operator_j^a(t)\operator_{j'}^{\bar{a}}(0)},
@@ -628,12 +632,15 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmat
 
 \chapter{Machine learning in the ABACUS algorithm}\label{chap:machine_learning}
 
+\epigraph{\itshape Real stupidity beats artificial intelligence every time.}{Terry Pratchett, Hogfather}
+
 \section{Machine learing in physics}
 
 In the past decade machine learning has emerged as an important tool in many areas.
 The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commerical and academic side.
 Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) \todo{Cite this somehow?} and the development of AlphaGo, which beat the world champion in the Japanes boardgame of Go by learning from both human professional games and playing against itself \cite{Silver2017a,Silver2017}.
 In the life sciences machine learning uses include detecting risk factors for cardivasular diseases from pictures of the retina \cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than hand crafted sequencers) \cite{Poplin2016}.
+Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another \cite{Liu2017}.\footnote{What the implications are of this brave new world where no image can be fully trusted is a discussion that is only just beginning.}
 
 In physics applications have also been found in a variety of fields.
 CERN is exploring ways of tagging particles in LHC collisions using deep learning \cite{paganini17_machin_learn_algor_jet_taggin}.
@@ -652,36 +659,25 @@ For example, an exact mapping was established between the variational renormaliz
 
 In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see \cite{Dunjko2017}).}
 
-\section{Stochastic gradient descent}
-Impact of data normalization on performance
+
+\section{Machine learning: the basics}
+training, validation, testing
+\subsection{Stochastic gradient descent}
+\subsection{Neural networks}
+\subsubsection{Feedforward}
+\subsubsection{Recurrent}
+\subsubsection{Convolutional}
 
 
-
--use Monte Carlo to produce data sets for training\\
--neural networks\\
---basics: training, validation, testing\\
---feedforward\\
--- continuous, online learning
-
-
-\section{Generative adverserial net}
-See \cite{Liu2017}, \cite{Kratzwald2017}
-
-Rapidities are not sensitive to the absolute size of the bethe numbers (addititive scale invariance), only their relative structure.
-Therefore a vector encoding only the changed rapidities should in principle be enough to get the delta lambdas.
-
-\section{Decision tree}
-
-subsection{Gradient boosting}
-
-GBM
-XGBoost
-LightGBM
-CatBoost
-
-\subsection{Random forest}
 
 \section{Reinforcement learning}
+
+The machine learning techniques we have described until now all rely on large data sets to function, being supervised algorithms.
+They use expert data to train and this (hopefully) allows for generalization to new data.\footnote{Unsupervised algorithms that do not map an input to an output exist and are widely used, but are more suitable for tasks such as clusturing.}
+In many cases however the acquisation of expert data is difficult or impossible.
+In these cases reinforcement learning comes into play.
+Here, there is no a priori knowledge of the targets, only a reward function that, given a state and an action returns a reward.
+
 Have go like learning of appropriate states by considering a given state and determinging whether it is a good "close" state.
 This requires some way to determine the value of a "move", a move being a mutation of a given vector of Bethe numbers\cite{Silver2017}
 
@@ -692,6 +688,25 @@ This requires some way to determine the value of a "move", a move being a mutati
 interesting\cite{mnih13_playin_atari_with_deep_reinf_learn,lillicrap15_contin_contr_with_deep_reinf_learn}
 
 \subsubsection{Recurrent Q learning}
+\cite{hausknecht15_deep_recur_q_learn_partial_obser_mdps}
+\subsubsection{Double Q-learning}
+\cite{hasselt15_deep_reinf_learn_with_doubl_q_learn}
+
+This fucking thing is non-Markovian, does it even make sense then?
+
+Note however that we are working with a non-Markovian problem.
+The Lieb-Liniger model itself is certainly Markovian, but the summation over states in the dynamical structure function is not, since states may not be doubly counted.
+Is this still valid?
+I don't know, I'm not a mathmatician, but hopefully it works.
+
+Lets just try it and see what happens, chaning only the action selection to disallow repeat states.
+
+Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?\todo{Find out!}
+
+\subsection{Monte Carlo tree search}
+
+
+
 
 \chapter{Methods and results}\label{chap:results}
 
@@ -717,6 +732,12 @@ Simple neural net
 
 Convolutional neural net
 Pooling or no pooling (zero padding) 
+Impact of data normalization on performance
+
+
+Rapidities are not sensitive to the absolute size of the bethe numbers (addititive scale invariance), only their relative structure.
+Therefore a vector encoding only the changed rapidities should in principle be enough to get the delta lambdas.
+
 
 
 If a move is illegal the probability is set to zero and the probabilities are renormalized~\cite{pmlr-v37-clark15}.
@@ -739,6 +760,10 @@ sumrule for one-body correlation function \cite{Caux2007}
   \frac{1}{2\pi L} \int_{\infty}^{\infty}\sum_k G_2(k,\omega) = n
 \end{equation}
 
+
+\section{The f-sum rule}
+To verify that we have summed form factors that contribute a lot to the density structure function, we can use the f-sum rule.
+
 \section{Results}
 
 If $c = n  x$ and $L = y$, than the ideal ordening of matrix elements for this setup translates to the case where $c = x$ and $L = n y$, for $n \in \mathbb{R}$.
@@ -748,9 +773,14 @@ If one of the parameters is perturbed by a factor $1+k$ with $k$ small, than the
 
 In general matrix elements for the different parameter families mentioned above differ only by a factor $n$, meaning that you can calculate the matrix elements for the different systems by a simple rescaling.
 
+Conjecture: The ordering of matrix elements is the same as long as the parameter $\gamma$ is the same. The value of the matrix elements is the same up to the factor with which the lenght of the system has been scaled.
+
 PROBLEM: We never reward in the experience replay because we never reach a terminal state. The reward function has to be edited to take this into account.
 
 \chapter{Discussion and conclusion}\label{chap:conclusion}
+
+\epigraph{\itshape I may not have gone where I intended to go, but I think I have ended up where I needed to be.}{Douglas Adams, The Long Dark Tea-Time of the Soul}
+
 
 
 In ABACUS the learning may work better since we are descending along threads, which means that similar states are together.
@@ -764,7 +794,20 @@ Inadmissable states may be ignored.
 In the current implementation of ABACUS the Bethe equations are solved using an LU decomposition. 
 Here we briefly outline this method for solving systems of equation.
 
+\chapter{The f-sum rule}
+
+
+The f-sum rule may be used to determine how many of the relevan
+
+
+\section{The $\rho$ operator}
+
+
+\section{The $:\rho^2:$ operator}
+
+
 \bibliographystyle{SciPost_bibstyle}
 \bibliography{master_thesis_references}
+
 
 \end{document}
