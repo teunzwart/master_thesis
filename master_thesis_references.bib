@@ -805,3 +805,149 @@
   primaryClass = {cs.LG},
 }
 
+@article{hasselt15_deep_reinf_learn_with_doubl_q_learn,
+  author =       {Hasselt, Hado van and Guez, Arthur and Silver,
+                  David},
+  title =        {Deep Reinforcement Learning With Double Q-Learning},
+  journal =      {CoRR},
+  year =         2015,
+  url =          {http://arxiv.org/abs/1509.06461v3},
+  abstract =     {The popular Q-learning algorithm is known to
+                  overestimate action values under certain
+                  conditions. It was not previously known whether, in
+                  practice, such overestimations are common, whether
+                  they harm performance, and whether they can
+                  generally be prevented. In this paper, we answer all
+                  these questions affirmatively. In particular, we
+                  first show that the recent DQN algorithm, which
+                  combines Q-learning with a deep neural network,
+                  suffers from substantial overestimations in some
+                  games in the Atari 2600 domain. We then show that
+                  the idea behind the Double Q-learning algorithm,
+                  which was introduced in a tabular setting, can be
+                  generalized to work with large-scale function
+                  approximation. We propose a specific adaptation to
+                  the DQN algorithm and show that the resulting
+                  algorithm not only reduces the observed
+                  overestimations, as hypothesized, but that this also
+                  leads to much better performance on several games.},
+  archivePrefix ={arXiv},
+  eprint =       {1509.06461},
+  primaryClass = {cs.LG},
+}
+
+@article{hausknecht15_deep_recur_q_learn_partial_obser_mdps,
+  author =       {Hausknecht, Matthew and Stone, Peter},
+  title =        {Deep Recurrent Q-Learning for Partially Observable
+                  Mdps},
+  journal =      {CoRR},
+  year =         2015,
+  url =          {http://arxiv.org/abs/1507.06527v4},
+  abstract =     {Deep Reinforcement Learning has yielded proficient
+                  controllers for complex tasks. However, these
+                  controllers have limited memory and rely on being
+                  able to perceive the complete game screen at each
+                  decision point. To address these shortcomings, this
+                  article investigates the effects of adding
+                  recurrency to a Deep Q-Network (DQN) by replacing
+                  the first post-convolutional fully-connected layer
+                  with a recurrent LSTM. The resulting \textit{Deep
+                  Recurrent Q-Network} (DRQN), although capable of
+                  seeing only a single frame at each timestep,
+                  successfully integrates information through time and
+                  replicates DQN's performance on standard Atari games
+                  and partially observed equivalents featuring
+                  flickering game screens. Additionally, when trained
+                  with partial observations and evaluated with
+                  incrementally more complete observations, DRQN's
+                  performance scales as a function of
+                  observability. Conversely, when trained with full
+                  observations and evaluated with partial
+                  observations, DRQN's performance degrades less than
+                  DQN's. Thus, given the same length of history,
+                  recurrency is a viable alternative to stacking a
+                  history of frames in the DQN's input layer and while
+                  recurrency confers no systematic advantage when
+                  learning to play the game, the recurrent net can
+                  better adapt at evaluation time if the quality of
+                  observations changes.},
+  archivePrefix ={arXiv},
+  eprint =       {1507.06527},
+  primaryClass = {cs.LG},
+}
+
+@Book{pitaevskii,
+  author =    {Lev Pitaevski and Sandro Stringari},
+  title =        {Bose-Einstein Condensation},
+  publisher =   {Clarendon Press},
+  year =         {2003},
+  volume =    {116},
+  series =    {Inernational Series of Monographs on Physics},
+  address =   {Oxford},  
+}
+
+@article{silver16_master_game_go_with_deep,
+  author =       {David Silver and Aja Huang and Chris J. Maddison and
+                  Arthur Guez and Laurent Sifre and George van den
+                  Driessche and Julian Schrittwieser and Ioannis
+                  Antonoglou and Veda Panneershelvam and Marc Lanctot
+                  and Sander Dieleman and Dominik Grewe and John Nham
+                  and Nal Kalchbrenner and Ilya Sutskever and Timothy
+                  Lillicrap and Madeleine Leach and Koray Kavukcuoglu
+                  and Thore Graepel and Demis Hassabis},
+  title =        {Mastering the Game of Go With Deep Neural Networks
+                  and Tree Search},
+  journal =      {Nature},
+  volume =       529,
+  number =       7587,
+  pages =        {484-489},
+  year =         2016,
+  doi =          {10.1038/nature16961},
+  url =          {https://doi.org/10.1038/nature16961},
+  DATE_ADDED =   {Wed Feb 14 11:46:36 2018},
+}
+
+
+@article{watkins92_q_learn,
+  author =       {Christopher J. C. H. Watkins and Peter Dayan},
+  title =        {Q-Learning},
+  journal =      {Machine Learning},
+  volume =       8,
+  number =       {3-4},
+  pages =        {279-292},
+  year =         1992,
+  doi =          {10.1007/bf00992698},
+  url =          {https://doi.org/10.1007/bf00992698},
+  DATE_ADDED =   {Wed Feb 14 11:48:14 2018},
+}
+
+
+@article{mnih15_human_level_contr_throug_deep_reinf_learn,
+  author =       {Volodymyr Mnih and Koray Kavukcuoglu and David
+                  Silver and Andrei A. Rusu and Joel Veness and Marc
+                  G. Bellemare and Alex Graves and Martin Riedmiller
+                  and Andreas K. Fidjeland and Georg Ostrovski and
+                  Stig Petersen and Charles Beattie and Amir Sadik and
+                  Ioannis Antonoglou and Helen King and Dharshan
+                  Kumaran and Daan Wierstra and Shane Legg and Demis
+                  Hassabis},
+  title =        {Human-Level Control Through Deep Reinforcement
+                  Learning},
+  journal =      {Nature},
+  volume =       518,
+  number =       7540,
+  pages =        {529-533},
+  year =         2015,
+  doi =          {10.1038/nature14236},
+  url =          {https://doi.org/10.1038/nature14236},
+  DATE_ADDED =   {Wed Feb 14 11:50:21 2018},
+}
+
+
+@Book{,
+  author =    {Richard S. Sutton and Andrew G. Barto},
+  title =        {Reinforcement Learning: An Introduction, but is draft for 2nd edition, 2017},
+  publisher =    {MIT Press},
+  year =         {1998},
+}
+
