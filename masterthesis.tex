@@ -44,6 +44,8 @@
 
 \setcounter{tocdepth}{10}
 \setcounter{secnumdepth}{10}
+\setcounter{MaxMatrixCols}{20}
+
 
 %%% Personal Information %%%
 \newcommand\TITLE{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}
@@ -103,6 +105,14 @@
 
 \tableofcontents
 
+\section*{TODO}
+\begin{itemize}
+  \item Talk with Paul Baireuther (Leiden)?
+  \item Talk with Rianne van den Berg?
+  \item \url{http://ataspinar.com/2017/08/15/building-convolutional-neural-networks-with-tensorflow/}
+\end{itemize}
+
+
 \newpage
 
 \section*{Abstract}
@@ -140,6 +150,18 @@ Finally \cref{chap:conclusion} summarizes our results and makes recommendations 
 
 
 
+
+\begin{itemize}
+  \item \textbf{How can we efficiently scan through the state space of the Lieb-Liniger model?}
+  \item How does ABACUS currently do this?
+  \item Is this approach amenable to machine learning? (Specifically reinforcement learning through minimization of the number of summed states necessary to reach a given f-sum rule saturation)
+  \item Would transfer learning allow the result of this to be maped to different system sizes (through convolutional down sampling/ restricted Boltzman machines)
+  \item What would be the nbest neural network approach be to deicde on the next best state to sum? \\ How do we choose? The number of edges grows linarly in time, making it difficult to have aprobability ditribution over them. We also have to keep in mind the constraints on the Bethe numbers of the Lieb-Liniger model.    
+  \item How do we backpropagate the succes/failure of a run through the network (see ALPHA GO)?
+  \item Does this generalize to other models? It should, as long as you are able to find the DSF's you are interested in since you need them for the sum rule.
+  \item Would an RNN scanning over the history of the summation work better?
+  \item Control: How does random sampling of the space perform in f-sum rule summation?
+\end{itemize}
 
 \chapter{The Bethe Ansatz}\label{chap:bethe_ansatz}
 
@@ -372,6 +394,9 @@ where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with element
 Some success at exact form \cite{Nardis2016}
 \cite{slavnov89_calcul_scalar_produc_wave_funct}
 
+There is an extra factor of $i$ in the code of ABACUS for $\expval{\mu}{\rho}{\lambda}$.
+See Slavnov eq 3.2 (is because of a d/dx log term)
+
 
 \subsection{Form factor for $\rho(x=0)$}
 For the density operator
@@ -551,6 +576,44 @@ If we perform the integration, cancel common terms and rearrange, we get the int
 	&= \theta(\lambda_F - \lvert\lambda'\rvert) \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda') + \kernel^{(F)}(\lambda,\lambda')
 \end{align}
 
+So far we have been exact.
+Now we can make use of the method of succesive approximation \cite{Zemyan2012} to solve this equation (a Fredholm integral equation of the second kind).
+
+If we have an integral equation of the form
+\begin{equation}
+  \phi(x) = f(x) + \omega \int_{a}^b K(x,t)\phi(t) \dd t,
+\end{equation}
+where $K(x,t)$ is a continous integration kernel on the interval $[a,b]$, then it seems reasable to assume that to lowest order the solution of the integral equation is $f(x)$, provided that $\omega$ is small.
+This gives a lowest order approximation $\phi_0(x) = f(x)$, subsequent substitution yielding 
+\begin{equation}
+  \phi(x) = f(x) + \omega \int_{a}^b K(x,t)\phi_0(t) \dd t,
+\end{equation}
+which we hope to be more tractable than the original equation.
+In general the $n+1$-th approximation is defined in terms of the $n$-th approximation as
+\begin{equation}
+  \phi_{n+1}(x) = f(x) + \omega \int_{a}^b K(x,t)\phi_n(t) \dd t.
+\end{equation}
+This converges as long as $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \rVert_2$ the $L_2$-norm:
+\begin{equation}
+  \lVert K \rVert_2 = \left( \int_{a}^b \int_a^b \abs{K(x,t)}^2 \dd x \dd t\right)^{1/2}.
+\end{equation}
+
+For the case we are interested in we have 
+\begin{equation}
+  \inversetruncc^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \inversetruncc^{(F)}_n(\lambda, \lambda'') \kernel (\lambda''-\lambda') \dd \lambda'' + \kernel^{(F)}(\lambda, \lambda'),
+\end{equation}
+which converges as long as 
+\begin{equation}
+\left(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c})\right)^{1/2} < 1.
+\end{equation}
+If we only wish to know the value of $\inversetruncc^{(F)}$ at a single point we can
+use that at each iteration step $\inversetruncc^{(F)}$ is only a number, allowing us to take it out of the integral. 
+We get
+\begin{align}
+  \inversetruncc^{(F)}_{n+1} (\lambda, \lambda') &= \theta(\lambda_F - \abs{\lambda'})  \inversetruncc^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \kernel (\lambda''-\lambda') \dd \lambda'' + \kernel^{(F)}(\lambda, \lambda')\\
+&= - \frac{1}{\pi} \theta(\lambda_F - \abs{\lambda'}) \inversetruncc^{(F)}_n(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \kernel^{F}(\lambda,\lambda').
+\end{align}
+
 \subsection{Excited states}
 
 For excited states there is no longer a Fermi level \cite{tofind} (or the Fermi level goes to \(\infty\)), meaning that the truncated kernel \(\kernel^{(F)}\) becomes equal to the regular Lieb-Liniger kernel~\(\kernel\).
@@ -594,7 +657,7 @@ A very similair derivation for type II excitations leads to
 
 \chapter{The ABACUS algorithm}\label{chap:abacus}
 
-\epigraph{That's the thing about people who think they hate computers... What they really hate are lousy programmers.}{Larry Niven}
+\epigraph{\itshape{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
 
 We are interested in calculating two-point zero temperature equilibrium correlation function:
 \begin{equation}\label{eq:expval}
@@ -622,13 +685,167 @@ Convergence is reached when \cite{Caux2009}
 \begin{equation}
 	\frac{1}{N}\sum_{i=1}^{N} \left(\frac{\Delta \lambda_i}{\lambda_i}\right)^2 < 10^4 \times \epsilon^2,
 \end{equation}
-where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable'' \cite{cppstandard2016}.
+where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable''~\cite{cppstandard2016}.
 On machines implementing IEEE 754-2008 (the standard for floating-point arithmatic) \cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
 
 \section{Ordering of matrix element magnitudes}
 
 
+\begin{verbatim}
+* General remarks
+There have been multplie versions of ABACUS.
+The current version is denoted with "G", meaning it supports out-of-equilibrium systems.
 
+Only the Heisenberg model and Lieb-Liniger model are fully implemented. There has also been work on the renormalization group (with Konik) and with Robinson.
+
+The general_scan() function is central and scans over the Hilbert space of the model.
+To calculate a DSF we use (in the Lehmann representation):
+S_{\alpha}^{O\bar{O}} = <\alpha|O\bar{O}|\alpha> = \sum_{\alpha'}  <\alpha|O\bar{O}|\alpha'>  <\alpha'|O\bar{O}|\alpha>
+O is a general operator.
+
+At the start of a simulation we choose the \alpha' to be close to \alpha.
+We then scan over all states in the Hilbert space.
+If states are very different, the matrix element will be small.
+
+To scan over the Hilbert space we use the concept of a descendant.
+Lets say that the matrix element <\alpha'|O\bar{O}|\alpha> ~ 10^{-2} is the largest one.
+We then consider all the states adjacent to this state which have a matrix element above the scan threshold. 
+The goal is to descent the "mountain" as slowly as possible. A depth first search is performed from the initial state until the threshold is crossed.
+Once no more states are above the threshold, it is lowered.
+In principle you will reach the entire Hilbert space in this way (though note, the Lieb-Liniger model has an infinite dimensional one).
+
+The initial state from which scanning commences is the "Seed_Scan_State".
+
+To keep track of which states have been visited we define a thread. A thread is a line of descendents in the Hilbert space. This informaiton needs to be saved during the simulation and is saved in ".thr" files.
+
+We call the lowering and subsequent scanning until all states are scanned a "cycle".
+
+Endpoints of threads are stored in the directory "thrdir".
+The higher the number, the lower the matrix element.
+
+There are 15 types of descendant.
+Note that the contributions of matrix elements are not monotonically decreasing, but may increase at some points.
+
+The building of states happens from the outide in. The first particles are the ones that may travel the farthest in pseudo-momentum space. 
+To make states unique, particles may not cross each other.
+For holes the idea is the opposite.
+
+The raw information about states is saved in ".raw" files, listing energy, momentum and the matric element of the state.
+
+To uniquely define a state a "checksum" for the state is defined in terms of the quantum numbers. 
+
+The Bethe numbers (the Is in the Bethe equations) are multiplied by 2 to get whole numbers
+This gives a vector of integers. 
+In the Heisenberg model there are strings of complex eigenvalues, leading to a vector of vectors.
+
+Sum rules allows checking the validity of the simulation.
+The contribution of states to sum rules is stored in ".src" files.
+Actual summing happens in the ".sum" file.
+* Lieb-Lininger model in the ABACUS algorithm
+main entry point for the simulation: src/EXECS/LiebLin_DSF.cc
+The parallel files are only used for refinement runs of serial simulations.
+
+The main function of src/EXECS/LiebLin_DSF.cc calls Scan_LienLin() from src/SCAN/General_Scan.cc
+** src/SCAN/General_Scan.cc
+Contains the functions to scan over the intermediate states that are needed in the Lehmann representation to calculate Density Structure Functions.
+
+  // Types of descendents:
+  // 14 == iK stepped up, leading exc one step further (can lead to ph recombination)
+  // 13 == iK stepped up, next exc (nr of ph preserved, not taking possible ph recombination into account)
+  // 12 == iK stepped up, next ext (nr ph increased, not taking possible ph recombination into account)
+  // 11 == iK stepped down, leading exc one step further (can lead to ph recombination)
+  // 10 == iK stepped down, next exc (nr of ph preserved, not taking possible ph recombination into account)
+  //  9 == iK stepped down, next exc (nr ph increased, not taking possible ph recombination into account)
+  //  8 == iK preserved, 14 and 11 (up to 2 ph recombinations)
+  //  7 == iK preserved, 14 and 10
+  //  6 == iK preserved, 14 and 9
+  //  5 == iK preserved, 13 and 11
+  //  4 == iK preserved, 13 and 10
+  //  3 == iK preserved, 13 and 9
+  //  2 == iK preserved, 12 and 11
+  //  1 == iK preserved, 12 and 10
+  //  0 == iK preserved, 12 and 9
+
+  // For scanning over symmetric states, the interpretation is slightly different.
+  // Types 14, 13 and 12 step iK up using the Ix2 on the right only, and mirrors the change on the left Ix2.
+  // Types 11, 10 and 9 step iK down using the Ix2 on the right only, and mirrors the change on the left Ix2.
+  // There is then no need of scanning over types 0 - 8.
+  // By convention, types 9, 10 and 11 can call types 9 - 14; types 12-14 can only call types 12-14.
+
+*** Scan_LiebLin()
+The function Scan_LiebLin() scans the Hilbert space of the Lieb-Liniger gas.
+There are overloaded versions of this function that are used to set things like number of processors for parallel runs. These are generally short and just call the main version after some setup.
+
+Possible DSFs are:
+// whichDSF == 'Z':  canonical partition function
+// whichDSF == 'd':  density-density correlation function
+// whichDSF == 'g':  Green's function < \Psi \Psi^{\dagger}>
+// whichDSF == 'o':  one-body function < \Psi^{\dagger} \Psi >
+
+A Lieb-Liniger Bethe state object is defined on which to perform the scanning (defined in src/LIEBLIN/LiebLin_Bethe_State.cc)
+
+If the calculation is a refinement run, quantum numbers from the saddle point state are read. Otherwise, a canonical saddle point state is made with Canonical_Saddle_Point_State() (defined in src/LIEBLIN/LiebLin_Tgt0.cc).
+
+An initial state for the Hilbert space scan is defined: "SeedScanState".
+It's the saddle point state for the partition function and density-density;
+the sps with a particle in the center removed for the one-body function and the sps with a center particle added for the Green's function.
+
+The "General_Scan()" function is called.
+
+**** Canonical_Saddle_Points_State()
+From source: "This function returns the discretized state minimizing the canonical free energy F = E - T S. This is obtained by rediscretizing the solution coming from TBA."
+
+It's  "LiebLin_Bethe_State", defined in src/LIEBLIN/LiebLin_Bethe_State.cc
+***** TODO Explore Canonical_Saddle_Points_State() further.
+*** General_Scan()
+General_Scan() return an object of type "Scan_Info", defined in src/SCAN/Scan_Info.cc,
+which defines a data structure that summarizes the sumrules and total time taken
+
+The expected cost of adding a particle-hole pair for the given DSF and averaging state are calculated using "Particle_Hole_Excitation_Cost()" (defined in src/SCAN/Particle_Hole_Excitation_Cost.cc")
+
+The data file name is determined based on the model parameters and is made using "Data_File_Name()", defined in src/UTILS/Data_File_Name.cc
+
+The necessary logging files are initiated: suffixes are ".raw", ".inadm", ".conv0", ".stat", ".log", ".thr", "_thrdir", ".src", ".sum"
+
+inadm: inadmissable states
+conv0: unconverged states
+
+The chemical potential and the sum_rule factor are calculated. 
+These are defined in the folders for the corresponding model, and the correct one is determined through disambiguation through the type of the argument.
+
+The first 200 lines of this function are to setup all files and streams for the rest of the simulation.
+
+The simulation is run in a "do-while" loop, running until either the maximum amount of time has elapsed or the sumrule saturation is less than the desired result.
+**** TODO What does Scan_State_List do in the setup of the simulation?
+
+** Lieb-Liniger
+The Lieb-Liniger Bethe state is defined in the file src/LIEBLIN/Lieb_Lin_Bethe_State.cc
+A number of supporting files provide functions to calculate things like the chemical potential and sumrules.
+
+The Lieb-Liniger Bethe state class may be either 0-initialized, or with c, L and N specified.
+In that case the Bethe quantumnumbers are initialized to the groundstate
+
+Next are a number of functions to set the state to a label.
+
+A function to check admissability of the state always returns true.
+
+Find_Rapidities() uses Iterate_BAE_Newton() to find the rapidities of the model through the Newton-method.
+
+Check_Rapidities() checks that no rapidities are NaN.
+
+String_delta() returns 0 since there are no strings in the Lieb-Liniger model.
+
+Check_Symmetry() checks whether the I's are symmetrically distributed.
+
+Compute_lnnorm() computes the log of the determinant of the Gaudin matrix.
+
+Set_Free_lambdaocs() set lambdaocs to PI * Ix2/(c * L) for (c * L) >= 1.0 and PI * Ix2/sqrt(c * L) otherwise.
+
+Iterate_BAE_Newton() computes the lambdas throught Newton's method.
+
+*** TODO Figure out what labels are and how they are structured. Maybe the way in which eigenstates are characterized.
+
+\end{verbatim}
 
 \chapter{Machine learning in the ABACUS algorithm}\label{chap:machine_learning}
 
@@ -657,13 +874,18 @@ Since the setups are often difficult to design, reinforcement learning is used, 
 There are also interesting links between deep learning and physics on a more fundamental level.
 For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similair way to the renormalization group \cite{Mehta2014}. 
 
-In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see \cite{Dunjko2017}).}
+In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see \cite{Dunjko2017} for that).}
 
 
 \section{Machine learning: the basics}
-training, validation, testing
-\subsection{Stochastic gradient descent}
+In many cases we would like to find patterns in data.
+The 
+
+usefull for getting better initial guesses for rapidities!\todo{Really include this, it's still interesting.}
+Integrate with the reinforcement learning, to get the training data. Try different neural net architectures.
 \subsection{Neural networks}
+Stochastic gradient descent
+training, validation, testing
 \subsubsection{Feedforward}
 \subsubsection{Recurrent}
 \subsubsection{Convolutional}
@@ -683,7 +905,7 @@ This requires some way to determine the value of a "move", a move being a mutati
 
 \subsection{Q-learning}
 
-\subsubsection{Deep Q networks}
+\subsubsection{Deep Q-networks}
 
 interesting\cite{mnih13_playin_atari_with_deep_reinf_learn,lillicrap15_contin_contr_with_deep_reinf_learn}
 
@@ -703,12 +925,44 @@ Lets just try it and see what happens, chaning only the action selection to disa
 
 Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?\todo{Find out!}
 
+\subsection{Q-learning with experience replay}
+
 \subsection{Monte Carlo tree search}
 
 
 
 
+
+
 \chapter{Methods and results}\label{chap:results}
+
+What we are in general interested in is that, given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible, meaning we first visit those states in state space which have a large matrix element. 
+These contribute the most to the sum in the Lehman series representation of the dynamic strucutre function.
+
+The dimensionality of the state space for the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator) is the number of allowable choices of qunatum numbers.
+If we have $M$ particles and a UV cutoff for the upper, respectively lower bound of the quantum number $I_{\infty+}$, $I_{\infty-}$, the number of states is \cite{Caux2009}\todo{Is there a symmetry factor of 1/M here?}
+\begin{equation}
+  I_{\infty+} + I_{\infty-} + 1 \choose M.
+\end{equation}
+
+Now we wish to define a new method to scan through the Hilbert space.
+Currently a 600 line function in ABACUS does this using heuristic methods, but this function is difficult to understnad and verify.
+Machine learning may offer a new way of doing this scanning.
+
+Tge idea is to branch out from the hround state to all allowed states recursively.
+The matric alements of the end poirnt of the graph thus generated are sestimated using a neural net: $NN(\{I\}) = \expval{\{\mu\}}{\mathcal{O}}{\{\lambda\}}$.
+The endpoint with the largest matrix element is selected, but all the otheres are stored since they may be useful lateter.
+The number of end points in the graph grows like $O(N)$ fir every iteration, so this allows us to evalute only $O(N)$ guesses per iteration.
+For the selected nodes the rapidities and matrix elements are calculated to machine precision.
+Then the children of this node are determind and their approximate matrix elements
+Repeat until timeout or obtained sumrule is large enoug.
+
+To compare against ABACUS we can use 2 metrics:
+time used to get to a certain sumrule percentage and number of states (or percentage of Hilbert space) visited.
+
+The guess for the matrix elements may be done with a convolutional neural network.
+We treat the Behten umbers as a !D image over which we convolve.
+This may also allow for transfer learning ins size since the convolution -> max pooling step downsampled
 
 
 
@@ -739,6 +993,8 @@ Rapidities are not sensitive to the absolute size of the bethe numbers (addititi
 Therefore a vector encoding only the changed rapidities should in principle be enough to get the delta lambdas.
 
 
+TWO approaches: either maximize sumrule given an set number of states or minimize number of states to achieve given sumrule
+
 
 If a move is illegal the probability is set to zero and the probabilities are renormalized~\cite{pmlr-v37-clark15}.
 Illegal moves are those that try to remove a particle from a position where there is none, or placing a particle on an already occupied position.
@@ -760,6 +1016,62 @@ sumrule for one-body correlation function \cite{Caux2007}
   \frac{1}{2\pi L} \int_{\infty}^{\infty}\sum_k G_2(k,\omega) = n
 \end{equation}
 
+\section{Possible NN options}
+
+tree like descent: given the previiusly visted states, use a nerual network to pick the best jumping off point, and another network to pick the best moves
+
+pro: similair to how ABACUS works now, allwoing for non connected jumps through state space
+
+con: - number of states to pick from grows linealy in time, making it difficult to choose a state (but maybe mitagetd by simply entering each state into the network separatly and then picking the one with the highest fitness)
+
+- messy/complicated: two seperate networks
+
+simple excitation change (used in tree like descent): a singel particle position is changed
+con: only ``connected'' states may be visited in each iteration: you can only continue from the latest state
+\\
+full state prediction: full predict the next state given the prvious state by picking N highst ranked position from a probability distribution
+
+pro:smaller output space
+
+con: unclear what to do with already visited states
+\\
+Add penalty in reward function for every visited state?
+\\
+ideas:
+use convolution over history of states
+
+use convulution over state
+
+reward may be either immediate or delayed
+
+
+\section{The Lieb-Liniger ``game''}
+
+To stay in the spirit of the results of Deepmind we will cast the stepping through the state-space of the Lieb-Liniger model in the form of a game with certain rules.
+The rules are:
+\begin{itemize}
+  \item no moves that lead to an already visited state
+  \item able to reach all states in the given momentum interval
+  \item sample important states first
+\end{itemize}
+
+We use the neural net to tell us which move to make.
+To that end we use the same representation of moves as Alpha Zero uses in chess \cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
+Available moves can be represented as a tuple, with the x-coordinate representing the location of the particle to remove and the y-coordiate being the new coordinate on which the particle is placed.
+This is represented by an $N_{sites} \times N_{sites}$ matrix, with the value of each matrix element coming from the neural net used for Q-learning.
+
+We represent state as vectors with lenght $N_{sites} = 2 I_{max} + 1$.
+Particles are denoted with 1's, and all other entries are zero.
+For example, the ground state of the $N=3$ state with $I_{max} = 5$ is 
+\begin{equation}
+  \begin{pmatrix} 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \end{pmatrix}
+\end{equation}
+
+Note that the learning is all tabula rase reinforcement learning
+
+\section{Exact saturation results}
+
+Exact results of saturations in small systems.
 
 \section{The f-sum rule}
 To verify that we have summed form factors that contribute a lot to the density structure function, we can use the f-sum rule.
@@ -777,17 +1089,27 @@ Conjecture: The ordering of matrix elements is the same as long as the parameter
 
 PROBLEM: We never reward in the experience replay because we never reach a terminal state. The reward function has to be edited to take this into account.
 
+\subsection{Random action selection}
+
+\subsection{Q-learning}
+
+\subsection{Q-learning with memory replay}
+
+\subsection{Verification}
+
+
+\subsection{Machine learning rapidities and operator matrix elements}
+
 \chapter{Discussion and conclusion}\label{chap:conclusion}
 
 \epigraph{\itshape I may not have gone where I intended to go, but I think I have ended up where I needed to be.}{Douglas Adams, The Long Dark Tea-Time of the Soul}
 
 
-
-In ABACUS the learning may work better since we are descending along threads, which means that similar states are together.
-
 Transfer learning ay be used to generalize from different states.
 
 Inadmissable states may be ignored.
+
+Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes
 
 \appendix
 \chapter{LU decomposition}\label{app:LUdecomp}
@@ -796,14 +1118,28 @@ Here we briefly outline this method for solving systems of equation.
 
 \chapter{The f-sum rule}
 
+When computing the dynamical structure function numerically we need a way to measure what fraction of relevant states have been summed.
+To that end we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation \cite{pitaevskii}.
+We first derive the general formula and then find sum rules for specific operators.
 
-The f-sum rule may be used to determine how many of the relevan
 
+In general we are interested in the correlation function of an operator $\mathcal{O}$:
+\begin{align}
+  \expval{\mathcal{O}_j^a(t)\mathcal{O}_{j'}^{\bar{a}}(0)},
+\end{align}
+where $j, j'$ are arbitrary points on a lattice, we consider arbitrary time differences $t$, $a$ is a label denoting the operator and
+
+\todo{Also known as Thomas-Reich-Kuhn sumrule \cite{pitaevskii}}
+
+Sum rule factors in ABACUS: used in saturation calculation, you can also just use LHS/RHS
 
 \section{The $\rho$ operator}
 
+The operator is $\expval{\{\mu\}}{\rho(x=0)}{\{\lambda\}}$, where $\rho(x=0) = \frac{1}{L} \sum{k''} e^{-i k'' x} \rho_{k''} |_{x=0}$ 
 
 \section{The $:\rho^2:$ operator}
+
+The $:\rho^2:$ operator is equal to  $(\psi^{\dagger})^2\psi^2$
 
 
 \bibliographystyle{SciPost_bibstyle}
