@@ -52,6 +52,7 @@
 \newcommand\THESISFORM{Master Thesis}
 \newcommand\AUTHOR{Teun Zwart}
 \newcommand\SUPERVISOR{Prof. dr. Jean-Sébastien Caux}
+\newcommand\SECONDASSESSOR{dr. Jasper van Wezel}
 \newcommand\UNIVERSITYLOGO{} % Uncomment line below and add name of logo file.
 
 \newcommand{\bea}{\begin{align}}
@@ -84,7 +85,8 @@
 		\end{minipage}
 		\begin{minipage}[t]{0.4\textwidth}
 			\begin{flushright}
-				\large\emph{Supervisor:}\\{\SUPERVISOR}
+				\large\emph{Supervisor}\\{\SUPERVISOR}\\~\\
+				\large\emph{Second Assessor}\\{\SECONDASSESSOR}\\~\\~\\
 			\end{flushright}
 		\end{minipage}
 		\vfill
@@ -107,11 +109,9 @@
 
 \section*{TODO}
 \begin{itemize}
-  \item Talk with Paul Baireuther (Leiden)?
-  \item Talk with Rianne van den Berg?
   \item \url{http://ataspinar.com/2017/08/15/building-convolutional-neural-networks-with-tensorflow/}
+  \item interesting for presentation \url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
 \end{itemize}
-
 
 \newpage
 
@@ -133,7 +133,7 @@ This is already efficient since only very small fractions of the state space are
 However, a more efficient summation is still desirable.
 
 In this work we consider reinforcement learning as a way to sum the state space in an efficient way.
-Inspired by computers playing both 1980's video games \cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the boardgame Go\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which state sare the most promising to sum when scanning the state space of a model.
+Inspired by computers playing both 1980's video games \cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the board game Go\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which states are the most promising to sum when scanning the state space of a model.
 
 This may also generalize to models beyond the Lieb-Liniger model.
 Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
@@ -161,6 +161,8 @@ Finally \cref{chap:conclusion} summarizes our results and makes recommendations 
   \item Does this generalize to other models? It should, as long as you are able to find the DSF's you are interested in since you need them for the sum rule.
   \item Would an RNN scanning over the history of the summation work better?
   \item Control: How does random sampling of the space perform in f-sum rule summation?
+  \item
+  \item How does a neural net perform on predicting rapidities and matrix elements?
 \end{itemize}
 
 \chapter{The Bethe Ansatz}\label{chap:bethe_ansatz}
@@ -299,7 +301,7 @@ I_j \in
 
 The Bethe equations and Bethe numbers have a number of different properties:
 
-\begin{theorem}
+\begin{theorem}\label{th:convexity}
 \begin{sloppypar}
 \noindent
 The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textup{\cite{Yang1969}}.
@@ -322,9 +324,9 @@ where
 	K(\lambda, \mu) = \frac{2c}{c^2 + (\lambda - \mu)^2}.
 \end{align}
 
-Introducing a vector \(v_j\) with real components we get \cite{Korepin1993}
+Introducing a vector \(v_j\) with real components we get~\cite{Korepin1993}
 \begin{align}
-  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_j^2 + \sum_{j>l=1}^{N} K(\lambda_j,\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^2 > 0,
+  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_{j}^2 + \sum_{j>l=1}^{N} K(\lambda_j,\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^2 > 0,
 \end{align}
 meaning that the action is convex and the minimum defining the Bethe equations is unique.
 \end{proof}
@@ -334,13 +336,13 @@ All solutions of the Bethe equations for the Lieb-Liniger model are real.
 \end{theorem}
 
 \begin{proof}
-We consider the set of complex solutions to the Bethe equations \(\{\lambda_j\}\), where we call the value with the largest complex part in this set \(\lambda_{\textrm{max}}\):
+We consider the set of complex solutions to the Bethe equations \(\{\lambda_j\}\), where we call the value with the largest complex part in this set \(\lambda_{\max}\):
 \begin{align}
-\textrm{Im} \, \lambda_{\textrm{max}} \geq \textrm{Im} \, \lambda_j.
+\textrm{Im} \, \lambda_{\max} \geq \textrm{Im} \, \lambda_j.
 \end{align}
 If we put this into the non-logarithmic form of the Bethe equations and take the modulus we get
 \begin{align}
-  \left| e^{i\lambda_{\textrm{max}} L} \right|= \left| \prod_k \frac{\lambda_{\textrm{max}} - \lambda_k + ic}{\lambda_{\textrm{max}} - \lambda_k - ic} \right|\geq 1,
+  \left| e^{i\lambda_{\max} L} \right|= \left| \prod_k \frac{\lambda_{\max} - \lambda_k + ic}{\lambda_{\textrm{max}} - \lambda_k - ic} \right|\geq 1,
 \end{align}
 since
 \begin{align}
@@ -376,7 +378,7 @@ The norm of a Bethe eigenstate is \cite{Caux2007}
   \braket{\{\lambda\}_N}{\{\lambda\}_N} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det(\mathcal{G}(\{\lambda\})),
 \end{align}
 where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with elements
-\begin{align}
+\begin{align}\label{eq:gaudin}
   \mathcal{G}(\{\lambda\})_{jk} = \delta_{jk} \left(L + \sum_{m=1}^NK(\lambda_j-\lambda_m)\right) - K(\lambda_j, \lambda_k)
 \end{align}
 
@@ -659,49 +661,110 @@ A very similair derivation for type II excitations leads to
 
 \epigraph{\itshape{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
 
-We are interested in calculating two-point zero temperature equilibrium correlation function:
+The ABACUS algorithm, developed by Caux et al. \cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
+Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also cabable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since \cite{Caux2009}), but we will not consider that here further.} correlation functions of the form
 \begin{equation}\label{eq:expval}
-	\expval{\operator_j^a(t)\operator_{j'}^{\bar{a}}(0)},
+	\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)},
 \end{equation}
-where \(\operator_{j'}^{\bar{a}} = (\operator_j^a)^{\dagger}\).
+where \(j=1\ldots N\) denotes lattice sites.
+This is the expecation value for arbitrary time seperations $t$ and distances $j-j'$.
 The equivalent Fourier transformed quantity is the dynamical structure factor (DSF)
-\begin{equation}
-	S^{a\bar{a}}(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\operator_j^a(t)\operator_{j'}^{\bar{a}}(0)}.
+\begin{equation}\label{eq:DSF}
+	S(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)}.
 \end{equation}
-This quantity is often more useful than \cref{eq:expval} because it is related to experimental linear response measurements \cite{Caux2009}.
+We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more usefull because it is the quantity directly accesible in experiments \cite{Caux2009}.
 
--DSF\cite{Cherny2008}\\
--Scanning over Hilbert space\\
--current implementation of finding rapidities\\
-- sumrules
-- expressions for the different matrix elements
+Calculing \cref{eq:DSF} is often still complicated, but by introducing the space Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations gives the Lehmann series representation of the DSF:
+\begin{equation}
+  S(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
+\end{equation}
+where we sum over intermediate eigenstates of the Hamiltonian under consideration, with $E_0$ the energy of the ground state $\ket{\lambda^0}$.
+The matrix elements $\mel{\lambda}{\mathcal{O}}{\mu}$ are known as form factors.
 
-- exact results for correlation functions\cite{Lang2017}, compare with this to find saturation?
+In order to calculate DSF we require
+\begin{itemize}
+  \item an orthonormal eigenstate basis
+  \item form factors for the operator $\mathcal{O}_k$ we are interested in
+  \item a way to do the summation over the intermediate states
+\end{itemize}
+The first and second item are provided by the Bethe ansatz.
+The summation proves to more difficult, but for this we can use ABACUS (Algebraic Bethe Ansatz-based Computation of Universal Structure factors) to perform it numerically.
+As long as a system is Bethe ansatz integrable and finite in size ABACUS can in principle compute its DSF.
+Even for large systems the results are highly accurate, with this accuracy being mostly energy and momentum independent \cite{Caux2009}.
+In fact, the accuracy can be measured using sum rules, and saturation in excess of 99\% is possible for systems with hundreds of particles.
 
-numerical Bethe ansatz \cite{Gu2005}
+
 \section{Numerically solving the Bethe equations}
 
-Convergence is reached when \cite{Caux2009}
+In general the computation of rapidities of Bethe integrable systems is a complex affair, with complex rapidities making the computation difficult.
+For the Lieb-Liniger model however there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}).
+
+In this case we can use the matrix Newton method to calculate rapidities.
+To introduce this method we first look at the one-dimensional case.
+If we want to find the value of \(x\) that solves \(f(x)=0\), we can iteratively approximate this value by 
+\begin{equation}
+  x^{k+1} = x^k - \frac{f(x^k)}{f'(x^k)}, \quad k = 0, 1, 2, \ldots,
+\end{equation}
+with given starting value \(x_0\).
+This converges quadratically (meaning on each iteration \(k+1\) the error \(\epsilon_{k+1}\) is of order \(\epsilon_k^2\)).
+
+Now we can turn to the case at hand, where we solve the Bethe equations.
+These are coupled non-linear equations of the general form \(\mathbf{f(x)=0}\).
+In this case we can find the solution \(x\) by iteratively applying the formula
+\begin{equation}
+  \mathbf{x}^{k+1} = \mathbf{x}^k - [J(\mathbf{x}^k)]^{-1}\mathbf{f}(\mathbf{x}^k), \quad k=0,1,2\ldots,
+\end{equation}
+where \(J\) is the Jacobian matrix of \(f\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
+Just as in the single variable case this converges quadratically.
+
+To prevent the calculation of the inverse, in practice Newton's method is used in the form
+\begin{equation}\label{eq:practicalnewton}
+  J(\mathbf{x^k})[x^{k+1} - x^k] = - \mathbf{f}(\mathbf{x}^k),
+\end{equation}
+where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x^k})\) and \( \mathbf{f}(\mathbf{x}^k\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\) \cite{Sueli2003}. 
+This can be solved using LU decomposition \cite{Press2007} (see appendix \cref{app:ludecomp}).
+
+In ABACUS we are ofcourse interested in the Bethe equations.
+Here we will specifically look at those of the Lieb-Liniger model.
+Recalling \cref{chap:bethe_ansatz}, the Bethe equations in logarithmic form are 
+\begin{align}
+  \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
+\end{align}
+or
+\begin{align}
+  0 = \frac{2\pi}{L}I_j - \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = B(\{\lambda\}),
+\end{align}
+with
+\begin{equation}
+  \phi(\lambda_j - \lambda_l) = -2\arctan\left(\frac{\lambda_j-\lambda_l}{c}\right).
+\end{equation}
+
+If we recast this is the shape of \cref{eq:practicalnewton}, we get
+\begin{equation}
+  \mathcal{G}(\{\lambda^k\}) \Delta \lambda = -B(\{\lambda^k\}),
+\end{equation}
+where we used that the Jacobian of the Bethe equations is equal to the Gaudin matrix (\cref{eq:label}) \cite{Caux2009}.
+
+The Bethe equations for real rapidities are considered solved when \cite{Caux2009}
 \begin{equation}
 	\frac{1}{N}\sum_{i=1}^{N} \left(\frac{\Delta \lambda_i}{\lambda_i}\right)^2 < 10^4 \times \epsilon^2,
 \end{equation}
 where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable''~\cite{cppstandard2016}.
 On machines implementing IEEE 754-2008 (the standard for floating-point arithmatic) \cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
 
-\section{Ordering of matrix element magnitudes}
 
+\section{Scanning over the Hilbert space}
+
+With the rapidities in hand (and the form factors and Gaudin norm readily derived therefrom), we are now faced with the summation over states..
+Ordering of matrix element magnitudes\todo{Ask permission for use from JS}
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
+  \caption{Size of matrix element magnitudes encountered while summing intermediate states. The yellow line denotes strictly decreasing magnited. Note that while in general the size of the form factors decreases, not all large form factors are immediatly found. Figure taken from \cite{Caux2009}.}
+\end{figure}
 
 \begin{verbatim}
 * General remarks
-There have been multplie versions of ABACUS.
-The current version is denoted with "G", meaning it supports out-of-equilibrium systems.
-
-Only the Heisenberg model and Lieb-Liniger model are fully implemented. There has also been work on the renormalization group (with Konik) and with Robinson.
-
-The general_scan() function is central and scans over the Hilbert space of the model.
-To calculate a DSF we use (in the Lehmann representation):
-S_{\alpha}^{O\bar{O}} = <\alpha|O\bar{O}|\alpha> = \sum_{\alpha'}  <\alpha|O\bar{O}|\alpha'>  <\alpha'|O\bar{O}|\alpha>
-O is a general operator.
 
 At the start of a simulation we choose the \alpha' to be close to \alpha.
 We then scan over all states in the Hilbert space.
@@ -714,136 +777,33 @@ The goal is to descent the "mountain" as slowly as possible. A depth first searc
 Once no more states are above the threshold, it is lowered.
 In principle you will reach the entire Hilbert space in this way (though note, the Lieb-Liniger model has an infinite dimensional one).
 
-The initial state from which scanning commences is the "Seed_Scan_State".
-
 To keep track of which states have been visited we define a thread. A thread is a line of descendents in the Hilbert space. This informaiton needs to be saved during the simulation and is saved in ".thr" files.
 
-We call the lowering and subsequent scanning until all states are scanned a "cycle".
-
-Endpoints of threads are stored in the directory "thrdir".
-The higher the number, the lower the matrix element.
-
-There are 15 types of descendant.
 Note that the contributions of matrix elements are not monotonically decreasing, but may increase at some points.
 
 The building of states happens from the outide in. The first particles are the ones that may travel the farthest in pseudo-momentum space. 
 To make states unique, particles may not cross each other.
 For holes the idea is the opposite.
 
-The raw information about states is saved in ".raw" files, listing energy, momentum and the matric element of the state.
-
-To uniquely define a state a "checksum" for the state is defined in terms of the quantum numbers. 
-
 The Bethe numbers (the Is in the Bethe equations) are multiplied by 2 to get whole numbers
 This gives a vector of integers. 
-In the Heisenberg model there are strings of complex eigenvalues, leading to a vector of vectors.
 
 Sum rules allows checking the validity of the simulation.
 The contribution of states to sum rules is stored in ".src" files.
 Actual summing happens in the ".sum" file.
-* Lieb-Lininger model in the ABACUS algorithm
-main entry point for the simulation: src/EXECS/LiebLin_DSF.cc
-The parallel files are only used for refinement runs of serial simulations.
 
-The main function of src/EXECS/LiebLin_DSF.cc calls Scan_LienLin() from src/SCAN/General_Scan.cc
-** src/SCAN/General_Scan.cc
+* src/SCAN/General_Scan.cc
 Contains the functions to scan over the intermediate states that are needed in the Lehmann representation to calculate Density Structure Functions.
 
-  // Types of descendents:
-  // 14 == iK stepped up, leading exc one step further (can lead to ph recombination)
-  // 13 == iK stepped up, next exc (nr of ph preserved, not taking possible ph recombination into account)
-  // 12 == iK stepped up, next ext (nr ph increased, not taking possible ph recombination into account)
-  // 11 == iK stepped down, leading exc one step further (can lead to ph recombination)
-  // 10 == iK stepped down, next exc (nr of ph preserved, not taking possible ph recombination into account)
-  //  9 == iK stepped down, next exc (nr ph increased, not taking possible ph recombination into account)
-  //  8 == iK preserved, 14 and 11 (up to 2 ph recombinations)
-  //  7 == iK preserved, 14 and 10
-  //  6 == iK preserved, 14 and 9
-  //  5 == iK preserved, 13 and 11
-  //  4 == iK preserved, 13 and 10
-  //  3 == iK preserved, 13 and 9
-  //  2 == iK preserved, 12 and 11
-  //  1 == iK preserved, 12 and 10
-  //  0 == iK preserved, 12 and 9
-
-  // For scanning over symmetric states, the interpretation is slightly different.
-  // Types 14, 13 and 12 step iK up using the Ix2 on the right only, and mirrors the change on the left Ix2.
-  // Types 11, 10 and 9 step iK down using the Ix2 on the right only, and mirrors the change on the left Ix2.
-  // There is then no need of scanning over types 0 - 8.
-  // By convention, types 9, 10 and 11 can call types 9 - 14; types 12-14 can only call types 12-14.
-
 *** Scan_LiebLin()
-The function Scan_LiebLin() scans the Hilbert space of the Lieb-Liniger gas.
-There are overloaded versions of this function that are used to set things like number of processors for parallel runs. These are generally short and just call the main version after some setup.
-
-Possible DSFs are:
-// whichDSF == 'Z':  canonical partition function
-// whichDSF == 'd':  density-density correlation function
-// whichDSF == 'g':  Green's function < \Psi \Psi^{\dagger}>
-// whichDSF == 'o':  one-body function < \Psi^{\dagger} \Psi >
-
-A Lieb-Liniger Bethe state object is defined on which to perform the scanning (defined in src/LIEBLIN/LiebLin_Bethe_State.cc)
-
-If the calculation is a refinement run, quantum numbers from the saddle point state are read. Otherwise, a canonical saddle point state is made with Canonical_Saddle_Point_State() (defined in src/LIEBLIN/LiebLin_Tgt0.cc).
 
 An initial state for the Hilbert space scan is defined: "SeedScanState".
 It's the saddle point state for the partition function and density-density;
 the sps with a particle in the center removed for the one-body function and the sps with a center particle added for the Green's function.
 
-The "General_Scan()" function is called.
 
-**** Canonical_Saddle_Points_State()
-From source: "This function returns the discretized state minimizing the canonical free energy F = E - T S. This is obtained by rediscretizing the solution coming from TBA."
-
-It's  "LiebLin_Bethe_State", defined in src/LIEBLIN/LiebLin_Bethe_State.cc
-***** TODO Explore Canonical_Saddle_Points_State() further.
-*** General_Scan()
-General_Scan() return an object of type "Scan_Info", defined in src/SCAN/Scan_Info.cc,
-which defines a data structure that summarizes the sumrules and total time taken
-
-The expected cost of adding a particle-hole pair for the given DSF and averaging state are calculated using "Particle_Hole_Excitation_Cost()" (defined in src/SCAN/Particle_Hole_Excitation_Cost.cc")
-
-The data file name is determined based on the model parameters and is made using "Data_File_Name()", defined in src/UTILS/Data_File_Name.cc
-
-The necessary logging files are initiated: suffixes are ".raw", ".inadm", ".conv0", ".stat", ".log", ".thr", "_thrdir", ".src", ".sum"
-
-inadm: inadmissable states
-conv0: unconverged states
-
-The chemical potential and the sum_rule factor are calculated. 
-These are defined in the folders for the corresponding model, and the correct one is determined through disambiguation through the type of the argument.
-
-The first 200 lines of this function are to setup all files and streams for the rest of the simulation.
-
-The simulation is run in a "do-while" loop, running until either the maximum amount of time has elapsed or the sumrule saturation is less than the desired result.
-**** TODO What does Scan_State_List do in the setup of the simulation?
-
-** Lieb-Liniger
-The Lieb-Liniger Bethe state is defined in the file src/LIEBLIN/Lieb_Lin_Bethe_State.cc
-A number of supporting files provide functions to calculate things like the chemical potential and sumrules.
-
-The Lieb-Liniger Bethe state class may be either 0-initialized, or with c, L and N specified.
-In that case the Bethe quantumnumbers are initialized to the groundstate
-
-Next are a number of functions to set the state to a label.
-
-A function to check admissability of the state always returns true.
-
-Find_Rapidities() uses Iterate_BAE_Newton() to find the rapidities of the model through the Newton-method.
-
-Check_Rapidities() checks that no rapidities are NaN.
-
-String_delta() returns 0 since there are no strings in the Lieb-Liniger model.
-
-Check_Symmetry() checks whether the I's are symmetrically distributed.
-
-Compute_lnnorm() computes the log of the determinant of the Gaudin matrix.
-
+* General_Scan()
 Set_Free_lambdaocs() set lambdaocs to PI * Ix2/(c * L) for (c * L) >= 1.0 and PI * Ix2/sqrt(c * L) otherwise.
-
-Iterate_BAE_Newton() computes the lambdas throught Newton's method.
-
-*** TODO Figure out what labels are and how they are structured. Maybe the way in which eigenstates are characterized.
 
 \end{verbatim}
 
@@ -1044,6 +1004,9 @@ use convulution over state
 
 reward may be either immediate or delayed
 
+\section{A neural net for each no of ph pairs}
+Maybe there should be multple neural nets, one for each possible number of ph-pairs (up to a certain max number).
+So you would first try 1 ph, than 2, etc...
 
 \section{The Lieb-Liniger ``game''}
 
@@ -1054,6 +1017,16 @@ The rules are:
   \item able to reach all states in the given momentum interval
   \item sample important states first
 \end{itemize}
+
+The maximum momentum $I_{max}$ is for the total momentum of the state, not the individual components, (so some particles can have high momentum, if it is compensated for by another particle with opposite negative momentum.)
+
+A possible way to quickly determine large MEs is to simplify the matrix element calculations by considering only the diagonal and first off-diagonals, which are then of the order $\frac{1}{(\mu-lambda)^2 + 1/L^2}$
+
+ABACUS can scan within an idividual slice.
+What you got may work for the partition function, where only energies matter, since those are not spanning so many orders of magnitude.
+
+The number of possible 1 ph-pair states increase with k up to a certain k and then saturates at a level of order $N$.
+For 2 ph-pairs it saturatiates at $N^3$
 
 We use the neural net to tell us which move to make.
 To that end we use the same representation of moves as Alpha Zero uses in chess \cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
@@ -1109,12 +1082,18 @@ Transfer learning ay be used to generalize from different states.
 
 Inadmissable states may be ignored.
 
+As mentioned in \cite{Caux2009} the applicability of ABACUS for large systems stems from the preliminary information provided by integrability, built into the algorithm.
+
+AI is creative \cite{1803.03453}.
+
 Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes
 
+In general reinforcement learning is very data inefficient, leading to the conejcture that a well crafted function may work better in this domain \cite{1710.02298}.
+
+Reproducibility of RL solutions is often an issue \cite{1709.06560}.
+
 \appendix
-\chapter{LU decomposition}\label{app:LUdecomp}
-In the current implementation of ABACUS the Bethe equations are solved using an LU decomposition. 
-Here we briefly outline this method for solving systems of equation.
+
 
 \chapter{The f-sum rule}
 
@@ -1141,9 +1120,12 @@ The operator is $\expval{\{\mu\}}{\rho(x=0)}{\{\lambda\}}$, where $\rho(x=0) = \
 
 The $:\rho^2:$ operator is equal to  $(\psi^{\dagger})^2\psi^2$
 
+\chapter{LU decomposition}\label{app:ludecomp}
+
 
 \bibliographystyle{SciPost_bibstyle}
 \bibliography{master_thesis_references}
+
 
 
 \end{document}
