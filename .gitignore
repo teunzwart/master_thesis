@@ -10,3 +10,5 @@ masterthesis.pdf
 *.blg
 *.fls
 *.fdb_latexmk
+auto/
+*-eps-converted-to.pdf

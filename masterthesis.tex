@@ -100,9 +100,9 @@
 \ 
 \vspace{4cm}
 
-\epigraph{\itshape Science is just magic that works.}{Kurt Vonnegut}
+\epigraph{\textit{Science is just magic that works.}}{Kurt Vonnegut}
 
-\epigraph{\itshape All sufficiently advanced technology is indistinguishable from magic.}{Arthur C. Clark}
+\epigraph{\textit{All sufficiently advanced technology is indistinguishable from magic.}}{Arthur C. Clark}
 
 
 \tableofcontents
@@ -119,7 +119,7 @@
 
 \chapter{Introduction}
 
-\epigraph{\itshape The future is already here -- it's just not very evenly distributed.}{William Gibson}
+\epigraph{\textit{The future is already here --- it's just not very evenly distributed.}}{William Gibson}
 
 Currently, in the ABACUS algorithm, dynamic structure factors for various Bethe-ansatz integrable models are calculated.
 This is done by summing over intermediate states to get the Lehmann series representation of the Fourier transform of the DSF.
@@ -133,7 +133,7 @@ This is already efficient since only very small fractions of the state space are
 However, a more efficient summation is still desirable.
 
 In this work we consider reinforcement learning as a way to sum the state space in an efficient way.
-Inspired by computers playing both 1980's video games \cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the board game Go\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which states are the most promising to sum when scanning the state space of a model.
+Inspired by computers playing both 1980's video games~\cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the board game Go\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which states are the most promising to sum when scanning the state space of a model.
 
 This may also generalize to models beyond the Lieb-Liniger model.
 Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
@@ -168,17 +168,17 @@ Finally \cref{chap:conclusion} summarizes our results and makes recommendations 
 \chapter{The Bethe Ansatz}\label{chap:bethe_ansatz}
 
 The Bethe Ansatz allows for a way to solve certain one-dimensional systems exactly.
-It was put forth by Bethe in 1931 to solve the Heisenberg model, refining and correcting the earlier work of Bloch \cite{Bethe1931}.
+It was put forth by Bethe in 1931 to solve the Heisenberg model, refining and correcting the earlier work of Bloch~\cite{Bethe1931}.
 
 \section{The Lieb-Liniger model}
 
 Here, to introduce and understand the Bethe Ansatz, we focus on the Lieb-Liniger model, finding its eigenfunctions and excitation spectrum.
-The Lieb-Liniger model, first introduced by Lieb and Liniger in 1963 \cite{Lieb1963, Lieb1963a}, consists of bosons interacting through a delta-function potential, described by the Hamiltonian
+The Lieb-Liniger model, first introduced by Lieb and Liniger in 1963~\cite{Lieb1963, Lieb1963a}, consists of bosons interacting through a delta-function potential, described by the Hamiltonian
 \begin{equation}
 	H = - \sum_{j=1}^{N} \frac{\partial^2}{\partial x_j^2} + 2c \sum_{j<l} \delta(x_j - x_l).
 \end{equation}
 Here \(c\) is the interaction strength of the model, \(\hbar=1\) and we set \(2m=1\).
-In the limit \(c\to0\) particles behave as free bosons, while \(c\to\infty\) yields fermionic behaviour and is known as the Tonks-Girardeau model \cite{Lieb1963, Franchini2017}.
+In the limit \(c\to0\) particles behave as free bosons, while \(c\to\infty\) yields fermionic behaviour and is known as the Tonks-Girardeau model~\cite{Lieb1963, Franchini2017}.
 
 We will only solve the repulsive case (\(c > 0\)) here.
 
@@ -191,12 +191,12 @@ For two particles, the Hamiltonian becomes
 	H =  - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2).
 \end{equation}
 We can write this in a more convenient form without the delta-function by integrating the Schrödinger equation over a small interfal \([-\epsilon,\epsilon]\).
-This yields the condition \cite{Lieb1963}\todo{Do this explicitly.}\footnote{This operation is relatively simple but does contain a few subtleties. Let us therefore do it explicitly:
+This yields the condition~\cite{Lieb1963}\todo{Do this explicitly.}\footnote{This operation is relatively simple but does contain a few subtleties. Let us therefore do it explicitly:
 the Schrödinger equation is
 \begin{equation}
 	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2)\right] \psi(x_1, x_2) = E \psi(x_1,x_2).
 \end{equation} 
-Integrating \cite{Griffiths1993}
+Integrating~\cite{Griffiths1993}
 }
 \begin{equation}\label{eq:lieblinigerboundary}
 	\left[\frac{\partial}{\partial x_2} - \frac{\partial}{\partial x_1} - c\right] \psi(x_1, x_2)\bigg\rvert_{x_1 = x_2} = 0.
@@ -205,7 +205,7 @@ Since particles only interact with each other when their positions coincide, thi
 \begin{equation}\label{eq:lieblinigersimple}
 	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2}\right] \psi(x_1, x_2) = E \psi(x_1,x_2),
 \end{equation}
-with \cref{eq:lieblinigerboundary} as a boundary condition \cite{Lieb1963}.
+with \cref{eq:lieblinigerboundary} as a boundary condition~\cite{Lieb1963}.
 Since we are dealing with bosons, we also require the wavefunction to be symmetric: \(\psi(x_1,x_2) = \psi(x_2,x_1)\).
 Effectively we have rewritten the Schrödinger equation such that we only consider the wave function away from the delta-function interaction points.
 The boundary condition then reintroduces the interaction terms.
@@ -216,7 +216,7 @@ This equation can be solved in terms of a superposition of plane waves:
 \begin{equation}
 	\psi(x_1,x_2) = A_{12} e^{i(\lambda_1x_1 + \lambda_2 x_2)} + A_{21} e^{i(\lambda_2 x_1 + \lambda_1 x_2)},
 \end{equation}
-where the \(\lambda\)'s are pseudo-momenta, so-called because they are unobservable \cite{Franchini2017}.
+where the \(\lambda\)'s are pseudo-momenta, so-called because they are unobservable~\cite{Franchini2017}.
 The \(A\)'s are the amplitudes of the planewaves making up the wavefunction.
 Since \cref{eq:lieblinigerboundary} has to be fulfilled we require the amplitudes be related to each other by
 \begin{align}
@@ -226,7 +226,7 @@ The right-hand side of this equation has modulus 1, meaning it can be written as
 \begin{align}
 	\frac{A_{12}}{A_{21}} = -e^{i\phi(\lambda_1-\lambda_2)},
 \end{align}
-where \cite{Korepin1993}
+where~\cite{Korepin1993}
 \begin{align}
   \phi(\lambda_1-\lambda_2) = i \log(\frac{\lambda_1-\lambda_2 + ic}{\lambda_1-\lambda_2-ic})
 \end{align}
@@ -234,7 +234,7 @@ or
 \begin{align}
 	\phi(\lambda_1-\lambda_2) = -2\arctan\left(\frac{\lambda_1-\lambda_2}{c}\right),
 \end{align}
-if we assume the argument of \(\phi\) to be real \cite{Lieb1963}.
+if we assume the argument of \(\phi\) to be real~\cite{Lieb1963}.
 
 We can now write the two-particle wavefunction by setting \(A_{21}=1\) (and ignoring normalization for the moment) to get
 \begin{equation}
@@ -247,11 +247,11 @@ yielding
 \end{equation}
 The sum runs over the permutations of the set \((1,2)\).
 This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
-This points to a Pauli principle like phenomenon \cite{tofind}.
+This points to a Pauli principle like phenomenon~\cite{tofind}.
 
 
 Going to the many-particle state is now a fairly straightforward generalization of the two-particle case.
-The wavefunction in this case becomes \cite{Franchini2017}\todo{Bring the presentation of this in line with the two particle case.}
+The wavefunction in this case becomes~\cite{Franchini2017}\todo{Bring the presentation of this in line with the two particle case.}
 \begin{equation}
 	\psi(x_1,\ldots,x_N) = \sum_{\mathcal{P}} A(\mathcal{P}) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}.
 \end{equation}
@@ -269,7 +269,7 @@ Imposing this condition on the wave function yields
 \begin{align}
   e^{i\lambda_1L} = - e^{-i\phi(\lambda_1 - \lambda2)}, \qquad e^{i\lambda_2L} = - e^{i\phi(\lambda_1 - \lambda2)},
 \end{align}
-or explicitly \cite{tofind}
+or explicitly~\cite{tofind}
 \begin{align}
   e^{i\lambda_1L} = \frac{\lambda_1-\lambda_2 + ic}{\lambda_1-\lambda_2-ic}, \qquad e^{i\lambda_2L} = \frac{\lambda_2-\lambda_1 + ic}{\lambda_2-\lambda_1-ic}.
 \end{align}
@@ -280,7 +280,7 @@ In logarithmic form this becomes
   \lambda_1 + \frac{1}{L} \phi(\lambda_1-\lambda_2) = \frac{2\pi}{L} I_1, \qquad \lambda_2 + \frac{1}{L} \phi(\lambda_2-\lambda_1) = \frac{2\pi}{L} I_2.
 \end{align}
 The numbers \(I_1, I_2\) uniquelly label the quasimomenta and are hald-odd integers. 
-They act as the quantum numbers of the theory \cite{tofind}.
+They act as the quantum numbers of the theory~\cite{tofind}.
 
 In the many particle case the bethe equations generalise to
 \begin{equation}
@@ -290,7 +290,7 @@ or in logarithmic form
 \begin{align}
   \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
 \end{align}
-where \cite{tofind}
+where~\cite{tofind}
 \begin{align}
 I_j \in 
 \begin{cases}
@@ -326,7 +326,7 @@ where
 
 Introducing a vector \(v_j\) with real components we get~\cite{Korepin1993}
 \begin{align}
-  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_{j}^2 + \sum_{j>l=1}^{N} K(\lambda_j,\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^2 > 0,
+  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_{j}^2 + \sum_{j>l=1}^{N} K(\lambda_j,\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^{2} > 0,
 \end{align}
 meaning that the action is convex and the minimum defining the Bethe equations is unique.
 \end{proof}
@@ -342,15 +342,15 @@ We consider the set of complex solutions to the Bethe equations \(\{\lambda_j\}\
 \end{align}
 If we put this into the non-logarithmic form of the Bethe equations and take the modulus we get
 \begin{align}
-  \left| e^{i\lambda_{\max} L} \right|= \left| \prod_k \frac{\lambda_{\max} - \lambda_k + ic}{\lambda_{\textrm{max}} - \lambda_k - ic} \right|\geq 1,
+  \left| e^{i\lambda_{\max} L} \right|= \left| \prod_k \frac{\lambda_{\max} - \lambda_k + ic}{\lambda_{\max} - \lambda_k - ic} \right|\geq 1,
 \end{align}
 since
 \begin{align}
 \left|\frac{\lambda+ic}{\lambda-ic} \right| \geq 1 \qquad \textrm{if Im}\, \lambda \geq 0.
 \end{align}
-This however means that \(\textrm{Im}\, \lambda_{\textrm{max}} \leq 0\) since only then \(e^{i\lambda_{\textrm{max}}L} \geq 1\).
+This however means that \(\textrm{Im}\, \lambda_{\max} \leq 0\) since only then \(e^{i\lambda_{\max}L} \geq 1\).
 Defining \(\textrm{Im}\,\lambda_{\min}\leq \lambda_j\) as the smallest imaginary part of a rapidity we can in the same way prove that \(\textrm{Im}\,\lambda_{\min} \geq 0\).
-Taking these statements together we see that \(\textrm{Im}\, \lambda_{j}=0\textrm{\,}\forall\textrm{\,} j\), and hence all  \(\lambda\)'s are real \cite{Korepin1993}.
+Taking these statements together we see that \(\textrm{Im}\, \lambda_{j}=0\textrm{\,}\forall\textrm{\,} j\), and hence all  \(\lambda\)'s are real~\cite{Korepin1993}.
 \end{proof}
 
 \begin{theorem}
@@ -362,7 +362,7 @@ Subtracting the relevant Bethe equations from eachother we get
 \begin{align}
   \lambda_j - \lambda_k + \frac{1}{L}\sum_{l=1}^N \left[\phi(\lambda_j - \lambda_l) - \phi(\lambda_k - \lambda_l)\right] = \frac{2\pi}{L} (I_j - I_k).
 \end{align}
-Because \(\phi(\lambda)\) is a monotonically increasing function, the first term in the sum is larger than the second term, hence showing the theorem to be true \cite{Korepin1993}.
+Because \(\phi(\lambda)\) is a monotonically increasing function, the first term in the sum is larger than the second term, hence showing the theorem to be true~\cite{Korepin1993}.
 \end{proof}
 
 \subsection{Momentum and energy}
@@ -370,16 +370,16 @@ The momentum of the Lieb-Liniger model is given by
 \begin{align}
   P = \sum_{j=1}^N \lambda_j = \frac{2\pi}{L}\sum_{j=1}^N I_j,
 \end{align}
-where the last step can be made because we sum an odd function over an even interval \cite{Korepin1993}.
+where the last step can be made because we sum an odd function over an even interval~\cite{Korepin1993}.
 
 \subsection{Gaudin norm}
-The norm of a Bethe eigenstate is \cite{Caux2007}
+The norm of a Bethe eigenstate is~\cite{Caux2007}
 \begin{align}
   \braket{\{\lambda\}_N}{\{\lambda\}_N} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det(\mathcal{G}(\{\lambda\})),
 \end{align}
 where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with elements
 \begin{align}\label{eq:gaudin}
-  \mathcal{G}(\{\lambda\})_{jk} = \delta_{jk} \left(L + \sum_{m=1}^NK(\lambda_j-\lambda_m)\right) - K(\lambda_j, \lambda_k)
+  \mathcal{G}(\{\lambda\})_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}K(\lambda_j-\lambda_m)\right) - K(\lambda_j, \lambda_k)
 \end{align}
 
 
@@ -393,8 +393,7 @@ where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with element
 
 
 \section{Correlation functions}
-Some success at exact form \cite{Nardis2016}
-\cite{slavnov89_calcul_scalar_produc_wave_funct}
+Some success at exact form~\cite{Nardis2016,slavnov89_calcul_scalar_produc_wave_funct}
 
 There is an extra factor of $i$ in the code of ABACUS for $\expval{\mu}{\rho}{\lambda}$.
 See Slavnov eq 3.2 (is because of a d/dx log term)
@@ -405,7 +404,7 @@ For the density operator
 \begin{align}
   \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
 \end{align}
-with \(\{x_k\}_{j=1}^N\) the positions of the particles in the gas, the form factor is \cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
+with \(\{x_k\}_{j=1}^N\) the positions of the particles in the gas, the form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
 \begin{multline}
   \matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
   \left(\sum_{j=1}^N(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+(\lambda_j) - V^-(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
@@ -419,7 +418,7 @@ If two states have the same momentum, the matrix element is 0, while if $\mu = \
 \subsection{Form factor for ${(\Psi^{\dag}(0))}^2{\Psi(0)}^2$}
 We are interested in the numerical values of form factors.
 The form factor for $(\Psi^{\dag}(0))^2\Psi(0)^2$ has a closed form determint solution and is easy to work with because both states under consideration have the same number of particles.\todo{What does it measure? What is it?}
-Given two states represented by sets of rapidities \(\{\mu_j\}^N_{j=1}\), \(\{\lambda_j\}^N_{j=1}\) satisfying the Bethe equations and satisfying \(\mu_k\neq \lambda_j \forall j,k=1\ldots N\) the form factor is \cite{Piroli2015}
+Given two states represented by sets of rapidities \(\{\mu_j\}^N_{j=1}\), \(\{\lambda_j\}^N_{j=1}\) satisfying the Bethe equations and satisfying \(\mu_k\neq \lambda_j \forall j,k=1\ldots N\) the form factor is~\cite{Piroli2015}
 \begin{multline}\label{eq:psi_sq_form_factor}
   \matrixel{0}{\prod_{j=1}^{N}\mathcal{C}(\mu_j) (\Psi^{\dag}(0))^2{\Psi(0)}^2 \prod_{j=1}^N\mathcal{B}(\lambda_j)}{0} =
   (-1)^N \frac{\mathcal{J}}{6c} \prod_{j=1}^{N}\prod_{k=1}^N (\lambda_{jk}+ic)\\ \times \prod_{j=1}^{N}\prod_{k=1}^N \frac{1}{\lambda_j - \mu_k}
@@ -465,7 +464,7 @@ For type I excitations the ground state displacement function is
 \begin{equation}\label{eq:particledisplacement}
 	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
 \end{equation}
-valid for all \(\lambda_p\) (if \(\lvert \lambda_p \rvert\ > \lambda_F\)) and all \(\lambda\) \cite{tofind}.
+valid for all \(\lambda_p\) (if \(\lvert \lambda_p \rvert\ > \lambda_F\)) and all \(\lambda\)~\cite{tofind}.
 
 \begin{sloppypar}
 We can rewrite this in a more explicit way.
@@ -525,7 +524,7 @@ For type II excitations the idea is much the same as type I. The displacement is
 \begin{equation}
 	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
 \end{equation}
-valid for all \(\lambda_h\) (if \(\lvert \lambda_h \rvert\ < \lambda_F\)) and all \(\lambda\) \cite{tofind}.
+valid for all \(\lambda_h\) (if \(\lvert \lambda_h \rvert\ < \lambda_F\)) and all \(\lambda\)~\cite{tofind}.
 The \(\delta\)-function part of this equation becomes
 \begin{align}
 	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') 
@@ -563,7 +562,7 @@ The expression for the displacement of type II excitations is thus
 
 In the above expressions we still have \(\inversetruncc^{(F)}\), for which there is no closed form solution, and which thus has to be numerically evaluated.
 
-The definition of \(\inversetruncc^{(F)}\) is \cite{tofind}
+The definition of \(\inversetruncc^{(F)}\) is~\cite{tofind}
 \begin{equation}
 	\left(1 + \inversetruncc^{(F)}\right) * \left(1 - \kernel^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R}
 \end{equation}
@@ -579,7 +578,7 @@ If we perform the integration, cancel common terms and rearrange, we get the int
 \end{align}
 
 So far we have been exact.
-Now we can make use of the method of succesive approximation \cite{Zemyan2012} to solve this equation (a Fredholm integral equation of the second kind).
+Now we can make use of the method of succesive approximation~\cite{Zemyan2012} to solve this equation (a Fredholm integral equation of the second kind).
 
 If we have an integral equation of the form
 \begin{equation}
@@ -618,8 +617,8 @@ We get
 
 \subsection{Excited states}
 
-For excited states there is no longer a Fermi level \cite{tofind} (or the Fermi level goes to \(\infty\)), meaning that the truncated kernel \(\kernel^{(F)}\) becomes equal to the regular Lieb-Liniger kernel~\(\kernel\).
-The displacement function for type I and II excitations are respectively \cite{tofind}
+For excited states there is no longer a Fermi level~\cite{tofind} (or the Fermi level goes to \(\infty\)), meaning that the truncated kernel \(\kernel^{(F)}\) becomes equal to the regular Lieb-Liniger kernel~\(\kernel\).
+The displacement function for type I and II excitations are respectively~\cite{tofind}
 \begin{align}
 	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta(\lambda-\lambda'') + \inversetruncc(\lambda-\lambda'') \right]\kernel(\lambda''-\lambda'),
 \end{align}
@@ -627,7 +626,7 @@ and
 \begin{align}
 	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta(\lambda-\lambda'') + \inversetruncc(\lambda - \lambda'') \right]\kernel(\lambda''-\lambda'),
 \end{align}
-where \(\inversetruncc\) is the inverse of of the kernel \(\kernel\), defined by \cite{tofind}
+where \(\inversetruncc\) is the inverse of of the kernel \(\kernel\), defined by~\cite{tofind}
 \begin{align}
 	(1+\inversetruncc)*(1-\kernel)(\lambda) = \delta(\lambda),
 \end{align}
@@ -659,10 +658,10 @@ A very similair derivation for type II excitations leads to
 
 \chapter{The ABACUS algorithm}\label{chap:abacus}
 
-\epigraph{\itshape{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
+\epigraph{\textit{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
 
-The ABACUS algorithm, developed by Caux et al. \cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
-Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also cabable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since \cite{Caux2009}), but we will not consider that here further.} correlation functions of the form
+The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
+Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also cabable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since~\cite{Caux2009}), but we will not consider that here further.} correlation functions of the form
 \begin{equation}\label{eq:expval}
 	\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)},
 \end{equation}
@@ -672,7 +671,7 @@ The equivalent Fourier transformed quantity is the dynamical structure factor (D
 \begin{equation}\label{eq:DSF}
 	S(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)}.
 \end{equation}
-We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more usefull because it is the quantity directly accesible in experiments \cite{Caux2009}.
+We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more usefull because it is the quantity directly accesible in experiments~\cite{Caux2009}.
 
 Calculing \cref{eq:DSF} is often still complicated, but by introducing the space Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations gives the Lehmann series representation of the DSF:
 \begin{equation}
@@ -690,7 +689,7 @@ In order to calculate DSF we require
 The first and second item are provided by the Bethe ansatz.
 The summation proves to more difficult, but for this we can use ABACUS (Algebraic Bethe Ansatz-based Computation of Universal Structure factors) to perform it numerically.
 As long as a system is Bethe ansatz integrable and finite in size ABACUS can in principle compute its DSF.
-Even for large systems the results are highly accurate, with this accuracy being mostly energy and momentum independent \cite{Caux2009}.
+Even for large systems the results are highly accurate, with this accuracy being mostly energy and momentum independent~\cite{Caux2009}.
 In fact, the accuracy can be measured using sum rules, and saturation in excess of 99\% is possible for systems with hundreds of particles.
 
 
@@ -712,7 +711,7 @@ Now we can turn to the case at hand, where we solve the Bethe equations.
 These are coupled non-linear equations of the general form \(\mathbf{f(x)=0}\).
 In this case we can find the solution \(x\) by iteratively applying the formula
 \begin{equation}
-  \mathbf{x}^{k+1} = \mathbf{x}^k - [J(\mathbf{x}^k)]^{-1}\mathbf{f}(\mathbf{x}^k), \quad k=0,1,2\ldots,
+  \mathbf{x}^{k+1} = \mathbf{x}^k - {[J(\mathbf{x}^k)]}^{-1}\mathbf{f}(\mathbf{x}^k), \quad k=0,1,2\ldots,
 \end{equation}
 where \(J\) is the Jacobian matrix of \(f\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
 Just as in the single variable case this converges quadratically.
@@ -721,8 +720,8 @@ To prevent the calculation of the inverse, in practice Newton's method is used i
 \begin{equation}\label{eq:practicalnewton}
   J(\mathbf{x^k})[x^{k+1} - x^k] = - \mathbf{f}(\mathbf{x}^k),
 \end{equation}
-where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x^k})\) and \( \mathbf{f}(\mathbf{x}^k\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\) \cite{Sueli2003}. 
-This can be solved using LU decomposition \cite{Press2007} (see appendix \cref{app:ludecomp}).
+where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x^k})\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
+This linear can be solved using LU decomposition~\cite{Press2007} (see appendix \cref{app:ludecomp}).
 
 In ABACUS we are ofcourse interested in the Bethe equations.
 Here we will specifically look at those of the Lieb-Liniger model.
@@ -743,14 +742,14 @@ If we recast this is the shape of \cref{eq:practicalnewton}, we get
 \begin{equation}
   \mathcal{G}(\{\lambda^k\}) \Delta \lambda = -B(\{\lambda^k\}),
 \end{equation}
-where we used that the Jacobian of the Bethe equations is equal to the Gaudin matrix (\cref{eq:label}) \cite{Caux2009}.
+where we used that the Jacobian of the Bethe equations is equal to the Gaudin matrix (\cref{eq:label})~\cite{Caux2009}.
 
-The Bethe equations for real rapidities are considered solved when \cite{Caux2009}
+The Bethe equations for real rapidities are considered solved when~\cite{Caux2009}
 \begin{equation}
 	\frac{1}{N}\sum_{i=1}^{N} \left(\frac{\Delta \lambda_i}{\lambda_i}\right)^2 < 10^4 \times \epsilon^2,
 \end{equation}
 where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable''~\cite{cppstandard2016}.
-On machines implementing IEEE 754-2008 (the standard for floating-point arithmatic) \cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
+On machines implementing IEEE 754-2008 (the standard for floating-point arithmatic)~\cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
 
 
 \section{Scanning over the Hilbert space}
@@ -760,7 +759,7 @@ Ordering of matrix element magnitudes\todo{Ask permission for use from JS}
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
-  \caption{Size of matrix element magnitudes encountered while summing intermediate states. The yellow line denotes strictly decreasing magnited. Note that while in general the size of the form factors decreases, not all large form factors are immediatly found. Figure taken from \cite{Caux2009}.}
+  \caption{Size of matrix element magnitudes encountered while summing intermediate states. The yellow line denotes strictly decreasing magnited. Note that while in general the size of the form factors decreases, not all large form factors are immediatly found. Figure taken from~\cite{Caux2009}.}
 \end{figure}
 
 \begin{verbatim}
@@ -809,32 +808,32 @@ Set_Free_lambdaocs() set lambdaocs to PI * Ix2/(c * L) for (c * L) >= 1.0 and PI
 
 \chapter{Machine learning in the ABACUS algorithm}\label{chap:machine_learning}
 
-\epigraph{\itshape Real stupidity beats artificial intelligence every time.}{Terry Pratchett, Hogfather}
+\epigraph{\textit{Real stupidity beats artificial intelligence every time.}}{Terry Pratchett, Hogfather}
 
 \section{Machine learing in physics}
 
 In the past decade machine learning has emerged as an important tool in many areas.
 The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commerical and academic side.
-Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) \todo{Cite this somehow?} and the development of AlphaGo, which beat the world champion in the Japanes boardgame of Go by learning from both human professional games and playing against itself \cite{Silver2017a,Silver2017}.
-In the life sciences machine learning uses include detecting risk factors for cardivasular diseases from pictures of the retina \cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than hand crafted sequencers) \cite{Poplin2016}.
-Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another \cite{Liu2017}.\footnote{What the implications are of this brave new world where no image can be fully trusted is a discussion that is only just beginning.}
+Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) \todo{Cite this somehow?} and the development of AlphaGo, which beat the world champion in the Japanes boardgame of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017}.
+In the life sciences machine learning uses include detecting risk factors for cardivasular diseases from pictures of the retina~\cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than hand crafted sequencers)~\cite{Poplin2016}.
+Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.\footnote{What the implications are of this brave new world where no image can be fully trusted is a discussion that is only just beginning.}
 
 In physics applications have also been found in a variety of fields.
-CERN is exploring ways of tagging particles in LHC collisions using deep learning \cite{paganini17_machin_learn_algor_jet_taggin}.
-In astronomy machine learning is used to classify objects in images and determine redshifts, which have to be automated due to the often large data sets resulting from even a single night of observations \cite{ball10_data_minin_and_machin_learn_in_astron}.
+CERN is exploring ways of tagging particles in LHC collisions using deep learning~\cite{paganini17_machin_learn_algor_jet_taggin}.
+In astronomy machine learning is used to classify objects in images and determine redshifts, which have to be automated due to the often large data sets resulting from even a single night of observations~\cite{ball10_data_minin_and_machin_learn_in_astron}.
 
 Condensed matter physics is now also benefitting from this field.
 Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wavefunction of various spin systems by approximatly encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy while avoiding the exponential number of parameters encountered when representing the Hilbert space.
-This technique has been extended to different systems such as the Hubbard model \cite{Saito2017}.
-Phase transitions and order parameters have also been succesfully extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins \cite{Nieuwenburg2017}.
+This technique has been extended to different systems such as the Hubbard model~\cite{Saito2017}.
+Phase transitions and order parameters have also been succesfully extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins~\cite{Nieuwenburg2017}.
 
 Reinforcement learning has been used to design setups for optical experiments in which complex entangled states are needed.
-Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if an `interesting' state is created \cite{dunjko17_machin_learn_artif_intel_quant_domain}.
+Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if an `interesting' state is created~\cite{dunjko17_machin_learn_artif_intel_quant_domain}.
 
 There are also interesting links between deep learning and physics on a more fundamental level.
-For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similair way to the renormalization group \cite{Mehta2014}. 
+For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similair way to the renormalization group~\cite{Mehta2014}. 
 
-In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see \cite{Dunjko2017} for that).}
+In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see~\cite{Dunjko2017} for that).}
 
 
 \section{Machine learning: the basics}
@@ -860,8 +859,8 @@ In many cases however the acquisation of expert data is difficult or impossible.
 In these cases reinforcement learning comes into play.
 Here, there is no a priori knowledge of the targets, only a reward function that, given a state and an action returns a reward.
 
-Have go like learning of appropriate states by considering a given state and determinging whether it is a good "close" state.
-This requires some way to determine the value of a "move", a move being a mutation of a given vector of Bethe numbers\cite{Silver2017}
+Have go like learning of appropriate states by considering a given state and determinging whether it is a good ``close'' state.
+This requires some way to determine the value of a ``move'', a move being a mutation of a given vector of Bethe numbers\cite{Silver2017}
 
 \subsection{Q-learning}
 
@@ -900,7 +899,7 @@ What we are in general interested in is that, given a starting point in state sp
 These contribute the most to the sum in the Lehman series representation of the dynamic strucutre function.
 
 The dimensionality of the state space for the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator) is the number of allowable choices of qunatum numbers.
-If we have $M$ particles and a UV cutoff for the upper, respectively lower bound of the quantum number $I_{\infty+}$, $I_{\infty-}$, the number of states is \cite{Caux2009}\todo{Is there a symmetry factor of 1/M here?}
+If we have $M$ particles and a UV cutoff for the upper, respectively lower bound of the quantum number $I_{\infty+}$, $I_{\infty-}$, the number of states is~\cite{Caux2009}\todo{Is there a symmetry factor of 1/M here?}
 \begin{equation}
   I_{\infty+} + I_{\infty-} + 1 \choose M.
 \end{equation}
@@ -921,7 +920,7 @@ To compare against ABACUS we can use 2 metrics:
 time used to get to a certain sumrule percentage and number of states (or percentage of Hilbert space) visited.
 
 The guess for the matrix elements may be done with a convolutional neural network.
-We treat the Behten umbers as a !D image over which we convolve.
+We treat the Behten umbers as a 1D image over which we convolve.
 This may also allow for transfer learning ins size since the convolution -> max pooling step downsampled
 
 
@@ -960,18 +959,18 @@ If a move is illegal the probability is set to zero and the probabilities are re
 Illegal moves are those that try to remove a particle from a position where there is none, or placing a particle on an already occupied position.
 Also illegal are those moves that place particles too far away from other particles \todo{Is this necessary? Maybe it is intereseting to see what the neural net does on its own, since maybe it will come up with good states based on the training set anyway.}
 
-verification with f-sum rule \cite{Caux2007a}
+verification with f-sum rule~\cite{Caux2007a}
 \begin{equation}
     \int \frac{\dd \omega}{2\pi} \omega S(k, \omega) = \frac{N}{L} k^2
 \end{equation}
 
-static correlator \cite{Nardis2016}
+static correlator~\cite{Nardis2016}
 \begin{equation}
   S(k) = \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi}S(k,\omega)
 \end{equation}
 
 
-sumrule for one-body correlation function \cite{Caux2007}
+sumrule for one-body correlation function~\cite{Caux2007}
 \begin{equation}
   \frac{1}{2\pi L} \int_{\infty}^{\infty}\sum_k G_2(k,\omega) = n
 \end{equation}
@@ -1029,7 +1028,7 @@ The number of possible 1 ph-pair states increase with k up to a certain k and th
 For 2 ph-pairs it saturatiates at $N^3$
 
 We use the neural net to tell us which move to make.
-To that end we use the same representation of moves as Alpha Zero uses in chess \cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
+To that end we use the same representation of moves as Alpha Zero uses in chess~\cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
 Available moves can be represented as a tuple, with the x-coordinate representing the location of the particle to remove and the y-coordiate being the new coordinate on which the particle is placed.
 This is represented by an $N_{sites} \times N_{sites}$ matrix, with the value of each matrix element coming from the neural net used for Q-learning.
 
@@ -1075,22 +1074,22 @@ PROBLEM: We never reward in the experience replay because we never reach a termi
 
 \chapter{Discussion and conclusion}\label{chap:conclusion}
 
-\epigraph{\itshape I may not have gone where I intended to go, but I think I have ended up where I needed to be.}{Douglas Adams, The Long Dark Tea-Time of the Soul}
+\epigraph{\textit{I may not have gone where I intended to go, but I think I have ended up where I needed to be.}}{Douglas Adams, The Long Dark Tea-Time of the Soul}
 
 
 Transfer learning ay be used to generalize from different states.
 
 Inadmissable states may be ignored.
 
-As mentioned in \cite{Caux2009} the applicability of ABACUS for large systems stems from the preliminary information provided by integrability, built into the algorithm.
+As mentioned in~\cite{Caux2009} the applicability of ABACUS for large systems stems from the preliminary information provided by integrability, built into the algorithm.
 
-AI is creative \cite{1803.03453}.
+AI is creative~\cite{1803.03453}.
 
 Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes
 
-In general reinforcement learning is very data inefficient, leading to the conejcture that a well crafted function may work better in this domain \cite{1710.02298}.
+In general reinforcement learning is very data inefficient, leading to the conejcture that a well crafted function may work better in this domain~\cite{1710.02298}.
 
-Reproducibility of RL solutions is often an issue \cite{1709.06560}.
+Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
 
 \appendix
 
@@ -1098,7 +1097,7 @@ Reproducibility of RL solutions is often an issue \cite{1709.06560}.
 \chapter{The f-sum rule}
 
 When computing the dynamical structure function numerically we need a way to measure what fraction of relevant states have been summed.
-To that end we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation \cite{pitaevskii}.
+To that end we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation~\cite{pitaevskii}.
 We first derive the general formula and then find sum rules for specific operators.
 
 
@@ -1108,7 +1107,7 @@ In general we are interested in the correlation function of an operator $\mathca
 \end{align}
 where $j, j'$ are arbitrary points on a lattice, we consider arbitrary time differences $t$, $a$ is a label denoting the operator and
 
-\todo{Also known as Thomas-Reich-Kuhn sumrule \cite{pitaevskii}}
+\todo{Also known as Thomas-Reich-Kuhn sumrule~\cite{pitaevskii}}
 
 Sum rule factors in ABACUS: used in saturation calculation, you can also just use LHS/RHS
 
@@ -1118,7 +1117,7 @@ The operator is $\expval{\{\mu\}}{\rho(x=0)}{\{\lambda\}}$, where $\rho(x=0) = \
 
 \section{The $:\rho^2:$ operator}
 
-The $:\rho^2:$ operator is equal to  $(\psi^{\dagger})^2\psi^2$
+The $:\rho^2:$ operator is equal to  ${(\psi^{\dagger})}^2\psi^2$
 
 \chapter{LU decomposition}\label{app:ludecomp}
 
