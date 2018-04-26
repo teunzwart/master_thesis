@@ -2,7 +2,7 @@
 % The report class uses some outdated commands, about which nag will complain.
 % You can just ignore these warnings.
 
-\documentclass[11pt, a4paper]{report} % Sets font and paper size.
+\documentclass[11pt, a4paper, draft]{report} % Sets font and paper size.
 
 %%% General formatting packages (order is important, so don't sort) %%%
 \usepackage{amsmath} % More equation formatting.
@@ -31,8 +31,9 @@
 \usepackage{hyperref}
 \usepackage[noabbrev]{cleveref} % Automate "equation (...)" reference. Use \cref.
 \usepackage{doi}
+\usepackage{bbm}
 
-\hypersetup{colorlinks, citecolor=blue, filecolor=black, linkcolor=blue, urlcolor=blue } 
+\hypersetup{colorlinks, citecolor=blue, filecolor=black, linkcolor=blue, urlcolor=blue} 
 
 
 
@@ -51,7 +52,7 @@
 \newcommand\TITLE{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}
 \newcommand\THESISFORM{Master Thesis}
 \newcommand\AUTHOR{Teun Zwart}
-\newcommand\SUPERVISOR{Prof. dr. Jean-Sébastien Caux}
+\newcommand\SUPERVISOR{prof. dr. Jean-Sébastien Caux}
 \newcommand\SECONDASSESSOR{dr. Jasper van Wezel}
 \newcommand\UNIVERSITYLOGO{} % Uncomment line below and add name of logo file.
 
@@ -65,6 +66,7 @@
 % Prevent all line breaks in inline equations.
 \binoppenalty=10000
 \relpenalty=10000
+% \allowdisplaybreaks
 
 \newtheorem{theorem}{Theorem}
 
@@ -111,6 +113,7 @@
 \begin{itemize}
   \item \url{http://ataspinar.com/2017/08/15/building-convolutional-neural-networks-with-tensorflow/}
   \item interesting for presentation \url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
+  \item \url{https://blog.bradfieldcs.com/an-introduction-to-hashing-in-the-era-of-machine-learning-6039394549b0}
 \end{itemize}
 
 \newpage
@@ -133,7 +136,7 @@ This is already efficient since only very small fractions of the state space are
 However, a more efficient summation is still desirable.
 
 In this work we consider reinforcement learning as a way to sum the state space in an efficient way.
-Inspired by computers playing both 1980's video games~\cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the board game Go\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which states are the most promising to sum when scanning the state space of a model.
+Inspired by computers playing both 1980's video games~\cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the board game Go~\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which states are the most promising to sum when scanning the state space of a model.
 
 This may also generalize to models beyond the Lieb-Liniger model.
 Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
@@ -186,7 +189,7 @@ We will only solve the repulsive case (\(c > 0\)) here.
 
 We will start solving the Lieb-Liniger model in the two-particle case. This later readily generalizes to many particles.
 
-For two particles, the Hamiltonian becomes
+For two particles, the Hamiltonian becomes\todo{Hamiltonian in second quantized form derivation to be found in \cite{feynman}, around p. 190}
 \begin{equation}
 	H =  - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2).
 \end{equation}
@@ -417,7 +420,8 @@ If two states have the same momentum, the matrix element is 0, while if $\mu = \
 
 \subsection{Form factor for ${(\Psi^{\dag}(0))}^2{\Psi(0)}^2$}
 We are interested in the numerical values of form factors.
-The form factor for $(\Psi^{\dag}(0))^2\Psi(0)^2$ has a closed form determint solution and is easy to work with because both states under consideration have the same number of particles.\todo{What does it measure? What is it?}
+The form factor for $(\Psi^{\dag}(0))^2\Psi(0)^2$ has a closed form determint solution and is easy to work with because both states under consideration have the same number of particles. 
+It is the normal ordered form of \(\rho^2\).
 Given two states represented by sets of rapidities \(\{\mu_j\}^N_{j=1}\), \(\{\lambda_j\}^N_{j=1}\) satisfying the Bethe equations and satisfying \(\mu_k\neq \lambda_j \forall j,k=1\ldots N\) the form factor is~\cite{Piroli2015}
 \begin{multline}\label{eq:psi_sq_form_factor}
   \matrixel{0}{\prod_{j=1}^{N}\mathcal{C}(\mu_j) (\Psi^{\dag}(0))^2{\Psi(0)}^2 \prod_{j=1}^N\mathcal{B}(\lambda_j)}{0} =
@@ -754,8 +758,21 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmat
 
 \section{Scanning over the Hilbert space}
 
-With the rapidities in hand (and the form factors and Gaudin norm readily derived therefrom), we are now faced with the summation over states..
-Ordering of matrix element magnitudes\todo{Ask permission for use from JS}
+With the rapidities in hand (and the form factors and Gaudin norm readily derived therefrom), we are now faced with the summation over states.
+At face value we may now hit a wall, since we are tasked with exploring a factorially large space and find eigenstates with numerically decreasing absolute form factor values.
+There are some principles that allow for the definition of an efficient algorithm for scanning the Hilbert space.
+
+First, form factors for large enough systems are approximatly continuous, meaning the changing of a single qunatum number does not change the form factor a lot.
+Therefore, given an eigenstate with a large form factor and thus a large contribution to the DSF, we can scan states close to this given state to find other large contributions.
+
+Second, form factors between the ground state and excited states generally decrease when more particle-hole excitations are created in the area in pseudo-momentum space clamped by the Fermi level.
+
+Third, as quantum numbers become larger, moving further from the Fermi level in quantum number space, the form factors also decrease~\cite{Crux2009}.
+
+With these principles we can start to define a way for scanning the Hilbert space.
+Starting from the lowest-energy state we generate
+
+
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
@@ -787,18 +804,6 @@ For holes the idea is the opposite.
 The Bethe numbers (the Is in the Bethe equations) are multiplied by 2 to get whole numbers
 This gives a vector of integers. 
 
-Sum rules allows checking the validity of the simulation.
-The contribution of states to sum rules is stored in ".src" files.
-Actual summing happens in the ".sum" file.
-
-* src/SCAN/General_Scan.cc
-Contains the functions to scan over the intermediate states that are needed in the Lehmann representation to calculate Density Structure Functions.
-
-*** Scan_LiebLin()
-
-An initial state for the Hilbert space scan is defined: "SeedScanState".
-It's the saddle point state for the partition function and density-density;
-the sps with a particle in the center removed for the one-body function and the sps with a center particle added for the Green's function.
 
 
 * General_Scan()
@@ -882,7 +887,7 @@ I don't know, I'm not a mathmatician, but hopefully it works.
 
 Lets just try it and see what happens, chaning only the action selection to disallow repeat states.
 
-Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?\todo{Find out!}
+Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?
 
 \subsection{Q-learning with experience replay}
 
@@ -931,10 +936,10 @@ In this respect we follow the approach of the Deepmind team, which first based A
 We create a `expert' dataset by generating 10000 states represented in Bethe number space for $N=10$.
 To constrain the required computation we implement a UV-cutoff in Bethe number space, with $\lvert I_{\max}\rvert=15$.\footnote{Note that, since $N$ is even, the effective maximum is $\lvert I_{\max}\rvert=14.5$.}
 Every possible legal state \textit{close} to this state was than generated, where closest meant that a state has a single change in a Bethe number, with size $\Delta I = 1$.
-For every adjacent state the matrix element for X\todo{Select an operator.} is calculated.
+For every adjacent state the matrix element for operator X is calculated.
 The adjacent state associated with the largest matrix element was then selected as the target state in the dataset.
 
-Predicting the best next state is done by using two convolutional neural networks. \todo{Expand on the architecture.}
+Predicting the best next state is done by using two convolutional neural networks.
 One convolutional net predicts the best place to take a Bethe number from, while the other predicts the best place to deposite the particle.
 
 
@@ -1100,24 +1105,192 @@ When computing the dynamical structure function numerically we need a way to mea
 To that end we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation~\cite{pitaevskii}.
 We first derive the general formula and then find sum rules for specific operators.
 
-
-In general we are interested in the correlation function of an operator $\mathcal{O}$:
+Starting with the dynamic structure function we have
 \begin{align}
-  \expval{\mathcal{O}_j^a(t)\mathcal{O}_{j'}^{\bar{a}}(0)},
+  	\mathcal{S}(k,\omega) &= \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t e^{i\omega t}\expval{[\operator_j(t),\operator_{j'}^{\dagger}(0)]},
 \end{align}
-where $j, j'$ are arbitrary points on a lattice, we consider arbitrary time differences $t$, $a$ is a label denoting the operator and
+where the expectation value \(\expval{\ldots} = \matrixel{\gamma}{\ldots}{\gamma}\) is over some state \(\gamma\), although any averaging will work, as long as we are consistent.
+Defining the Fourier transform
+\begin{equation}
+  \mathcal{O}_j = \frac{1}{N} \sum_k e^{ikj} \mathcal{O}_k
+\end{equation}
+we can rewrite part of this equation:
+\begin{align}
+  \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \expval{[\operator_j(t),\operator_{j'}^{\dagger}(0)]} &= \frac{1}{2N^3} \sum_{j, j'}\sum_{k',k''} e^{ij(k'-k)}e^{ij'(k-k'')}  \expval{[\operator_{k'}(t),\operator_{k''}^{\dagger}(0)]}\\
+&= \frac{1}{2N} \sum_{k',k''} \delta_{k,k'}\delta_{k,k''}  \expval{[\operator_{k'}(t),\operator_{k''}^{\dagger}(0)]} \\
+&= \frac{1}{2N}  \expval{[\operator_{k}(t),\operator_{k}^{\dagger}(0)]}.
+\end{align}
 
-\todo{Also known as Thomas-Reich-Kuhn sumrule~\cite{pitaevskii}}
+Now we look at the first frequency moment:
+\begin{align}
+  I_k &= \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega)\\
+  &= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{[\operator_k(t),\operator_{k}^{\dagger}(0)]}\\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \left(\matrixel{\gamma}{\operator_k(t)\operator_{k}^{\dagger}(0)}{\gamma} - \matrixel{\gamma}{\operator_{k}^{\dagger}(0)\operator_k(t)}{\gamma}\right) \\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{\operator_k(t)}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}(0)}{\gamma} \right.\nonumber\\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\operator_{k}^{\dagger}(0)}{\alpha}\matrixel{\alpha}{\operator_k(t)}{\gamma}\right)\\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\operator_ke^{-iHt}}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} \right.\nonumber\\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{e^{iHt}\operator_ke^{-iHt}}{\gamma}\right)\\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\operator_k}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- e^{i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\operator_k}{\gamma}\right), \label{eq:fourierfreqmoment}
+\end{align}
+where we used the Heisenberg relation \(\mathcal{O}(t) = e^{iHt}\mathcal{O}e^{-iHt}\) and introduced a complete set of states \(\alpha\), \(\mathbbm{1}=\sum_{\alpha}\ket{\alpha}\bra{\alpha}\).
 
-Sum rule factors in ABACUS: used in saturation calculation, you can also just use LHS/RHS
+With the identity
+\begin{equation}
+  \int_{-\infty}^{\infty} \dd t e^{i(\omega-\omega')t} = 2\pi \delta(\omega-\omega')
+\end{equation}
+we can rewrite \cref{eq:fourierfreqmoment} as 
+\begin{align}
+  \frac{1}{2N} \sum_{\alpha} \int_{\infty}^{\infty}&\dd \omega  \left(\delta(\omega-E_{\alpha}+E_{\gamma})\matrixel{\gamma}{\operator_k}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma}\right. \nonumber\\
+&\qquad\left.- \delta(\omega+E_{\alpha}-E_{\gamma})\matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\operator_k}{\gamma}\right)\\
+&=\frac{1}{2N} \sum_{\alpha} (E_{\alpha} - E_{\gamma}) \left(\matrixel{\gamma}{\operator_k}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\operator_k}{\gamma}\right)\\
+&=\frac{1}{2N} \sum_{\alpha}  \left(-\matrixel{\gamma}{[H,\operator_k]}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{[H,\operator_k]}{\gamma}\right)\\
+&=\frac{-1}{2N} \matrixel{\gamma}{[[H,\operator_k],\operator_{k}^{\dagger}]}{\gamma},
+\end{align}
+where we used \(H\ket{\alpha}=E_{\alpha}\ket{\alpha}\) and \(\mathbbm{1}=\sum_{\alpha}\ket{\alpha}\bra{\alpha}\).
+
+We have thus derived~\cite{Cauxfsum}
+\begin{align}
+  \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{[[H,\operator_k],\operator_{k}^{\dagger}]}{\gamma}.
+\end{align}
+
 
 \section{The $\rho$ operator}
 
-The operator is $\expval{\{\mu\}}{\rho(x=0)}{\{\lambda\}}$, where $\rho(x=0) = \frac{1}{L} \sum{k''} e^{-i k'' x} \rho_{k''} |_{x=0}$ 
+\begin{sloppypar}
+We can now calculate the f-sum rule explicitly for the density operator \(\rho\) when considering the Lieb-Liniger model \cite{Cauxfsum}.
+The Hamiltonian in second-quantized form is \cite{Franchini2017} 
+\begin{equation}
+  \label{eq:1}
+  H = \int \dd x \left[\partial_x\psi^{\dag}(x) \partial_{x} \psi(x) + c \psi^{\dag}(x)\psi^{\dag}(x)\psi(x)\psi(x)\right],
+\end{equation}
+with commutator \([\psi(x), \psi^{\dagger}(x')] = \delta(x-x')\).
+Applying the Fourier transform \(\psi (x) = \frac{1}{L}\sum_{k} e^{ikx}\psi_k\), we get
+\begin{equation}
+  \label{eq:2}
+  H = \frac{1}{L} \sum_k k^2 \psi^{\dagger}_{k}\psi_k +\frac{c}{L^3} \sum_{k_1,k_2,q} \psi^{\dag}_{k_1+q} \psi^{\dag}_{k_2+q} \psi_{k_2} \psi_{k_1},
+\end{equation}
+with commutator \([\psi_k,\psi_{k'}^{\dag}]=\delta_{k,k'}\).
+\end{sloppypar}
 
-\section{The $:\rho^2:$ operator}
+The dynamic structure function in this case becomes
+\begin{equation}
+  \label{eq:3}
+  \mathcal{S}(k,\omega) = \frac{1}{2L} \int_0^{\infty} \dd x \dd x' e^{-ik(x-x')} \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{\left[\rho(x, t), \rho(x',0)\right]},
+\end{equation}
+with the Fourier transform of the density operator being 
+\begin{align}
+  \label{eq:4}
+  \rho_k &= \int_{0}^{L} \dd x e^{-ikx} \rho(x) \\
+         &= \int_{0}^{L} \dd x e^{-ikx} \psi^{\dag}(x) \psi(x)\\
+         &= \frac{1}{L^2} \int_{0}^{L} \dd x \sum_{k',k''} e^{ik''x-ikx-ik'x} \psi_{k'}^{\dag} \psi_{k''}\\
+         &= \frac{1}{L} \sum_{k_1} \psi_{k_1}^{\dag} \psi_{k_1+k}.
+\end{align}
 
-The $:\rho^2:$ operator is equal to  ${(\psi^{\dagger})}^2\psi^2$
+The f-sum rule becomes
+\begin{equation}
+  \label{eq:5}
+  \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \mathcal{S} (k, \omega) = \frac{-1}{2L} \expval{[[H,\rho_k],\rho_{-k}]}.
+\end{equation}
+Calculating the right-hand side of the sum rule, we start with the first commutator:
+\begin{multline}
+  \label{eq:hamiltoniancom}
+  [H, \rho_k] = \frac{1}{L} \sum_{k_1} \left(\frac{1}{L} \sum_{k_2}k_2^2\left[\psi_{k_2}^{\dag}\psi_{k_2}, \psi_{k_1}^{\dag}\psi_{k_1+k}\right] \right.\\\left.+\frac{c}{L^3} \sum_{k_3, k_4, q} \left[\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}\psi_{k_1+k}\right]  \right).
+\end{multline}
+The first commutator in \cref{eq:hamiltoniancom} is 
+\begin{align}
+  \label{eq:7}
+  \left[\psi_{k_2}^{\dag}\psi_{k_2}, \psi_{k_1}^{\dag}\psi_{k_1+k}\right] &= \psi_{k_2}^{\dag}\psi_{k_2} \psi_{k_1}^{\dag}\psi_{k_1+k} - \psi_{k_1}^{\dag}\psi_{k_1+k}\psi_{k_2}^{\dag}\psi_{k_2}\\
+                                                                          &= \psi_{k_2}^{\dag}[\psi_{k_2}, \psi_{k_1}^{\dag}]\psi_{k_1+k} +  \psi_{k_2}^{\dag}\psi_{k_1}^{\dag}\psi_{k_2}\psi_{k_1+k}\nonumber\\
+                                                                          &\quad- \psi_{k_1}^{\dag}[\psi_{k_1+k},\psi_{k_2}^{\dag}]\psi_{k_2} - \psi_{k_1}^{\dag}\psi_{k_2}^{\dag}\psi_{k_1+k}\psi_{k_2}\\
+                                                                          &= L \delta_{k_1,k_2} \psi_{k_2}^{\dag}\psi_{k_1+k} - L \delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2} .
+\end{align}
+
+The second commutator \cref{eq:hamiltoniancom} is 
+\begin{align}
+  \label{eq:8}
+  [\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}, \psi_{k_1}^{\dag}\psi_{k_1+k}] &= 
+\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}\psi_{k_1}^{\dag}\psi_{k_1+k} \nonumber\\
+& \quad - \psi_{k_1}^{\dag}\psi_{k_1+k}\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}\\
+&=\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}[\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}]\psi_{k_1+k} \nonumber\\
+& \quad - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1}^{\dag}\psi_{k_4}\psi_{k_3}\psi_{k_1+k} \nonumber\\\
+& \quad - \psi_{k_1}^{\dag}[\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}]\psi_{k_4}\psi_{k_3} \nonumber\\
+& \quad+ \psi_{k_1}^{\dag}\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\psi_{k_4}\psi_{k_3}\\
+&=\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}[\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}]\psi_{k_1+k} \nonumber\\
+& \quad - \psi_{k_1}^{\dag}[\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}]\psi_{k_4}\psi_{k_3}.
+\end{align}
+
+We have 
+\begin{align}
+  \label{eq:9}
+  [\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}] &= \psi_{k_3}\psi_{k_4} \psi_{k_1}^{\dag} - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
+                                           &= \psi_{k_3} [\psi_{k_4}, \psi_{k_1}^{\dag}] + \psi_{k_3} \psi_{k_1}^{\dag} \psi_{k_4} - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
+                                           &= L\psi_{k_3} \delta_{k_1, k_4} + [\psi_{k_3}, \psi_{k_1}^{\dag}] \psi_{k_4} + \psi^{\dag}_{k_1} \psi_{k_3} \psi_4  - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
+                                           &= L\psi_{k_3} \delta_{k_1, k_4} + L\psi_{k_4} \delta_{k_1,k_3}
+\end{align}
+and 
+\begin{align}
+  \label{eq:10}
+  [\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}] &= \psi_{k_1+k}\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
+                                                        & = [\psi_{k_1+k},\psi_{k_3+q}^{\dag}] \psi_{k_4-q}^{\dag} + \psi_{k_3+q}^{\dag} \psi_{k_1+k} \psi_{k_4-q}^{\dag} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
+                                                        &= [\psi_{k_1+k},\psi_{k_3+q}^{\dag}] \psi_{k_4-q}^{\dag} + [\psi_{k_3+q}^{\dag}, \psi_{k_1+k} ]\psi_{k_4-q}^{\dag} \nonumber\\
+&\quad+ \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
+                                                        &= L\delta_{k_1+k,k_3+q} \psi_{k_4-q}^{\dag} + L\delta_{k_1+k,k_4-q} \psi_{k_3+q}^{\dag}.
+\end{align}
+With this the second part of the commutator is (suppressing prefactors)
+\begin{align}
+  \label{eq:11}
+   \sum_{k_1,k_3,k_4,q}  &\left(\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}, \psi_{k_1}^{\dag}\psi_{k_1+k}\right)\\
+  &=L\sum_{k_1,k_3,k_4,q}  \left(\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}(\psi_{k_3} \delta_{k_1, k_4} + \psi_{k_4} \delta_{k_1,k_3})\psi_{k_1+k} \right.\nonumber\\
+ &\quad \left.  - \psi_{k_1}^{\dag}(\delta_{k_1+k,k_3+q} \psi_{k_4-q}^{\dag} + \delta_{k_1+k,k_4-q} \psi_{k_3+q}^{\dag})\psi_{k_4}\psi_{k_3}\right)\\
+ &=L\sum_{k_3,k_4,q} \left( \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_3} \psi_{k_4+k} +  \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4} \psi_{k_3+k}\right.\nonumber\\
+ & \quad \left. -  \psi_{k_3+q-k}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_3} \psi_{k_4} - \psi_{k_3+q}^{\dag}\psi_{k_4-q-k}^{\dag}\psi_{k_3} \psi_{k_4}\right)\\
+&= 0,
+\end{align}
+when we perform the summation over \(k_3\) and \(k_4\).
+
+Thus we have
+\begin{align}
+  \label{eq:13}
+  [H, \rho_k] &= \frac{1}{L^2} \sum_{k_1,k_2} k_2^2  \left( \delta_{k_1,k_2} \psi_{k_2}^{\dag}\psi_{k_1+k} -  \delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2} \right) \\
+              &= \frac{1}{L} \sum_{k_1} k_1^2  \left(\psi_{k_1}^{\dag}\psi_{k_1+k} -  \psi_{k_1-k}^{\dag}\psi_{k_1} \right) \\
+              &= \frac{1}{L} \sum_{k_1} (k_1^2 -(k_1+k)^2 \psi_{k_1}^{\dag}\psi_{k_1+k}\\
+              &= \frac{1}{L} \sum_{k_1} (-2kk_1+k^2) \psi_{k_1}^{\dag}\psi_{k_1+k}.
+\end{align}
+
+Now we can calculate the rest of the right side of the sum rule:
+\begin{align}
+  \label{eq:14}
+  [[H,\rho_k],\rho_{-k}] &= \frac{1}{L^2} \sum_{k_1}(-2kk_1+k^2) \sum_{k_2} [\psi_{k_1}^{\dag}\psi_{k_1+k}, \psi_{k_2}^{\dag}\psi_{k_2-k}],
+\end{align}
+where
+\begin{align}
+  \label{eq:15}
+   \sum_{k_2} [\psi_{k_1}^{\dag}\psi_{k_1+k}, \psi_{k_2}^{\dag}\psi_{k_2-k}] &=  \sum_{k_2} \left(\psi_{k_1}^{\dag}\psi_{k_1+k} \psi_{k_2}^{\dag}\psi_{k_2-k} - \psi_{k_2}^{\dag}\psi_{k_2-k}\psi_{k_1}^{\dag}\psi_{k_1+k} \right)\\
+                                                                             &= \sum_{k_2} \left(\psi_{k_1}^{\dag}[\psi_{k_1+k}, \psi_{k_2}^{\dag}]\psi_{k_2-k} + \psi_{k_1}^{\dag} \psi_{k_2}^{\dag}\psi_{k_1+k}\psi_{k_2-k} \right.\nonumber\\
+&\quad\left. - \psi_{k_2}^{\dag}[\psi_{k_2-k},\psi_{k_1}^{\dag}]\psi_{k_1+k} -\psi_{k_2}^{\dag}\psi_{k_1}^{\dag}\psi_{k_2-k}\psi_{k_1+k} \right) \\
+                                                                             &= L\sum_{k_2} \left(\delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2-k} - \delta_{k_2-k,k_1}\psi_{k_2}^{\dag}\psi_{k_1+k}\right) \\
+                                                                             &= L \left(\psi_{k_1}^{\dag}\psi_{k_1} - \psi_{k_1+k}^{\dag}\psi_{k_1+k}\right) .
+\end{align}
+Thus
+\begin{align}
+  [[H,\rho_k],\rho_{-k}] &= \frac{1}{L} \sum_{k_1}(-2kk_1+k^2) \left(\psi_{k_1}^{\dag}\psi_{k_1} - \psi_{k_1+k}^{\dag}\psi_{k_1+k}\right) \\
+                         &=  \frac{1}{L} \sum_{k_1}(-2kk_1-k^2 -k^2+2kk_1) \psi_{k_1}^{\dag}\psi_{k_1}\\
+                         &=  \frac{-2k}{L} \sum_{k_1}\psi_{k_1}^{\dag}\psi_{k_1}\\
+                         &= -2kN,
+\end{align}
+where we used 
+\begin{align}
+  \label{eq:6}
+  N = \int_0^{L} \dd x \psi^{\dagger}(x) \psi(x)
+    = \frac{1}{L^2} \int_{0}^L \dd x \sum_{k,k'} e^{ix(k'-k)} \psi_k^{\dag} \psi_{k'}
+    = \frac{1}{L} \sum_k \psi^{\dag}_k \psi_k .
+\end{align}
+The f-sum rule for the dynamical structure factor of the Lieb-Liniger model for the density operator is
+\begin{align}
+  \label{eq:16}
+  \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \mathcal{S}(k, \omega) = \frac{N}{L}k^2
+\end{align}
 
 \chapter{LU decomposition}\label{app:ludecomp}
 
