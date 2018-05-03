@@ -2,7 +2,7 @@
 % The report class uses some outdated commands, about which nag will complain.
 % You can just ignore these warnings.
 
-\documentclass[11pt, a4paper, draft]{report} % Sets font and paper size.
+\documentclass[11pt, a4paper]{report} % Sets font and paper size.
 
 %%% General formatting packages (order is important, so don't sort) %%%
 \usepackage{amsmath} % More equation formatting.
@@ -43,7 +43,7 @@
 \fancyhead[R]{}
 \setlength{\headheight}{14pt}
 
-\setcounter{tocdepth}{10}
+\setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{10}
 \setcounter{MaxMatrixCols}{20}
 
@@ -113,7 +113,6 @@
 \begin{itemize}
   \item \url{http://ataspinar.com/2017/08/15/building-convolutional-neural-networks-with-tensorflow/}
   \item interesting for presentation \url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
-  \item \url{https://blog.bradfieldcs.com/an-introduction-to-hashing-in-the-era-of-machine-learning-6039394549b0}
 \end{itemize}
 
 \newpage
@@ -665,7 +664,7 @@ A very similair derivation for type II excitations leads to
 \epigraph{\textit{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
 
 The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
-Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also cabable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since~\cite{Caux2009}), but we will not consider that here further.} correlation functions of the form
+Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also cabable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since the appearance of~\cite{Caux2009} in 2009), but we will not consider that here further.} correlation functions of the form
 \begin{equation}\label{eq:expval}
 	\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)},
 \end{equation}
@@ -677,7 +676,7 @@ The equivalent Fourier transformed quantity is the dynamical structure factor (D
 \end{equation}
 We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more usefull because it is the quantity directly accesible in experiments~\cite{Caux2009}.
 
-Calculing \cref{eq:DSF} is often still complicated, but by introducing the space Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations gives the Lehmann series representation of the DSF:
+Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:
 \begin{equation}
   S(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
 \end{equation}
@@ -697,7 +696,7 @@ Even for large systems the results are highly accurate, with this accuracy being
 In fact, the accuracy can be measured using sum rules, and saturation in excess of 99\% is possible for systems with hundreds of particles.
 
 
-\section{Numerically solving the Bethe equations}
+\section{Numerically solving the Bethe equations}\label{sec:numer-solv-bethe}
 
 In general the computation of rapidities of Bethe integrable systems is a complex affair, with complex rapidities making the computation difficult.
 For the Lieb-Liniger model however there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}).
@@ -720,12 +719,12 @@ In this case we can find the solution \(x\) by iteratively applying the formula
 where \(J\) is the Jacobian matrix of \(f\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
 Just as in the single variable case this converges quadratically.
 
-To prevent the calculation of the inverse, in practice Newton's method is used in the form
+To prevent the calculation of the inverse of the Jacobian, in practice Newton's method is used in the form
 \begin{equation}\label{eq:practicalnewton}
   J(\mathbf{x^k})[x^{k+1} - x^k] = - \mathbf{f}(\mathbf{x}^k),
 \end{equation}
 where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x^k})\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
-This linear can be solved using LU decomposition~\cite{Press2007} (see appendix \cref{app:ludecomp}).
+This linear can be solved using LU decomposition~\cite{Press2007} (see \cref{app:ludecomp}).
 
 In ABACUS we are ofcourse interested in the Bethe equations.
 Here we will specifically look at those of the Lieb-Liniger model.
@@ -759,57 +758,45 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmat
 \section{Scanning over the Hilbert space}
 
 With the rapidities in hand (and the form factors and Gaudin norm readily derived therefrom), we are now faced with the summation over states.
-At face value we may now hit a wall, since we are tasked with exploring a factorially large space and find eigenstates with numerically decreasing absolute form factor values.
-There are some principles that allow for the definition of an efficient algorithm for scanning the Hilbert space.
+At face value we may now hit a wall, since we are tasked with exploring a factorially large space and find eigenstates with monotonically decreasing absolute numerical form factor values.
+Luckily, there are some principles that allow for the definition of an efficient algorithm for scanning the Hilbert space.
 
 First, form factors for large enough systems are approximatly continuous, meaning the changing of a single qunatum number does not change the form factor a lot.
 Therefore, given an eigenstate with a large form factor and thus a large contribution to the DSF, we can scan states close to this given state to find other large contributions.
 
 Second, form factors between the ground state and excited states generally decrease when more particle-hole excitations are created in the area in pseudo-momentum space clamped by the Fermi level.
 
-Third, as quantum numbers become larger, moving further from the Fermi level in quantum number space, the form factors also decrease~\cite{Crux2009}.
+Third, as quantum numbers become larger, moving further from the Fermi level in quantum number space, the form factors also decrease~\cite{Caux2009}.
 
 With these principles we can start to define a way for scanning the Hilbert space.
-Starting from the lowest-energy state we generate
+Starting from the lowest-energy state we generate states with low-lying particle-hole pair excitations in the Fermi interval (low-lying meaning they are close to the center of the interval).
+If the contributions from these states to the chosen sum rule are large enough, further scanning of this state commences, with increasing complexity of the state in the form of more particle-hole pairs.
+
+Large enough, in the context above, means that the form factor associated with the state is above the so-called \textit{running threshold}, with initial value such that the number of intermediate states is of order \(N^2\).
+The form factors are kept, and the threshold is lowered after a scan and a new scan is initiated of those sectors in the Hilbert space for which the average form factor is above the current running threshold.
+ABACUS thus keeps track of the already scanned states in the Hilbert space to allow knowledge to be gathered on where to scan next as well as to avoid doubly counting states~\cite{Caux2009}.
+
+In practice we are therefore descending a ``mountain'' of form factors as slowly as possible, always trying to move in the direction of smallest change.
+This proves especially difficult since the form factors are not monotonically decreasing while moving around in Hilbert space.
+This inefficiency is seen in \cref{fig:orderedmagnitudes}, where the absolute magnitude of form factors is plotted as a function of their order in the computation.
+We see both that some highly contributing form factors are missed early on, appearing as spike in the distribution later, as well as see small form factors spurrioulsy being considered early, resulting in wasted computations.
+
+After an ABACUS run, the available data consists of a set of energy-momentum-form factor triplets.
+The quality of this data, in terms of how well it captures important contributions from the Hilbert space, can be determined with sum rules.
+A suitable candidate of these is the f-sum rule~\cite{Caux2007a}, which relates the first energy moment over the DSF to a function of \(k\).
+For the density-density correlator of the Lieb-Liniger model this becomes
+\begin{align}
+  \int \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{1}{N}\sum_{\mu}(E_{\mu}-E_o)\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2  = \frac{N}{L} k^2.
+\end{align}
+A full derivation of the generic formula, as well as the specific case above may be found in~\cref{cha:f-sum-rule}. 
 
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
   \caption{Size of matrix element magnitudes encountered while summing intermediate states. The yellow line denotes strictly decreasing magnited. Note that while in general the size of the form factors decreases, not all large form factors are immediatly found. Figure taken from~\cite{Caux2009}.}
+  \label{fig:orderedmagnitudes}
 \end{figure}
-
-\begin{verbatim}
-* General remarks
-
-At the start of a simulation we choose the \alpha' to be close to \alpha.
-We then scan over all states in the Hilbert space.
-If states are very different, the matrix element will be small.
-
-To scan over the Hilbert space we use the concept of a descendant.
-Lets say that the matrix element <\alpha'|O\bar{O}|\alpha> ~ 10^{-2} is the largest one.
-We then consider all the states adjacent to this state which have a matrix element above the scan threshold. 
-The goal is to descent the "mountain" as slowly as possible. A depth first search is performed from the initial state until the threshold is crossed.
-Once no more states are above the threshold, it is lowered.
-In principle you will reach the entire Hilbert space in this way (though note, the Lieb-Liniger model has an infinite dimensional one).
-
-To keep track of which states have been visited we define a thread. A thread is a line of descendents in the Hilbert space. This informaiton needs to be saved during the simulation and is saved in ".thr" files.
-
-Note that the contributions of matrix elements are not monotonically decreasing, but may increase at some points.
-
-The building of states happens from the outide in. The first particles are the ones that may travel the farthest in pseudo-momentum space. 
-To make states unique, particles may not cross each other.
-For holes the idea is the opposite.
-
-The Bethe numbers (the Is in the Bethe equations) are multiplied by 2 to get whole numbers
-This gives a vector of integers. 
-
-
-
-* General_Scan()
-Set_Free_lambdaocs() set lambdaocs to PI * Ix2/(c * L) for (c * L) >= 1.0 and PI * Ix2/sqrt(c * L) otherwise.
-
-\end{verbatim}
 
 \chapter{Machine learning in the ABACUS algorithm}\label{chap:machine_learning}
 
@@ -900,6 +887,37 @@ Does this mostly have to do with the proofs of convergence just becoming easier 
 
 \chapter{Methods and results}\label{chap:results}
 
+Now that we have introduced the theoretical tools necessary, we can combine them in a way applicable to integrable models.
+We start with simple regression to find rapidities and then turn to exploring the state space of the Lieb-Liniger model.
+All neural networks and code were written in Python, with the neural networks using the Keras framework~\cite{chollet2015keras} with Tensorflow backend~\cite{tensorflow2015-whitepaper}.
+
+\section{Regressing rapidities}
+
+As discussed (\cref{chap:bethe_ansatz}), rapidities play a central role in Bethe ansatz integrable models.
+They form the basis for calculations of form factors and quantities such as energy of a system.
+
+We have also seen how rapidities may be found numerically in~\cref{sec:numer-solv-bethe}, using the (multidimensional) Newton method.
+This method converges quadratically, but requires an initial guess for the rapidities.
+It is here that we may find an improvent by way of machine learning.
+
+In the naive case, where we simply start from scratch in calculating the rapidities, we base the initial values for the Newton method on a simplified version of the Bethe equations:
+\begin{align}
+  \label{eq:12}
+  \lambda_j = \frac{2\pi}{L} I_j.
+\end{align}
+
+Since the Newton method converges quadratically we expect the number of iterations required for convergence to be reduced if the initial values are closer to their true values.
+Therefore, we use a neural network to act as a function approximator, feeding in an array of \(N\) Bethe numbers and outputting an array of \(N\) rapidities.
+
+The methodology is as follows: we generate a dataset of 20000 sets of Bethe numbers and matching rapidities of length \(N\).
+This is then fed to
+
+\subsection{Results}
+
+\section{Walking through state space}
+
+\subsection{Results}
+
 What we are in general interested in is that, given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible, meaning we first visit those states in state space which have a large matrix element. 
 These contribute the most to the sum in the Lehman series representation of the dynamic strucutre function.
 
@@ -908,6 +926,8 @@ If we have $M$ particles and a UV cutoff for the upper, respectively lower bound
 \begin{equation}
   I_{\infty+} + I_{\infty-} + 1 \choose M.
 \end{equation}
+
+
 
 Now we wish to define a new method to scan through the Hilbert space.
 Currently a 600 line function in ABACUS does this using heuristic methods, but this function is difficult to understnad and verify.
@@ -964,21 +984,7 @@ If a move is illegal the probability is set to zero and the probabilities are re
 Illegal moves are those that try to remove a particle from a position where there is none, or placing a particle on an already occupied position.
 Also illegal are those moves that place particles too far away from other particles \todo{Is this necessary? Maybe it is intereseting to see what the neural net does on its own, since maybe it will come up with good states based on the training set anyway.}
 
-verification with f-sum rule~\cite{Caux2007a}
-\begin{equation}
-    \int \frac{\dd \omega}{2\pi} \omega S(k, \omega) = \frac{N}{L} k^2
-\end{equation}
 
-static correlator~\cite{Nardis2016}
-\begin{equation}
-  S(k) = \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi}S(k,\omega)
-\end{equation}
-
-
-sumrule for one-body correlation function~\cite{Caux2007}
-\begin{equation}
-  \frac{1}{2\pi L} \int_{\infty}^{\infty}\sum_k G_2(k,\omega) = n
-\end{equation}
 
 \section{Possible NN options}
 
@@ -1096,10 +1102,13 @@ In general reinforcement learning is very data inefficient, leading to the conej
 
 Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
 
+We are seeing an increase in the system sizes realizable with exact diagonalization \cite{wietek18_sublat_codin_algor_distr_memor}
+
 \appendix
 
 
 \chapter{The f-sum rule}
+\label{cha:f-sum-rule}
 
 When computing the dynamical structure function numerically we need a way to measure what fraction of relevant states have been summed.
 To that end we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation~\cite{pitaevskii}.
@@ -1190,7 +1199,7 @@ with the Fourier transform of the density operator being
 The f-sum rule becomes
 \begin{equation}
   \label{eq:5}
-  \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \mathcal{S} (k, \omega) = \frac{-1}{2L} \expval{[[H,\rho_k],\rho_{-k}]}.
+  \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega\mathcal{S} (k, \omega) = \frac{-1}{2L} \expval{[[H,\rho_k],\rho_{-k}]}.
 \end{equation}
 Calculating the right-hand side of the sum rule, we start with the first commutator:
 \begin{multline}
@@ -1289,7 +1298,7 @@ where we used
 The f-sum rule for the dynamical structure factor of the Lieb-Liniger model for the density operator is
 \begin{align}
   \label{eq:16}
-  \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \mathcal{S}(k, \omega) = \frac{N}{L}k^2
+  \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{N}{L}k^2
 \end{align}
 
 \chapter{LU decomposition}\label{app:ludecomp}
