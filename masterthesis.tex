@@ -664,17 +664,17 @@ A very similair derivation for type II excitations leads to
 \epigraph{\textit{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
 
 The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
-Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also cabable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since the appearance of~\cite{Caux2009} in 2009), but we will not consider that here further.} correlation functions of the form
+Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also capable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since the appearance of~\cite{Caux2009} in 2009), but we will not consider that here further.} correlation functions of the form
 \begin{equation}\label{eq:expval}
 	\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)},
 \end{equation}
 where \(j=1\ldots N\) denotes lattice sites.
-This is the expecation value for arbitrary time seperations $t$ and distances $j-j'$.
+This is the expectation value for arbitrary time separations $t$ and distances $j-j'$.
 The equivalent Fourier transformed quantity is the dynamical structure factor (DSF)
 \begin{equation}\label{eq:DSF}
 	S(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)}.
 \end{equation}
-We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more usefull because it is the quantity directly accesible in experiments~\cite{Caux2009}.
+We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because it is the quantity directly accessible in experiments~\cite{Caux2009,Caux2007a}.
 
 Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:
 \begin{equation}
@@ -690,7 +690,7 @@ In order to calculate DSF we require
   \item a way to do the summation over the intermediate states
 \end{itemize}
 The first and second item are provided by the Bethe ansatz.
-The summation proves to more difficult, but for this we can use ABACUS (Algebraic Bethe Ansatz-based Computation of Universal Structure factors) to perform it numerically.
+The summation proves to be more difficult, but for this we can use ABACUS (Algebraic Bethe Ansatz-based Computation of Universal Structure factors) to perform it numerically.
 As long as a system is Bethe ansatz integrable and finite in size ABACUS can in principle compute its DSF.
 Even for large systems the results are highly accurate, with this accuracy being mostly energy and momentum independent~\cite{Caux2009}.
 In fact, the accuracy can be measured using sum rules, and saturation in excess of 99\% is possible for systems with hundreds of particles.
@@ -705,7 +705,7 @@ In this case we can use the matrix Newton method to calculate rapidities.
 To introduce this method we first look at the one-dimensional case.
 If we want to find the value of \(x\) that solves \(f(x)=0\), we can iteratively approximate this value by 
 \begin{equation}
-  x^{k+1} = x^k - \frac{f(x^k)}{f'(x^k)}, \quad k = 0, 1, 2, \ldots,
+  x^{k+1} = x^k - \frac{f(x^k)}{f'(x^k)}, \qquad k = 0, 1, 2, \ldots,
 \end{equation}
 with given starting value \(x_0\).
 This converges quadratically (meaning on each iteration \(k+1\) the error \(\epsilon_{k+1}\) is of order \(\epsilon_k^2\)).
@@ -714,9 +714,9 @@ Now we can turn to the case at hand, where we solve the Bethe equations.
 These are coupled non-linear equations of the general form \(\mathbf{f(x)=0}\).
 In this case we can find the solution \(x\) by iteratively applying the formula
 \begin{equation}
-  \mathbf{x}^{k+1} = \mathbf{x}^k - {[J(\mathbf{x}^k)]}^{-1}\mathbf{f}(\mathbf{x}^k), \quad k=0,1,2\ldots,
+  \mathbf{x}^{k+1} = \mathbf{x}^k - {[J(\mathbf{x}^k)]}^{-1}\mathbf{f}(\mathbf{x}^k), \qquad k=0,1,2\ldots,
 \end{equation}
-where \(J\) is the Jacobian matrix of \(f\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
+where \(J\) is the Jacobian matrix of mathbf{f}\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
 Just as in the single variable case this converges quadratically.
 
 To prevent the calculation of the inverse of the Jacobian, in practice Newton's method is used in the form
@@ -724,9 +724,9 @@ To prevent the calculation of the inverse of the Jacobian, in practice Newton's 
   J(\mathbf{x^k})[x^{k+1} - x^k] = - \mathbf{f}(\mathbf{x}^k),
 \end{equation}
 where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x^k})\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
-This linear can be solved using LU decomposition~\cite{Press2007} (see \cref{app:ludecomp}).
+This linear system can be solved using LU decomposition~\cite{Press2007} (see \cref{app:ludecomp}).
 
-In ABACUS we are ofcourse interested in the Bethe equations.
+In ABACUS we are of course interested in the Bethe equations.
 Here we will specifically look at those of the Lieb-Liniger model.
 Recalling \cref{chap:bethe_ansatz}, the Bethe equations in logarithmic form are 
 \begin{align}
@@ -734,7 +734,7 @@ Recalling \cref{chap:bethe_ansatz}, the Bethe equations in logarithmic form are
 \end{align}
 or
 \begin{align}
-  0 = \frac{2\pi}{L}I_j - \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = B(\{\lambda\}),
+  \frac{2\pi}{L}I_j - \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = B(\{\lambda\}),
 \end{align}
 with
 \begin{equation}
@@ -745,23 +745,28 @@ If we recast this is the shape of \cref{eq:practicalnewton}, we get
 \begin{equation}
   \mathcal{G}(\{\lambda^k\}) \Delta \lambda = -B(\{\lambda^k\}),
 \end{equation}
-where we used that the Jacobian of the Bethe equations is equal to the Gaudin matrix (\cref{eq:label})~\cite{Caux2009}.
+where we used that the Jacobian of the Bethe equations is equal to the Gaudin matrix (\cref{eq:gaudin})~\cite{Caux2009}.
 
 The Bethe equations for real rapidities are considered solved when~\cite{Caux2009}
 \begin{equation}
 	\frac{1}{N}\sum_{i=1}^{N} \left(\frac{\Delta \lambda_i}{\lambda_i}\right)^2 < 10^4 \times \epsilon^2,
 \end{equation}
 where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable''~\cite{cppstandard2016}.
-On machines implementing IEEE 754-2008 (the standard for floating-point arithmatic)~\cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
+On machines implementing IEEE 754-2008 (the standard for floating-point arithmetic)~\cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
 
 
 \section{Scanning over the Hilbert space}
 
-With the rapidities in hand (and the form factors and Gaudin norm readily derived therefrom), we are now faced with the summation over states.
+With the rapidities in hand (and the form factors and Gaudin norm readily computed therefrom, see~\cref{chap:bethe_ansatz}), we are now faced with the summation over states.
 At face value we may now hit a wall, since we are tasked with exploring a factorially large space and find eigenstates with monotonically decreasing absolute numerical form factor values.
+The dimensionality of the state space is equal to the number of allowable choices of quantum numbers because a Pauli-like principle is at work.
+For the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator), given $M$ particles and a UV cutoff for the upper, respectively lower bound of the quantum number $I_{\infty+}$, $I_{\infty-}$, the number of states is~\cite{Caux2009}
+\begin{equation}
+  \binom{I_{\infty+} + I_{\infty-} + 1}{M} = \frac{(I_{\infty+} + I_{\infty-} + 1)!}{M!(I_{\infty+} + I_{\infty-} + 1 - M)!}.
+\end{equation}
 Luckily, there are some principles that allow for the definition of an efficient algorithm for scanning the Hilbert space.
 
-First, form factors for large enough systems are approximatly continuous, meaning the changing of a single qunatum number does not change the form factor a lot.
+First, form factors for large enough systems are approximately continuous, meaning the changing of a single quantum number does not change the form factor a lot.
 Therefore, given an eigenstate with a large form factor and thus a large contribution to the DSF, we can scan states close to this given state to find other large contributions.
 
 Second, form factors between the ground state and excited states generally decrease when more particle-hole excitations are created in the area in pseudo-momentum space clamped by the Fermi level.
@@ -779,24 +784,76 @@ ABACUS thus keeps track of the already scanned states in the Hilbert space to al
 In practice we are therefore descending a ``mountain'' of form factors as slowly as possible, always trying to move in the direction of smallest change.
 This proves especially difficult since the form factors are not monotonically decreasing while moving around in Hilbert space.
 This inefficiency is seen in \cref{fig:orderedmagnitudes}, where the absolute magnitude of form factors is plotted as a function of their order in the computation.
-We see both that some highly contributing form factors are missed early on, appearing as spike in the distribution later, as well as see small form factors spurrioulsy being considered early, resulting in wasted computations.
+We see both that some highly contributing form factors are missed early on, appearing as spikes in the distribution later, as well as see small form factors spuriously being considered early, resulting in wasted computations.
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
+  \caption{Size of matrix element magnitudes encountered while summing intermediate states of the XXZ model. The yellow line denotes strictly decreasing magnitude. Note that while in general the size of the form factors decreases, not all large form factors are immediately found. Figure taken from~\cite{Caux2009}.}
+  \label{fig:orderedmagnitudes}
+\end{figure}
 
 After an ABACUS run, the available data consists of a set of energy-momentum-form factor triplets.
 The quality of this data, in terms of how well it captures important contributions from the Hilbert space, can be determined with sum rules.
 A suitable candidate of these is the f-sum rule~\cite{Caux2007a}, which relates the first energy moment over the DSF to a function of \(k\).
-For the density-density correlator of the Lieb-Liniger model this becomes
+With this sum rule the intensity in individual momentum slices can be explicitly determined.
+For the density-density correlation function of the Lieb-Liniger model this becomes
 \begin{align}
   \int \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{1}{N}\sum_{\mu}(E_{\mu}-E_o)\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2  = \frac{N}{L} k^2.
 \end{align}
 A full derivation of the generic formula, as well as the specific case above may be found in~\cref{cha:f-sum-rule}. 
 
+\Cref{fig:lieb_density_dsf} shows the DSF in energy-momentum space for the density-density correlator of the Lieb-Liniger model obtained from ABACUS runs.
+In \cref{table:saturation} the efficiency of ABACUS is showcased.
+It presents the number of states necessary to reach a given saturation in the XXZ model and the fraction of the Hilbert space necessary to reach this saturation.
+Only very small fractions are necessary, although the algorithm is not perfect, with the second number in parentheses showing the number of states required if perfectly monotonically decreasing states were summed.
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
-  \caption{Size of matrix element magnitudes encountered while summing intermediate states. The yellow line denotes strictly decreasing magnited. Note that while in general the size of the form factors decreases, not all large form factors are immediatly found. Figure taken from~\cite{Caux2009}.}
-  \label{fig:orderedmagnitudes}
+  \begin{tabular}{cc}
+    \includegraphics[width=4.3cm]{c_0p25_L_100_N_100.eps}
+    &
+      \includegraphics[width=4.3cm]{c_1_L_100_N_100.eps} \\
+    \includegraphics[width=4.3cm]{c_5_L_100_N_100.eps}
+    &
+      \includegraphics[width=4.3cm]{c_10_L_100_N_100.eps} \\
+    \includegraphics[width=4.3cm]{c_20_L_100_N_100.eps}
+    &
+      \includegraphics[width=4.3cm]{c_100_L_100_N_100.eps}
+  \end{tabular}
+  \caption{Plots of the dynamical structure factor of the Lieb-Liniger model for different values of the interactions parameter \(\gamma\).
+    In this case we have $L = 100$ and $N = 100$.
+    Figure taken from~\cite{Caux2007a}}
+  \label{fig:lieb_density_dsf}
 \end{figure}
+
+
+\begin{table}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{c|c|c|c|c}
+  & N = 50 & N = 100 & N = 200 & N = 400 \\
+\hline
+% 90\% & 235 (4.9e-12) & 944 (6.8e-26) & 8772 (5.3e-54) & 117373 (3.5e-111)\\
+% 95\% & 385 (8.2e-12) & 2492 (1.8e-25) & 27096 (1.6e-53) & 573466 (1.7e-110) \\
+% 99\% & 1515 (3.2e-11) & 18490 (1.3e-24) & 469120 (2.8e-52) & \\
+% 99.9\% & 7478 (1.6e-10) & 141560 (1.0e-23) & & \\
+% 99.99\% & 26724 (5.7e-10) & 932706 (6.8e-23) & & \\
+90\% & 235 (4.9e-12; 40) & 944 (6.8e-26; 135) & 8772 (5.3e-54; 731) & 117373 (3.5e-111, 5175)\\
+95\% & 385 (8.2e-12; 82) & 2492 (1.8e-25; 386) & 27096 (1.6e-53; 4319) & 573466 (1.7e-110; 34261) \\
+99\% & 1515 (3.2e-11; 386) & 18490 (1.3e-24; 2500) & 469120 (2.8e-52; 16359) & \\
+99.9\% & 7478 (1.6e-10; 1342) & 141560 (1.0e-23; 15366) & & \\
+99.99\% & 26724 (5.7e-10; 2182) & 932706 (6.8e-23; 84047) & & \\
+\end{tabular}
+}
+\caption{Number of states required for a given sum rule saturation in the XXZ model.
+In parentheses are the fraction Hilbert space fraction this represents, with the second number in
+parentheses the number of contributions needed if the algorithm was perfectly able to only sum monotonically decreasing form factors.
+Table reproduced from~\cite{Caux2009}.
+}
+\label{table:saturation}
+\end{table}
+
+
 
 \chapter{Machine learning in the ABACUS algorithm}\label{chap:machine_learning}
 
@@ -921,11 +978,7 @@ This is then fed to
 What we are in general interested in is that, given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible, meaning we first visit those states in state space which have a large matrix element. 
 These contribute the most to the sum in the Lehman series representation of the dynamic strucutre function.
 
-The dimensionality of the state space for the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator) is the number of allowable choices of qunatum numbers.
-If we have $M$ particles and a UV cutoff for the upper, respectively lower bound of the quantum number $I_{\infty+}$, $I_{\infty-}$, the number of states is~\cite{Caux2009}\todo{Is there a symmetry factor of 1/M here?}
-\begin{equation}
-  I_{\infty+} + I_{\infty-} + 1 \choose M.
-\end{equation}
+
 
 
 
