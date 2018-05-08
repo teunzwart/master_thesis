@@ -193,13 +193,8 @@ For two particles, the Hamiltonian becomes\todo{Hamiltonian in second quantized 
 	H =  - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2).
 \end{equation}
 We can write this in a more convenient form without the delta-function by integrating the Schrödinger equation over a small interval \([-\epsilon,\epsilon]\).
-This yields the condition~\cite{Lieb1963}\todo{Do this explicitly.}\footnote{This operation is relatively simple but does contain a few subtleties. Let us therefore do it explicitly:
-the Schrödinger equation is
-\begin{equation}
-	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2)\right] \psi(x_1, x_2) = E \psi(x_1,x_2).
-\end{equation} 
-Integrating~\cite{Griffiths1993}
-}
+This yields the condition~\cite{Lieb1963} (see \cref{cha:boundary} for an explicit derivation)
+
 \begin{equation}\label{eq:lieblinigerboundary}
 	\left[\frac{\partial}{\partial x_2} - \frac{\partial}{\partial x_1} - c\right] \psi(x_1, x_2)\bigg\rvert_{x_1 = x_2} = 0.
 \end{equation}
@@ -249,11 +244,11 @@ yielding
 \end{equation}
 The sum runs over the permutations of the set \((1,2)\).
 This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
-This points to a Pauli principle like phenomenon~\cite{tofind}.
+This points to a Pauli-principle-like phenomenon~\cite{Caux2009,Franchini2017}.
 
 
 Going to the many-particle state is now a fairly straightforward generalization of the two-particle case.
-The wave function in this case becomes~\cite{Franchini2017}\todo{Bring the presentation of this in line with the two particle case.}
+The wave function in this case becomes~\cite{Franchini2017}
 \begin{equation}
 	\psi(x_1,\ldots,x_N) = \sum_{\mathcal{P}} A(\mathcal{P}) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}.
 \end{equation}
@@ -271,7 +266,7 @@ Imposing this condition on the wave function yields
 \begin{align}
   e^{i\lambda_1L} = - e^{-i\phi(\lambda_1 - \lambda2)}, \qquad e^{i\lambda_2L} = - e^{i\phi(\lambda_1 - \lambda2)},
 \end{align}
-or explicitly~\cite{tofind}
+or explicitly~\cite{Franchini2017}
 \begin{align}
   e^{i\lambda_1L} = \frac{\lambda_1-\lambda_2 + ic}{\lambda_1-\lambda_2-ic}, \qquad e^{i\lambda_2L} = \frac{\lambda_2-\lambda_1 + ic}{\lambda_2-\lambda_1-ic}.
 \end{align}
@@ -282,7 +277,7 @@ In logarithmic form this becomes
   \lambda_1 + \frac{1}{L} \phi(\lambda_1-\lambda_2) = \frac{2\pi}{L} I_1, \qquad \lambda_2 + \frac{1}{L} \phi(\lambda_2-\lambda_1) = \frac{2\pi}{L} I_2.
 \end{align}
 The numbers \(I_1, I_2\) uniquely label the quasimomenta and are half-odd integers. 
-They act as the quantum numbers of the theory~\cite{tofind}.
+They act as the quantum numbers of the theory~\cite{Franchini2017}.
 
 In the many particle case the Bethe equations generalise to
 \begin{equation}
@@ -292,7 +287,7 @@ or in logarithmic form
 \begin{align}
   \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
 \end{align}
-where~\cite{tofind}
+where~\cite{Franchini2017}
 \begin{align}
 I_j \in 
 \begin{cases}
@@ -364,7 +359,7 @@ Subtracting the relevant Bethe equations from each other we get
 \begin{align}
   \lambda_j - \lambda_k + \frac{1}{L}\sum_{l=1}^N \left[\phi(\lambda_j - \lambda_l) - \phi(\lambda_k - \lambda_l)\right] = \frac{2\pi}{L} (I_j - I_k).
 \end{align}
-Because \(\phi(\lambda)\) is a monotonically increasing function, the first term in the sum is larger than the second term, hence showing the theorem to be true~\cite{Korepin1993}.
+Because \(\lvert\atan(x)-\atan(y)\rvert=\lvert x-y\rvert\), the left side has the same sign as its first term, since the first term in the sum is larger than the second term, hence showing the theorem to be true~\cite{Korepin1993,Gaudin2009}.
 \end{proof}
 
 \subsection{Momentum and energy}
@@ -385,11 +380,9 @@ where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with element
 \end{align}
 
 
-- two particles \\
-- many particles\\
-- Bethe equations\\
-- ground state\\
-- ground state density (iterative scheme for density)\cite{Zemyan2012}
+\section{Ground state}
+\subsection{Ground state density}
+iterative scheme for density\cite{Zemyan2012}
 
 
 
@@ -408,6 +401,7 @@ For the density operator
 \end{align}
 with \(\{x_k\}_{j=1}^N\) the positions of the particles in the gas, the form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
 \begin{multline}
+  \label{eq:rho_form_factor}
   \matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
   \left(\sum_{j=1}^N(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+(\lambda_j) - V^-(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
 \end{multline}
@@ -417,34 +411,8 @@ with element of the matrix \(U\) given by
 \end{align}
 If two states have the same momentum, the matrix element is 0, while if $\mu = \lambda$ we have $\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}=\frac{N}{L}$.
 
-\subsection{Form factor for ${(\Psi^{\dag}(0))}^2{\Psi(0)}^2$}
-We are interested in the numerical values of form factors.
-The form factor for $(\Psi^{\dag}(0))^2\Psi(0)^2$ has a closed form determinant solution and is easy to work with because both states under consideration have the same number of particles. 
-It is the normal ordered form of \(\rho^2\).
-Given two states represented by sets of rapidities \(\{\mu_j\}^N_{j=1}\), \(\{\lambda_j\}^N_{j=1}\) satisfying the Bethe equations and satisfying \(\mu_k\neq \lambda_j \forall j,k=1\ldots N\) the form factor is~\cite{Piroli2015}
-\begin{multline}\label{eq:psi_sq_form_factor}
-  \matrixel{0}{\prod_{j=1}^{N}\mathcal{C}(\mu_j) (\Psi^{\dag}(0))^2{\Psi(0)}^2 \prod_{j=1}^N\mathcal{B}(\lambda_j)}{0} =
-  (-1)^N \frac{\mathcal{J}}{6c} \prod_{j=1}^{N}\prod_{k=1}^N (\lambda_{jk}+ic)\\ \times \prod_{j=1}^{N}\prod_{k=1}^N \frac{1}{\lambda_j - \mu_k}
-  \times \prod_{j=1}^N(V(\lambda_j)^+ - V(\lambda_j)^-) \frac{\det(I_N + U)}{(V(p)^+ - V(p)^-)(V(s)^+ - V(s)^-)},
-\end{multline}
-where \(\mathcal{B}\) and \(\mathcal{C}\) are defined in\todo{Write about ABA}, \(\lambda_{jk} = \lambda_j-\lambda_k\), \(I_N\) is the \(N\)-dimensional identity matrix,
-\begin{align}
-  V(\lambda_j)^{\pm} = \prod_{m=1}^N \frac{\mu_m - \lambda_j \pm ic}{\lambda_m -\lambda_j \pm ic},
-\end{align}
-the elements of the matrix \(U\) are given by
-\begin{align}
-  U_{jk} = \frac{i}{V(\lambda_j)^+ - V(\lambda_j)^-} \frac{\prod_{m=1}^N (\mu_m - \lambda_j)}{\prod_{\substack{m=1\\m\neq j}}^N (\lambda_m-\lambda_j)} \left[K(\lambda_j,\lambda_k) - K(p,\lambda_k)K(s,\lambda_j)\right]
-\end{align}
-and
-\begin{align}
-  \mathcal{J} = (P_{\lambda} - P_{\mu})^4 - 4 (P_{\lambda} - P_{\mu})(Q_{\lambda}-Q_{\mu}) + 3 (E_{\lambda} - E_{\mu})^2,
-\end{align}
-with
-\begin{align}
-  P_{\lambda} = \sum_{j=1}^N \lambda_j, \qquad E_{\lambda} = \sum_{j=1}^N \lambda_j^2, \qquad Q_{\lambda} = \sum_{j=1}^N \lambda_j^3.
-\end{align}
-The parameters \(s\) and \(p\) are arbitrary complex numbers which are not necessarily in the set of rapidities of the states.
-We will generally set them to 0, since that simplifies numerical evaluation of \cref{eq:psi_sq_form_factor} and the form factor does not depend on their values.
+The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
+We will generally set it to 0, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
 Note that for the Lieb-Liniger model \(V(\lambda_j)^{-} = (V(\lambda_j)^{+})^{*}\), since all rapidities are real in this case.
 
 \subsection{The thermodynamic limit}
@@ -613,10 +581,10 @@ which converges as long as
 If we only wish to know the value of $\inversetruncc^{(F)}$ at a single point we can
 use that at each iteration step $\inversetruncc^{(F)}$ is only a number, allowing us to take it out of the integral. 
 We get
-\begin{align}
-  \inversetruncc^{(F)}_{n+1} (\lambda, \lambda') &= \theta(\lambda_F - \abs{\lambda'})  \inversetruncc^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \kernel (\lambda''-\lambda') \dd \lambda'' + \kernel^{(F)}(\lambda, \lambda')\\
-&= - \frac{1}{\pi} \theta(\lambda_F - \abs{\lambda'}) \inversetruncc^{(F)}_n(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \kernel^{F}(\lambda,\lambda').
-\end{align}
+\begin{gather}
+  \inversetruncc^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'})  \inversetruncc^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \kernel (\lambda''-\lambda') \dd \lambda'' + \kernel^{(F)}(\lambda, \lambda')\\
+= - \frac{1}{\pi} \theta(\lambda_F - \abs{\lambda'}) \inversetruncc^{(F)}_n(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \kernel^{F}(\lambda,\lambda').
+\end{gather}
 
 \subsection{Excited states}
 
@@ -629,7 +597,7 @@ and
 \begin{align}
 	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta(\lambda-\lambda'') + \inversetruncc(\lambda - \lambda'') \right]\kernel(\lambda''-\lambda'),
 \end{align}
-where \(\inversetruncc\) is the inverse of of the kernel \(\kernel\), defined by~\cite{tofind}
+where \(\inversetruncc\) is the inverse of of the kernel \(\kernel\), defined by~\cite{Yang1969}
 \begin{align}
 	(1+\inversetruncc)*(1-\kernel)(\lambda) = \delta(\lambda),
 \end{align}
@@ -716,7 +684,7 @@ In this case we can find the solution \(x\) by iteratively applying the formula
 \begin{equation}
   \mathbf{x}^{k+1} = \mathbf{x}^k - {[J(\mathbf{x}^k)]}^{-1}\mathbf{f}(\mathbf{x}^k), \qquad k=0,1,2\ldots,
 \end{equation}
-where \(J\) is the Jacobian matrix of mathbf{f}\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
+where \(J\) is the Jacobian matrix of \(\mathbf{f}\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
 Just as in the single variable case this converges quadratically.
 
 To prevent the calculation of the inverse of the Jacobian, in practice Newton's method is used in the form
@@ -863,7 +831,7 @@ Table reproduced from~\cite{Caux2009}.
 
 In the past decade machine learning has emerged as an important tool in many areas.
 The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commercial and academic side.
-Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) \todo{Cite this somehow?} and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017}.
+Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017}.
 In the life sciences machine learning uses include detecting risk factors for cardiovascular diseases from pictures of the retina~\cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than hand crafted sequencers)~\cite{Poplin2016}.
 Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.\footnote{What the implications are of this brave new world where no image can be fully trusted is a discussion that is only just beginning.}
 
@@ -889,7 +857,7 @@ In the rest of this chapter we will review some aspects of machine learning usef
 In many cases we would like to find patterns in data.
 The 
 
-useful for getting better initial guesses for rapidities!\todo{Really include this, it's still interesting.}
+useful for getting better initial guesses for rapidities!
 Integrate with the reinforcement learning, to get the training data. Try different neural net architectures.
 \subsection{Neural networks}
 Stochastic gradient descent
@@ -1035,7 +1003,7 @@ TWO approaches: either maximize sum rule given an set number of states or minimi
 
 If a move is illegal the probability is set to zero and the probabilities are renormalized~\cite{pmlr-v37-clark15}.
 Illegal moves are those that try to remove a particle from a position where there is none, or placing a particle on an already occupied position.
-Also illegal are those moves that place particles too far away from other particles \todo{Is this necessary? Maybe it is interesting to see what the neural net does on its own, since maybe it will come up with good states based on the training set anyway.}
+Also illegal are those moves that place particles too far away from other particles Is this necessary? Maybe it is interesting to see what the neural net does on its own, since maybe it will come up with good states based on the training set anyway.
 
 
 
@@ -1157,8 +1125,40 @@ Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
 
 We are seeing an increase in the system sizes realizable with exact diagonalization \cite{wietek18_sublat_codin_algor_distr_memor}
 
+\section*{Acknowledgemnts}
+Sam Kuypers
+
 \appendix
 
+\chapter{Boundary term of the Lieb-Liniger model}\label{cha:boundary}
+
+Here we explicitly derive the boundary term (\cref{eq:lieblinigerboundary}) of the Lieb-Liniger model~\cite{tofind}.
+We start with the Schrödinger equation
+\begin{equation}
+	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2)\right] \psi(x_1, x_2) = E \psi(x_1,x_2).
+\end{equation} 
+Substituting \(x_+ = \frac{x_1+x_2}{2}\) and \(x_-=x_1-x_2\) this becomes
+\begin{align}
+  \label{eq:17}
+  	\left[-\frac{1}{2}\frac{\partial^2}{\partial x_+^2} - 2\frac{\partial^2}{\partial x_-^2} + 2c \delta(x_-)\right] \psi = E\psi.
+\end{align}
+Integrating over an interval \(x_-\in[-\epsilon,\epsilon]\) we get
+\begin{align}
+  \label{eq:18}
+  -\frac{1}{2} \frac{\partial^2}{\partial x_+^2} \int_{-\epsilon}^{\epsilon} \psi \dd x_- - 2 \int_{-\epsilon}^{\epsilon} \frac{\partial^2}{\partial x_-^2}\psi \dd x_- + 2c\int_{\epsilon}^{\epsilon} \delta(x_-)\psi \dd x_- = E\int_{\epsilon}^{\epsilon} \psi \dd x_.
+\end{align}
+The first term on the left hand sice becomes 0 on \(\lim_{\epsilon\to0^+}\) as well as the term on the right hand side, leaving us with
+\begin{align}
+  \label{eq:19}
+  \left.- \frac{\partial}{\partial x_-} \psi \right|_{x_-=-0^+}^{x_-=0^+}  + \left.c\phi\right|_{x_-=0} = 0.
+\end{align}
+
+Given that we are dealing with the bosonic case we require symmetric wave functions, \(\psi(x_1,x_2)=\psi(x_2,x_1)\).
+This simplifies the result to
+\begin{align}
+  \label{eq:20}
+  \left.(\partial_{x_2} - \partial_{x_1} - c) \psi(x_1, x_2)\right|_{x_2-x_1=0^+} = 0.
+\end{align}
 
 \chapter{The f-sum rule}
 \label{cha:f-sum-rule}
