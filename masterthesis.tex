@@ -48,20 +48,6 @@
 \setcounter{MaxMatrixCols}{20}
 
 
-%%% Personal Information %%%
-\newcommand\TITLE{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}
-\newcommand\THESISFORM{Master Thesis}
-\newcommand\AUTHOR{Teun Zwart}
-\newcommand\SUPERVISOR{prof. dr. Jean-Sébastien Caux}
-\newcommand\SECONDASSESSOR{dr. Jasper van Wezel}
-\newcommand\UNIVERSITYLOGO{} % Uncomment line below and add name of logo file.
-
-\newcommand{\bea}{\begin{align}}
-\newcommand{\ena}{\end{align}}
-
-\newcommand{\inversetruncc}{\mathcal{L}}
-\newcommand{\kernel}{\mathcal{C}}
-\newcommand{\operator}{\mathcal{O}}
 
 % Prevent all line breaks in inline equations.
 \binoppenalty=10000
@@ -77,18 +63,18 @@
 	\begin{center}
 		% \includegraphics[width=\textwidth]{\UNIVERSITYLOGO}
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
-		\huge{\textbf{\TITLE}}
+		\huge{\textbf{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}}
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
-		\Large{\THESISFORM}\\[0.5cm]
+		\Large{Master's Thesis}\\[0.5cm]
 		\begin{minipage}[t]{0.4\textwidth}
 			\begin{flushleft}
-				\large\emph{Author:}\\{\AUTHOR}
+				\large\emph{Author}\\{Teun Zwart (10499873)}
 			\end{flushleft}
 		\end{minipage}
 		\begin{minipage}[t]{0.4\textwidth}
 			\begin{flushright}
-				\large\emph{Supervisor}\\{\SUPERVISOR}\\~\\
-				\large\emph{Second Assessor}\\{\SECONDASSESSOR}\\~\\~\\
+				\large\emph{Supervisor}\\{prof. dr. Jean-Sébastien Caux}\\~\\
+				\large\emph{Second Assessor}\\{dr. Jasper van Wezel}\\~\\~\\
 			\end{flushright}
 		\end{minipage}
 		\vfill
@@ -108,12 +94,6 @@
 
 
 \tableofcontents
-
-\section*{TODO}
-\begin{itemize}
-  \item \url{http://ataspinar.com/2017/08/15/building-convolutional-neural-networks-with-tensorflow/}
-  \item interesting for presentation \url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
-\end{itemize}
 
 \newpage
 
@@ -242,58 +222,57 @@ yielding
 \begin{equation}
   \psi(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} (-1)^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
 \end{equation}
-The sum runs over the permutations of the set \((1,2)\).
+The sum runs over the permutations of the set \((1,2)\)~\cite{Caux2015}.
 This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
 This points to a Pauli-principle-like phenomenon~\cite{Caux2009,Franchini2017}.
 
 
 Going to the many-particle state is now a fairly straightforward generalization of the two-particle case.
-The wave function in this case becomes~\cite{Franchini2017}
+The wave function in this case becomes~\cite{Gaudin2009}
 \begin{equation}
-	\psi(x_1,\ldots,x_N) = \sum_{\mathcal{P}} A(\mathcal{P}) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}.
+	\psi(x_1,\ldots,x_N) = \sum_{P\in\pi_N} A(P) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}
 \end{equation}
+where we sum over permutations of the set \(1,\ldots,N\)~\cite{Franchini2017}.
 
 
-\subsubsection{Quantization}
+\subsection{Quantization}
 
-Since we would like to study the thermodynamics of the system, it is convenient to confine the system to a finite length \(L\).
+Since we would like to study the properties of the system for finite densities, it is convenient to confine the system to a finite length \(L\).
 This translates into a periodicity requirement for the wave function.
-For two particles this means
+It require that the wave functions obeys~\cite{Franchini2017}
 \begin{align}
-	\psi(x_1+L,x_2|\lambda_1,\lambda_2) = \psi(x_1,x_2+L|\lambda_1,\lambda_2) = \psi(x_1,x_2|\lambda_1,\lambda_2).
+	\psi(x_1,\ldots,x_j+L,\ldots,x_N) = \psi((x_1,\ldots,x_j,\ldots,x_N) \qquad \forall j\in 1,\ldots,N.
 \end{align}
-Imposing this condition on the wave function yields
-\begin{align}
-  e^{i\lambda_1L} = - e^{-i\phi(\lambda_1 - \lambda2)}, \qquad e^{i\lambda_2L} = - e^{i\phi(\lambda_1 - \lambda2)},
-\end{align}
-or explicitly~\cite{Franchini2017}
-\begin{align}
-  e^{i\lambda_1L} = \frac{\lambda_1-\lambda_2 + ic}{\lambda_1-\lambda_2-ic}, \qquad e^{i\lambda_2L} = \frac{\lambda_2-\lambda_1 + ic}{\lambda_2-\lambda_1-ic}.
-\end{align}
-
-These are known as the Bethe equations.
-In logarithmic form this becomes 
-\begin{align}\label{eq:bethe_equations}
-  \lambda_1 + \frac{1}{L} \phi(\lambda_1-\lambda_2) = \frac{2\pi}{L} I_1, \qquad \lambda_2 + \frac{1}{L} \phi(\lambda_2-\lambda_1) = \frac{2\pi}{L} I_2.
-\end{align}
-The numbers \(I_1, I_2\) uniquely label the quasimomenta and are half-odd integers. 
-They act as the quantum numbers of the theory~\cite{Franchini2017}.
-
-In the many particle case the Bethe equations generalise to
+If we impose this condition on the wave function, it means that because of the boundary term the quasimomenta have to obey the relation~\cite{Korepin1993}
 \begin{equation}
+  \label{eq:expbethe}
   e^{i\lambda_jL} = \prod_{l\neq j} \frac{\lambda_j-\lambda_l + ic}{\lambda_j - \lambda_l - ic}
 \end{equation}
-or in logarithmic form
+These are the Bethe equations.
+If we take the logarithm of \cref{eq:expbethe} we get
 \begin{align}
+  \label{eq:bethe_equations}
   \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
 \end{align}
-where~\cite{Franchini2017}
+where
 \begin{align}
 I_j \in 
 \begin{cases}
   \mathbb{Z} + \frac{1}{2}, \qquad &N \textrm{ even}\\
   \mathbb{Z}  &N \textrm{ odd}
 \end{cases}
+\end{align}
+The numbers \(I_j, I_2\) uniquely label the quasimomenta and are half-odd integers. 
+They act as the quantum numbers of the theory~\cite{Franchini2017}.
+
+We can get the momentum and energy of the Lieb-Liniger model from the rapidities. The momentum is given by summing over \cref{eq:bethe_equations}:
+\begin{align}
+  P = \sum_{j=1}^N \lambda_j = \frac{2\pi}{L}\sum_{j=1}^N I_j,
+\end{align}
+where the last step can be made because we sum an odd function over an even interval.
+The energy meanwhile is~\cite{Korepin1993}
+\begin{align}
+  E = \sum_{j=1}^{N}\lambda_j^2.
 \end{align}
 
 The Bethe equations and Bethe numbers have a number of different properties:
@@ -314,16 +293,16 @@ where \(\theta_1(\lambda) = \int_0^{\lambda} \theta(\mu)\dd\mu\).
 The Bethe equations follow from this by setting \(\frac{\partial S}{\partial \lambda_j} = 0\), which corresponds to a minimum.
 To show this we need to have a positive definite matrix of second derivatives:
 \begin{align}
-	\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} = \delta_{jl} \left[L + \sum_{m=1}^{N} K(\lambda_j,\lambda_m)\right] - K(\lambda_j, \lambda_l),
+	\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} = \delta_{jl} \left[L + \sum_{m=1}^{N} \mathcal{C}(\lambda_j-\lambda_m)\right] - \mathcal{C}(\lambda_j- \lambda_l),
 \end{align}
-where 
+where we have the kernel
 \begin{align}
-	K(\lambda, \mu) = \frac{2c}{c^2 + (\lambda - \mu)^2}.
+	\mathcal{C}(\lambda - \mu) = \frac{2c}{c^2 + (\lambda - \mu)^2}.
 \end{align}
 
 Introducing a vector \(v_j\) with real components we get~\cite{Korepin1993}
 \begin{align}
-  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_{j}^2 + \sum_{j>l=1}^{N} K(\lambda_j,\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^{2} > 0,
+  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_{j}^2 + \sum_{j>l=1}^{N} \mathcal{C}(\lambda_j-\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^{2} > 0,
 \end{align}
 meaning that the action is convex and the minimum defining the Bethe equations is unique.
 \end{proof}
@@ -362,68 +341,61 @@ Subtracting the relevant Bethe equations from each other we get
 Because \(\lvert\atan(x)-\atan(y)\rvert=\lvert x-y\rvert\), the left side has the same sign as its first term, since the first term in the sum is larger than the second term, hence showing the theorem to be true~\cite{Korepin1993,Gaudin2009}.
 \end{proof}
 
-\subsection{Momentum and energy}
-The momentum of the Lieb-Liniger model is given by
-\begin{align}
-  P = \sum_{j=1}^N \lambda_j = \frac{2\pi}{L}\sum_{j=1}^N I_j,
-\end{align}
-where the last step can be made because we sum an odd function over an even interval~\cite{Korepin1993}.
+
 
 \subsection{Gaudin norm}
-The norm of a Bethe eigenstate is~\cite{Caux2007}
+The norm of a Bethe eigenstate is given in terms of a determinant.
+This result was first conjectured by Gaudin and for the Lieb-Liniger model takes the form~\cite{Caux2007}
 \begin{align}
   \braket{\{\lambda\}_N}{\{\lambda\}_N} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det(\mathcal{G}(\{\lambda\})),
 \end{align}
 where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with elements
 \begin{align}\label{eq:gaudin}
-  \mathcal{G}(\{\lambda\})_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}K(\lambda_j-\lambda_m)\right) - K(\lambda_j, \lambda_k)
+  \mathcal{G}(\{\lambda\})_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}K(\lambda_j-\lambda_m)\right) - K(\lambda_j, \lambda_k).
 \end{align}
 
 
-\section{Ground state}
-\subsection{Ground state density}
-iterative scheme for density\cite{Zemyan2012}
-
-
-
-
-\section{Correlation functions}
-Some success at exact form~\cite{Nardis2016,slavnov89_calcul_scalar_produc_wave_funct}
-
-There is an extra factor of $i$ in the code of ABACUS for $\expval{\mu}{\rho}{\lambda}$.
-See Slavnov eq 3.2 (is because of a d/dx log term)
-
-
-\subsection{Form factor for $\rho(x=0)$}
-For the density operator
+\section{The thermodynamic limit}
+\subsection{Ground state}
+In going to the thermodynamic limit we let \(N\) and \(L\) tend to infinity, keeping \(D=N/L\) constant.
+We first introduce a contiuum version of the Bethe equations in terms of the function \(\lambda(x)\):
 \begin{align}
-  \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
+  \label{eq:contbethe}
+  L \lambda(x) + \sum_{k=1}^N\theta(\lambda(x)-\lambda_k) = 2 \pi L x.
 \end{align}
-with \(\{x_k\}_{j=1}^N\) the positions of the particles in the gas, the form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
-\begin{multline}
-  \label{eq:rho_form_factor}
-  \matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
-  \left(\sum_{j=1}^N(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+(\lambda_j) - V^-(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
-\end{multline}
-with element of the matrix \(U\) given by
+where \(\lambda(x)\) takes values that are solutions to the original Bethe equations: \(\lambda_j=\lambda(I_j/L)\).
+If we invert the equation and take its derivative with respect to \(\lambda\) we get the density of particles in momentum space:
 \begin{align}
-  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}} \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right).
+  \rho(\lambda(x)) = \frac{\dd x(\lambda)}{\dd \lambda}.
 \end{align}
-If two states have the same momentum, the matrix element is 0, while if $\mu = \lambda$ we have $\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}=\frac{N}{L}$.
+This allows us to differentiate \cref{eq:contbethe} with respect to \(\lambda\) and write it as 
+\begin{align}
+  1+\frac{1}{L} \sum_{k=1}^{N} \mathcal{C}(\lambda(x)- \lambda_k) = 2\pi \rho(\lambda(x)).
+\end{align}
 
-The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
-We will generally set it to 0, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
-Note that for the Lieb-Liniger model \(V(\lambda_j)^{-} = (V(\lambda_j)^{+})^{*}\), since all rapidities are real in this case.
+If we now change the sum to an integral we get 
+\begin{align}
+  \frac{1}{L} \sum_l \mathcal{C}(\lambda(x)- \lambda_l) = \int_{-\lambda_F}^{\lambda_F} K(\lambda,\mu) \rho(\mu) \dd \mu, 
+\end{align}
+leading to~\cref{Korepin1993}
+\begin{align}
+  \rho(\lambda) - \frac{1}{2\pi} \int_{-\lambda_F}^{\lambda^F} \mathcal{C}(\lambda-\mu) \rho(\mu) \dd \mu = \frac{1}{2\pi}.
+\end{align}
+This is the Lieb equation, which is the same as Love's equation, describing the capacitance of a circular capacitor~\cite{Gaudin2009}.
+Together with 
+\begin{align}
+  D = \frac{N}{L} = \int_{-\lambda_F}^{\lambda_F} \rho(\lambda) \dd \lambda
+\end{align}
+this allows for the calculation of \(\rho(\lambda)\) for a given value of \(D\).
 
-\subsection{The thermodynamic limit}
 
-\subsubsection{Type I excitations}
+\subsection{Excitations}
 
-\subsubsection{Type II excitations}
 
-\subsection{Thermodynamic properties}
 
-\subsubsection{Various limit cases}
+
+
+
 
 
 \section{Displacement functions for excitations}
@@ -433,22 +405,22 @@ We now find the displacement function for particle-like (type I) and hole-like (
 \subsubsection{Type I}
 For type I excitations the ground state displacement function is 
 \begin{equation}\label{eq:particledisplacement}
-	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda'),
 \end{equation}
-valid for all \(\lambda_p\) (if \(\lvert \lambda_p \rvert\ > \lambda_F\)) and all \(\lambda\)~\cite{tofind}.
+valid for all \(\lambda_p\) (if \(\lvert \lambda_p \rvert\ > \lambda_F\)) and all \(\lambda\)~\cite{Caux2015}.
 
 \begin{sloppypar}
 We can rewrite this in a more explicit way.
 Lets first focus on the part involving the \(\delta\)-function, which we can rewrite, using a Heaviside step function, as
 \begin{align}
-	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') \\
-	&=- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \theta(\lambda_F - \lvert \lambda'' \rvert)  \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda')\\
-	&= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \kernel(\lambda-\lambda').
+	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \delta(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda') \\
+	&=- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \theta(\lambda_F - \lvert \lambda'' \rvert)  \delta(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda')\\
+	&= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \mathcal{C}(\lambda-\lambda').
 \end{align}
 We change variables \(a=\lambda-\lambda'\):
 \begin{equation}\label{eq:integratedkerneldeltapart}
-	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \kernel(\lambda-\lambda')=
-	 \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a).
+	- \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \mathcal{C}(\lambda-\lambda')=
+	 \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a).
 \end{equation}
 We assume \(\lambda\) to be finite, meaning the upper bound of the integral reduces to \(-\textrm{sgn}(\lambda_p)\infty\).
 \end{sloppypar}
@@ -457,14 +429,14 @@ We assume \(\lambda\) to be finite, meaning the upper bound of the integral redu
 Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
 Thus we can rewrite \cref{eq:integratedkerneldeltapart} as
 \begin{align}
-	\theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a) &=
-	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a).
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) &=
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a).
 \end{align}
 
 Since the kernel is symmetric, for the value of the integral it does not matter whether \(\mathrm{sgn}(\lambda_p)\) is \(+1\) or \(-1\).
 It only adds a sign-function in front of the integral:
 \begin{align}
-	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \dd a\,\kernel(a)\\
+	\theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_p)\lvert\lambda-\lambda_p\rvert}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \dd a\,\mathcal{C}(a)\\
 	&= - \frac{c}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \int_{\lvert\lambda-\lambda_p\rvert}^{\infty} \dd a\,\frac{1}{c^2 + a^2}\\
 	&= - \frac{1}{2\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \left( \pi - 2\atan(\frac{\lvert \lambda - \lambda_p\rvert}{c})\right)\label{eq:dpdeltanonsimplified}\\
 	&= - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right),
@@ -472,80 +444,80 @@ It only adds a sign-function in front of the integral:
 where the last equality is valid because the argument of the arctangent is strictly positive.
 It is important to remark that the above expression would not be valid without the Heaviside function, since the integral is only applicable when \(\lvert\lambda\rvert< \lambda_F\).
 
-The second part of \cref{eq:particledisplacement}, which involves \(\inversetruncc^{(F)}(\lambda,\lambda')\), can't be rewritten in closed form, since there is no closed form solution for \(\inversetruncc^{(F)}(\lambda,\lambda')\).
+The second part of \cref{eq:particledisplacement}, which involves \(\mathcal{L}^{(F)}(\lambda,\lambda')\), can't be rewritten in closed form, since there is no closed form solution for \(\mathcal{L}^{(F)}(\lambda,\lambda')\).
 We can however rewrite it to get rid of the improper integral, which will help in numerical evaluation of the expression.
 We have
 \begin{align}
-	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda')\\
-	&= -  \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'\kernel(\lambda''-\lambda') \right]\\
-	&=   \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lambda''-\lambda_p}^{\lambda''-\textrm{sgn}(\lambda_p)\infty} \dd a\,\kernel(a) \right]\\
-	&= -\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\int_{\lvert\lambda''-\lambda_p\rvert}^{\infty} \dd a\,\kernel(a) \right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \left[\frac{\pi}{2} - \atan(\frac{\lvert\lambda''-\lambda_p\rvert}{c})\right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
+	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda')\\
+	&= -  \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'\mathcal{C}(\lambda''-\lambda') \right]\\
+	&=   \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\int_{\lambda''-\lambda_p}^{\lambda''-\textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) \right]\\
+	&= -\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\int_{\lvert\lambda''-\lambda_p\rvert}^{\infty} \dd a\,\mathcal{C}(a) \right]\\
+	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\frac{\pi}{2} - \atan(\frac{\lvert\lambda''-\lambda_p\rvert}{c})\right]\\
+	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
 \end{align}
 where, as before, we argued that \(\lvert\lambda''\rvert < \lvert\lambda_p\rvert\) and thus that \(\lambda'' - \lambda_p\) always has the opposite sign from \(\lambda_p\).
 
 Taking these results together, the displacement function for type I excitations becomes 
 \begin{multline}
-	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right) \\-\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \inversetruncc^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
+	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right) \\-\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
 \end{multline}
 
 \subsubsection{Type II}
 For type II excitations the idea is much the same as type I. The displacement is
 \begin{equation}
-	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'') \right)\kernel(\lambda''-\lambda'),
+	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda'),
 \end{equation}
-valid for all \(\lambda_h\) (if \(\lvert \lambda_h \rvert\ < \lambda_F\)) and all \(\lambda\)~\cite{tofind}.
+valid for all \(\lambda_h\) (if \(\lvert \lambda_h \rvert\ < \lambda_F\)) and all \(\lambda\)~\cite{Caux2015}.
 The \(\delta\)-function part of this equation becomes
 \begin{align}
-	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \delta(\lambda-\lambda'') \kernel(\lambda''-\lambda') 
-		= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \kernel(\lambda-\lambda').
+	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \delta(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda') 
+		= - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \mathcal{C}(\lambda-\lambda').
 \end{align}
 A change of variables \(a=\lambda-\lambda'\) results in:
 \begin{align}
-	 - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \kernel(\lambda-\lambda') = 
-	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda+\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \kernel(a).
+	 - \theta(\lambda_F - \lvert \lambda \rvert) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \mathcal{C}(\lambda-\lambda') = 
+	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\lambda+\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \mathcal{C}(a).
 \end{align}
 Since we again assume \(\lambda\) to be finite, the lower bound of the integral reduces to \(\textrm{sgn}(\lambda_h)\infty\).
 Because both \({\lvert \lambda_h \rvert\ < \lambda_F}\) and \({\lvert\lambda\rvert < \lambda_F}\) (due to the Heaviside function), we can no longer make statements about the sign of \(\lambda-\lambda_h\), and have to be a bit more general in our expression.
 We get
 \begin{align}
-	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \kernel(a) &=
+	  \theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \mathcal{C}(a) &=
 	  \frac{c}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \frac{1}{c^2 + a^2}\\
 	  &= \frac{1}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
 \end{align}
 
-For hole-like excitations the part of the displacement function involving \(\inversetruncc^{(F)}(\lambda,\lambda')\) becomes
+For hole-like excitations the part of the displacement function involving \(\mathcal{L}^{(F)}(\lambda,\lambda')\) becomes
 \begin{align}
-	 - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda')\\
-	 &= - \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \kernel(\lambda''-\lambda')\right]\\
-	 &= \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \dd a \, \kernel(a)\right]\\
-	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
+	 - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda')\\
+	 &= - \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}(\lambda''-\lambda')\right]\\
+	 &= \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \dd a \, \mathcal{C}(a)\right]\\
+	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
 \end{align}
 
 The expression for the displacement of type II excitations is thus
 \begin{multline}
 	D_h(\lambda, \lambda_h) = \frac{1}{\pi}\theta(\lambda_F - \lvert \lambda \rvert) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right] \\+
-	\frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \inversetruncc^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
+	\frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
 \end{multline}
 
-\subsection{Calculating \(\inversetruncc^{(F)}\)}
+\subsection{Calculating \(\mathcal{L}^{(F)}\)}
 
-In the above expressions we still have \(\inversetruncc^{(F)}\), for which there is no closed form solution, and which thus has to be numerically evaluated.
+In the above expressions we still have \(\mathcal{L}^{(F)}\), for which there is no closed form solution, and which thus has to be numerically evaluated.
 
-The definition of \(\inversetruncc^{(F)}\) is~\cite{tofind}
+The definition of \(\mathcal{L}^{(F)}\) is~\cite{Caux2015}
 \begin{equation}
-	\left(1 + \inversetruncc^{(F)}\right) * \left(1 - \kernel^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R}
+	\left(1 + \mathcal{L}^{(F)}\right) * \left(1 - \mathcal{C}^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R}
 \end{equation}
 or explicitly
 \begin{equation}
-	\int_{-\infty}^{\infty} \dd \lambda'' \left( \delta(\lambda-\lambda'') + \inversetruncc^{(F)}(\lambda,\lambda'')\right)\left(\delta(\lambda''-\lambda') - \kernel^{(F)}(\lambda'',\lambda')\right) = \delta(\lambda-\lambda'),
+	\int_{-\infty}^{\infty} \dd \lambda'' \left( \delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'')\right)\left(\delta(\lambda''-\lambda') - \mathcal{C}^{(F)}(\lambda'',\lambda')\right) = \delta(\lambda-\lambda'),
 \end{equation}
 with  \(\lambda, \lambda', \lambda'' \in \mathbb{R}\).
 If we perform the integration, cancel common terms and rearrange, we get the integral equation
 \begin{align}
-	\inversetruncc^{(F)}(\lambda,\lambda') &= \int_{-\infty}^{\infty} \inversetruncc^{(F)}(\lambda,\lambda'') \kernel^{(F)}(\lambda'',\lambda') + \kernel^{(F)}(\lambda,\lambda')\\
-	&= \theta(\lambda_F - \lvert\lambda'\rvert) \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \inversetruncc^{(F)}(\lambda,\lambda'') \kernel(\lambda''-\lambda') + \kernel^{(F)}(\lambda,\lambda')
+	\mathcal{L}^{(F)}(\lambda,\lambda') &= \int_{-\infty}^{\infty} \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}^{(F)}(\lambda'',\lambda') + \mathcal{C}^{(F)}(\lambda,\lambda')\\
+	&= \theta(\lambda_F - \lvert\lambda'\rvert) \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda') + \mathcal{C}^{(F)}(\lambda,\lambda')
 \end{align}
 
 So far we have been exact.
@@ -572,60 +544,88 @@ This converges as long as $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \
 
 For the case we are interested in we have 
 \begin{equation}
-  \inversetruncc^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \inversetruncc^{(F)}_n(\lambda, \lambda'') \kernel (\lambda''-\lambda') \dd \lambda'' + \kernel^{(F)}(\lambda, \lambda'),
+  \mathcal{L}^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \mathcal{L}^{(F)}_n(\lambda, \lambda'') \mathcal{C} (\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}(\lambda, \lambda'),
 \end{equation}
 which converges as long as 
 \begin{equation}
 \left(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c})\right)^{1/2} < 1.
 \end{equation}
-If we only wish to know the value of $\inversetruncc^{(F)}$ at a single point we can
-use that at each iteration step $\inversetruncc^{(F)}$ is only a number, allowing us to take it out of the integral. 
+If we only wish to know the value of $\mathcal{L}^{(F)}$ at a single point we can
+use that at each iteration step $\mathcal{L}^{(F)}$ is only a number, allowing us to take it out of the integral. 
 We get
 \begin{gather}
-  \inversetruncc^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'})  \inversetruncc^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \kernel (\lambda''-\lambda') \dd \lambda'' + \kernel^{(F)}(\lambda, \lambda')\\
-= - \frac{1}{\pi} \theta(\lambda_F - \abs{\lambda'}) \inversetruncc^{(F)}_n(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \kernel^{F}(\lambda,\lambda').
+  \mathcal{L}^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} (\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}(\lambda, \lambda')\\
+= - \frac{1}{\pi} \theta(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}(\lambda,\lambda').
 \end{gather}
 
 \subsection{Excited states}
 
-For excited states there is no longer a Fermi level~\cite{tofind} (or the Fermi level goes to \(\infty\)), meaning that the truncated kernel \(\kernel^{(F)}\) becomes equal to the regular Lieb-Liniger kernel~\(\kernel\).
-The displacement function for type I and II excitations are respectively~\cite{tofind}
+For excited states there is no longer a Fermi level~\cite{Caux2015} (or the Fermi level goes to \(\infty\)), meaning that the truncated kernel \(\mathcal{C}^{(F)}\) becomes equal to the regular Lieb-Liniger kernel~\(\mathcal{C}\).
+The displacement function for type I and II excitations are respectively~\cite{Caux2015}
 \begin{align}
-	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta(\lambda-\lambda'') + \inversetruncc(\lambda-\lambda'') \right]\kernel(\lambda''-\lambda'),
+	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta(\lambda-\lambda'') + \mathcal{L}(\lambda-\lambda'') \right]\mathcal{C}(\lambda''-\lambda'),
 \end{align}
 and
 \begin{align}
-	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta(\lambda-\lambda'') + \inversetruncc(\lambda - \lambda'') \right]\kernel(\lambda''-\lambda'),
+	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta(\lambda-\lambda'') + \mathcal{L}(\lambda - \lambda'') \right]\mathcal{C}(\lambda''-\lambda'),
 \end{align}
-where \(\inversetruncc\) is the inverse of of the kernel \(\kernel\), defined by~\cite{Yang1969}
+where \(\mathcal{L}\) is the inverse of of the kernel \(\mathcal{C}\), defined by~\cite{Yang1969}
 \begin{align}
-	(1+\inversetruncc)*(1-\kernel)(\lambda) = \delta(\lambda),
+	(1+\mathcal{L})*(1-\mathcal{C})(\lambda) = \delta(\lambda),
 \end{align}
 or explicitly
 \begin{align}
-	\int_{-\infty}^{\infty} \dd \lambda' \left[ \delta(\lambda-\lambda') + \inversetruncc(\lambda-\lambda') \right] \left[ \delta(\lambda') - \kernel(\lambda')\right] = \delta(\lambda), \quad \lambda, \lambda' \in \mathbb{R}.
+	\int_{-\infty}^{\infty} \dd \lambda' \left[ \delta(\lambda-\lambda') + \mathcal{L}(\lambda-\lambda') \right] \left[ \delta(\lambda') - \mathcal{C}(\lambda')\right] = \delta(\lambda), \quad \lambda, \lambda' \in \mathbb{R}.
 \end{align}
 If we perform the integral and rearrange, we get an expression which simplifies the displacement functions:
 \begin{align}\label{eq:kernelinversion}
-	\int_{\infty}^{\infty} \dd \lambda' \inversetruncc(\lambda-\lambda') \kernel(\lambda') = -\kernel(\lambda) + \inversetruncc(\lambda).
+	\int_{\infty}^{\infty} \dd \lambda' \mathcal{L}(\lambda-\lambda') \mathcal{C}(\lambda') = -\mathcal{C}(\lambda) + \mathcal{L}(\lambda).
 \end{align}
 
 With this in hand, we have for particles:
 \begin{align}
-	D_p(\lambda, \lambda_p) &= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta(\lambda-\lambda'') + \inversetruncc(\lambda-\lambda'') \right]\kernel(\lambda''-\lambda')\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \left[\kernel(\lambda-\lambda') + \int_{-\infty}^{\infty} \dd  \lambda'' \inversetruncc(\lambda-\lambda'') \kernel(\lambda''-\lambda')\right]\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \left[\kernel(\lambda-\lambda') - \kernel(\lambda-\lambda') + \inversetruncc(\lambda-\lambda')\right]\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \inversetruncc(\lambda-\lambda')\\
-	&=  \int_{\lambda-\lambda_p}^{-\textrm{sgn}(\lambda_p)\infty} \dd a \, \inversetruncc(a),
+	D_p(\lambda, \lambda_p) &= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta(\lambda-\lambda'') + \mathcal{L}(\lambda-\lambda'') \right]\mathcal{C}(\lambda''-\lambda')\\
+	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}(\lambda-\lambda') + \int_{-\infty}^{\infty} \dd  \lambda'' \mathcal{L}(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda')\right]\\
+	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}(\lambda-\lambda') - \mathcal{C}(\lambda-\lambda') + \mathcal{L}(\lambda-\lambda')\right]\\
+	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \mathcal{L}(\lambda-\lambda')\\
+	&=  \int_{\lambda-\lambda_p}^{-\textrm{sgn}(\lambda_p)\infty} \dd a \, \mathcal{L}(a),
 \end{align}
 where we used \cref{eq:kernelinversion} in going from the second to the third line, and made the substitution \(a = \lambda-\lambda'\) in the last line.
 A very similar derivation for type II excitations leads to
 \begin{align}
-	D_h(\lambda,\lambda_h) = \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a\, \inversetruncc(a).
+	D_h(\lambda,\lambda_h) = \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a\, \mathcal{L}(a).
 \end{align}
 
 
+\section{Correlation functions}
+Some success at exact form~\cite{Nardis2016,slavnov89_calcul_scalar_produc_wave_funct}
 
+
+\subsection{Form factor for $\rho(x=0)$}
+For the density operator
+\begin{align}
+  \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
+\end{align}
+with \(\{x_k\}_{j=1}^N\) the positions of the particles in the gas, the form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
+\begin{multline}
+  \label{eq:rho_form_factor}
+  \matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
+  \left(\sum_{j=1}^N(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+(\lambda_j) - V^-(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
+\end{multline}
+with element of the matrix \(U\) given by
+\begin{align}
+  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}} \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right).
+\end{align}
+Including normalization we have~\cite{Nardis2015}
+\begin{align}
+  \label{eq:21}
+  \frac{\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}}{\innerproduct{\mu}{\mu}\innerproduct{\lambda}{\lambda}}.
+\end{align}
+If two states have the same momentum, the matrix element is 0, while if $\mu = \lambda$ we have (suppressing normalization factors) $\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}=\frac{N}{L}$.
+
+The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
+We will generally set it to 0, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
+Note that for the Lieb-Liniger model \(V(\lambda_j)^{-} = (V(\lambda_j)^{+})^{*}\), since all rapidities are real in this case.
 
 \chapter{The ABACUS algorithm}\label{chap:abacus}
 
@@ -634,13 +634,13 @@ A very similar derivation for type II excitations leads to
 The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
 Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also capable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since the appearance of~\cite{Caux2009} in 2009), but we will not consider that here further.} correlation functions of the form
 \begin{equation}\label{eq:expval}
-	\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)},
+	\expval{\mathcal{O}_j(t)\mathcal{O}_{j'}^{\dagger}(0)},
 \end{equation}
 where \(j=1\ldots N\) denotes lattice sites.
 This is the expectation value for arbitrary time separations $t$ and distances $j-j'$.
 The equivalent Fourier transformed quantity is the dynamical structure factor (DSF)
 \begin{equation}\label{eq:DSF}
-	S(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\operator_j(t)\operator_{j'}^{\dagger}(0)}.
+	S(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\mathcal{O}_j(t)\mathcal{O}_{j'}^{\dagger}(0)}.
 \end{equation}
 We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because it is the quantity directly accessible in experiments~\cite{Caux2009,Caux2007a}.
 
@@ -692,7 +692,7 @@ To prevent the calculation of the inverse of the Jacobian, in practice Newton's 
   J(\mathbf{x^k})[x^{k+1} - x^k] = - \mathbf{f}(\mathbf{x}^k),
 \end{equation}
 where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x^k})\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
-This linear system can be solved using LU decomposition~\cite{Press2007} (see \cref{app:ludecomp}).
+This linear system can be solved using LU decomposition~\cite{Press2007}.
 
 In ABACUS we are of course interested in the Bethe equations.
 Here we will specifically look at those of the Lieb-Liniger model.
@@ -1125,6 +1125,8 @@ Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
 
 We are seeing an increase in the system sizes realizable with exact diagonalization \cite{wietek18_sublat_codin_algor_distr_memor}
 
+\url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
+
 \section*{Acknowledgemnts}
 Sam Kuypers
 
@@ -1132,7 +1134,7 @@ Sam Kuypers
 
 \chapter{Boundary term of the Lieb-Liniger model}\label{cha:boundary}
 
-Here we explicitly derive the boundary term (\cref{eq:lieblinigerboundary}) of the Lieb-Liniger model~\cite{tofind}.
+Here we explicitly derive the boundary term (\cref{eq:lieblinigerboundary}) of the Lieb-Liniger model~\cite{Caux2015}.
 We start with the Schrödinger equation
 \begin{equation}
 	\left[- \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2)\right] \psi(x_1, x_2) = E \psi(x_1,x_2).
@@ -1169,7 +1171,7 @@ We first derive the general formula and then find sum rules for specific operato
 
 Starting with the dynamic structure function we have
 \begin{align}
-  	\mathcal{S}(k,\omega) &= \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t e^{i\omega t}\expval{[\operator_j(t),\operator_{j'}^{\dagger}(0)]},
+  	\mathcal{S}(k,\omega) &= \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t e^{i\omega t}\expval{[\mathcal{O}_j(t),\mathcal{O}_{j'}^{\dagger}(0)]},
 \end{align}
 where the expectation value \(\expval{\ldots} = \matrixel{\gamma}{\ldots}{\gamma}\) is over some state \(\gamma\), although any averaging will work, as long as we are consistent.
 Defining the Fourier transform
@@ -1178,22 +1180,22 @@ Defining the Fourier transform
 \end{equation}
 we can rewrite part of this equation:
 \begin{align}
-  \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \expval{[\operator_j(t),\operator_{j'}^{\dagger}(0)]} &= \frac{1}{2N^3} \sum_{j, j'}\sum_{k',k''} e^{ij(k'-k)}e^{ij'(k-k'')}  \expval{[\operator_{k'}(t),\operator_{k''}^{\dagger}(0)]}\\
-&= \frac{1}{2N} \sum_{k',k''} \delta_{k,k'}\delta_{k,k''}  \expval{[\operator_{k'}(t),\operator_{k''}^{\dagger}(0)]} \\
-&= \frac{1}{2N}  \expval{[\operator_{k}(t),\operator_{k}^{\dagger}(0)]}.
+  \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \expval{[\mathcal{O}_j(t),\mathcal{O}_{j'}^{\dagger}(0)]} &= \frac{1}{2N^3} \sum_{j, j'}\sum_{k',k''} e^{ij(k'-k)}e^{ij'(k-k'')}  \expval{[\mathcal{O}_{k'}(t),\mathcal{O}_{k''}^{\dagger}(0)]}\\
+&= \frac{1}{2N} \sum_{k',k''} \delta_{k,k'}\delta_{k,k''}  \expval{[\mathcal{O}_{k'}(t),\mathcal{O}_{k''}^{\dagger}(0)]} \\
+&= \frac{1}{2N}  \expval{[\mathcal{O}_{k}(t),\mathcal{O}_{k}^{\dagger}(0)]}.
 \end{align}
 
 Now we look at the first frequency moment:
 \begin{align}
   I_k &= \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega)\\
-  &= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{[\operator_k(t),\operator_{k}^{\dagger}(0)]}\\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \left(\matrixel{\gamma}{\operator_k(t)\operator_{k}^{\dagger}(0)}{\gamma} - \matrixel{\gamma}{\operator_{k}^{\dagger}(0)\operator_k(t)}{\gamma}\right) \\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{\operator_k(t)}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}(0)}{\gamma} \right.\nonumber\\
-&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\operator_{k}^{\dagger}(0)}{\alpha}\matrixel{\alpha}{\operator_k(t)}{\gamma}\right)\\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\operator_ke^{-iHt}}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} \right.\nonumber\\
-&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{e^{iHt}\operator_ke^{-iHt}}{\gamma}\right)\\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\operator_k}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
-&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- e^{i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\operator_k}{\gamma}\right), \label{eq:fourierfreqmoment}
+  &= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{[\mathcal{O}_k(t),\mathcal{O}_{k}^{\dagger}(0)]}\\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \left(\matrixel{\gamma}{\mathcal{O}_k(t)\mathcal{O}_{k}^{\dagger}(0)}{\gamma} - \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)\mathcal{O}_k(t)}{\gamma}\right) \\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{\mathcal{O}_k(t)}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}(0)}{\gamma} \right.\nonumber\\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)}{\alpha}\matrixel{\alpha}{\mathcal{O}_k(t)}{\gamma}\right)\\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\mathcal{O}_ke^{-iHt}}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{e^{iHt}\mathcal{O}_ke^{-iHt}}{\gamma}\right)\\
+&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- e^{i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right), \label{eq:fourierfreqmoment}
 \end{align}
 where we used the Heisenberg relation \(\mathcal{O}(t) = e^{iHt}\mathcal{O}e^{-iHt}\) and introduced a complete set of states \(\alpha\), \(\mathbbm{1}=\sum_{\alpha}\ket{\alpha}\bra{\alpha}\).
 
@@ -1203,17 +1205,17 @@ With the identity
 \end{equation}
 we can rewrite \cref{eq:fourierfreqmoment} as 
 \begin{align}
-  \frac{1}{2N} \sum_{\alpha} \int_{\infty}^{\infty}&\dd \omega  \left(\delta(\omega-E_{\alpha}+E_{\gamma})\matrixel{\gamma}{\operator_k}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma}\right. \nonumber\\
-&\qquad\left.- \delta(\omega+E_{\alpha}-E_{\gamma})\matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\operator_k}{\gamma}\right)\\
-&=\frac{1}{2N} \sum_{\alpha} (E_{\alpha} - E_{\gamma}) \left(\matrixel{\gamma}{\operator_k}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\operator_k}{\gamma}\right)\\
-&=\frac{1}{2N} \sum_{\alpha}  \left(-\matrixel{\gamma}{[H,\operator_k]}{\alpha}\matrixel{\alpha}{\operator_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\operator_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{[H,\operator_k]}{\gamma}\right)\\
-&=\frac{-1}{2N} \matrixel{\gamma}{[[H,\operator_k],\operator_{k}^{\dagger}]}{\gamma},
+  \frac{1}{2N} \sum_{\alpha} \int_{\infty}^{\infty}&\dd \omega  \left(\delta(\omega-E_{\alpha}+E_{\gamma})\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma}\right. \nonumber\\
+&\qquad\left.- \delta(\omega+E_{\alpha}-E_{\gamma})\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
+&=\frac{1}{2N} \sum_{\alpha} (E_{\alpha} - E_{\gamma}) \left(\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
+&=\frac{1}{2N} \sum_{\alpha}  \left(-\matrixel{\gamma}{[H,\mathcal{O}_k]}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{[H,\mathcal{O}_k]}{\gamma}\right)\\
+&=\frac{-1}{2N} \matrixel{\gamma}{[[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma},
 \end{align}
 where we used \(H\ket{\alpha}=E_{\alpha}\ket{\alpha}\) and \(\mathbbm{1}=\sum_{\alpha}\ket{\alpha}\bra{\alpha}\).
 
 We have thus derived~\cite{Cauxfsum}
 \begin{align}
-  \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{[[H,\operator_k],\operator_{k}^{\dagger}]}{\gamma}.
+  \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{[[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma}.
 \end{align}
 
 
@@ -1353,8 +1355,6 @@ The f-sum rule for the dynamical structure factor of the Lieb-Liniger model for 
   \label{eq:16}
   \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{N}{L}k^2
 \end{align}
-
-\chapter{LU decomposition}\label{app:ludecomp}
 
 
 \bibliographystyle{SciPost_bibstyle}
