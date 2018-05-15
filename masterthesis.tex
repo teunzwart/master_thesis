@@ -377,7 +377,7 @@ If we now change the sum to an integral we get
 \begin{align}
   \frac{1}{L} \sum_l \mathcal{C}(\lambda(x)- \lambda_l) = \int_{-\lambda_F}^{\lambda_F} K(\lambda,\mu) \rho(\mu) \dd \mu, 
 \end{align}
-leading to~\cref{Korepin1993}
+leading to~\cite{Korepin1993}
 \begin{align}
   \rho(\lambda) - \frac{1}{2\pi} \int_{-\lambda_F}^{\lambda^F} \mathcal{C}(\lambda-\mu) \rho(\mu) \dd \mu = \frac{1}{2\pi}.
 \end{align}
@@ -391,6 +391,56 @@ this allows for the calculation of \(\rho(\lambda)\) for a given value of \(D\).
 
 \subsection{Excitations}
 
+Given the ground state we can build different excited states.
+There are two type of excitations: particle-like (type I) excitations in which a new particle outside the Fermi interval is added with momentum \(k > \left|\lambda_F\right|\) and hole-like (type II) excitations.
+Additionally a particle may be excited out of the Fermi interval, but this is a combination of the first two~\cite{Franchini2017}.
+
+The \(N\)-particle ground state in terms of Bethe numbers is given by
+\begin{align}
+  \label{eq:22}
+  \{I\} = \left\{-\frac{N-1}{2},-\frac{N-3}{2}, \ldots, \frac{N-3}{2},\frac{N-1}{2}\right\}.
+\end{align}
+Adding an excitation, changing the state to an \(N+1\)-particle state results in
+\begin{align}
+  \label{eq:23}
+    \{I\} = \left\{-\frac{N}{2},-\frac{N}{2}+1, \ldots, \frac{N}{2}-1,\frac{N}{2}+q\right\},
+\end{align}
+for \(m>0\).
+Due to the coupled and non-linear nature of the Bethe equations, the addition of a single particle results in a change for all rapidities of the system~\cite{Franchini2017}.
+
+We define the displacement of the rapidities as~\cite{Caux2015}
+\begin{align}
+  \label{eq:24}
+  \frac{d_j}{L} = \lambda_j - \lambda_j^0,
+\end{align}
+with the superscript denoting that the rapidity is part of the ground state rapidity set.
+Subtracting the Bethe equations of the ground state from the excited state we get~\cite{Franchini2017,Caux2015}
+\begin{align}
+  \label{eq:25}
+   d_j = - \pi - \phi(\lambda_j-q) - \sum_{j=1}^{N} \left[\phi(\lambda_j - \lambda_l) - \phi(\lambda_j^0-\lambda_l^0)\right],
+\end{align}
+where \(q\) is the rapidity of the new particle.
+Expanding the term in brackets gives\footnote{The expansions goes as follows:
+  \begin{align*}
+    \phi(\lambda_j-\lambda_l) - \phi(\lambda_j^0 - \lambda_l^0) &= \phi(\lambda_j^0 - \lambda_l^0 + \Delta\lambda) - \phi(\lambda_j^0 - \lambda_l^0) \quad \mathrm{where}\quad \Delta \lambda = \frac{1}{L}(d_j - d_l)\\
+    &\approx\Delta \lambda \left.\frac{\partial\phi(x)}{\partial x} \right|_{x = \lambda_j^0-\lambda_l^0}
+    = \frac{1}{L}(d_j-d_l) \frac{2c}{c^2 + (\lambda_j^0-\lambda_l^0)^2}.
+  \end{align*}
+}
+\begin{align}
+  \label{eq:27}
+  d_j = -\pi - \phi(\lambda_j-q) - \frac{1}{L} \sum_{l=1}^N \frac{2c}{c^2 + (\lambda_j^0-\lambda_l^0)^2} (d_j-d_l) + \mathcal{O}\left(\frac{N}{L^2}\right),
+\end{align}
+or, rearranging and turning the sums into integrals, extending \(d_j\to d(\lambda,q)\) to the continuum
+\begin{multline}
+  \label{eq:28}
+  d(\lambda,q) \left(1+2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda'\mathcal{C}(\lambda'-\lambda)\rho(\lambda')\right) = \\-\pi -\phi(\lambda-q) + 2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}(\lambda'-\lambda) \rho(\lambda') d(\lambda',q).
+\end{multline}
+If we use the Lieb equation and introduce \(D_p(\lambda,q)=d(\lambda,q)\rho(\lambda)\), the displacement function for particle-like excitations, we get
+\begin{align}
+  \label{eq:29}
+  D_p(\lambda,q) - \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}(\lambda'-\lambda) D_p(\lambda', q) = \frac{-1}{2\pi} (\pi+\phi(\lambda-q))
+\end{align}
 
 
 
@@ -402,7 +452,6 @@ this allows for the calculation of \(\rho(\lambda)\) for a given value of \(D\).
 We now find the displacement function for particle-like (type I) and hole-like (type~II) excitations, first for the ground state and then for excited states.
 
 \subsection{The ground state}
-\subsubsection{Type I}
 For type I excitations the ground state displacement function is 
 \begin{equation}\label{eq:particledisplacement}
 	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda'),
@@ -462,7 +511,6 @@ Taking these results together, the displacement function for type I excitations 
 	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \lvert \lambda \rvert)  \atan\left(\frac{c}{\lvert\lambda-\lambda_p\rvert}\right) \\-\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\lvert\lambda''-\lambda_p\rvert}),
 \end{multline}
 
-\subsubsection{Type II}
 For type II excitations the idea is much the same as type I. The displacement is
 \begin{equation}
 	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda'),
