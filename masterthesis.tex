@@ -475,9 +475,14 @@ To that end we introduce the truncated kernel:
 Its associated inverse is defined by
 \begin{align}
   \label{eq:32}
-  	\left(1 + \mathcal{L}^{(F)}\right) * \left(1 - \mathcal{C}^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R}.
+  	\left(1 + \mathcal{L}^{(F)}\right) * \left(1 - \mathcal{C}^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R},
 \end{align}
-With this we can rewrite the displacement functions \cref{eq:partdisplacement} and \cref{eq:holedisplacement} to be valid for a larger domain.
+where we define by \(*\) the convolution:
+\begin{align}
+  \label{eq:29}
+  (f*g)(x) = \int_{-\infty}^{\infty} \dd y f(x-y)g(y).
+\end{align}
+With this we can rewrite the differential equations for the displacement functions in \cref{eq:partdisplacement} and \cref{eq:holedisplacement} to be valid for a larger domain.
 
 Using \cref{eq:inversetruncated} we can write the particle displacement integral equation as 
 \begin{align}
@@ -515,8 +520,8 @@ for which the solution is
 Rewriting using
 \begin{align}
   \label{eq:39}
-  \frac{1}{2\pi} (\pi \mathrm{sgn}(\lambda_h) + \phi(\lambda-\lambda_h)) &= \frac{1}{2\pi} \int_{-\mathrm{sgn}(\lambda_h)\infty} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi(\lambda - \lambda') \\
-                                                                         &= - \int_{-\mathrm{sgn}(\lambda_h)\infty} \dd \lambda' \mathcal{C}(\lambda-\lambda')
+  \frac{1}{2\pi} (\pi \mathrm{sgn}(\lambda_h) + \phi(\lambda-\lambda_h)) &= \frac{1}{2\pi} \int_{-\mathrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi(\lambda - \lambda') \\
+                                                                         &= - \int_{-\mathrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}(\lambda-\lambda')
 \end{align}
 gives
 \begin{align}
@@ -612,7 +617,7 @@ For hole-like excitations the part of the displacement function involving \(\mat
 	 &= \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \dd a \, \mathcal{C}(a)\right]\\
 	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right],
 \end{align}
-assuming \(lambda''\) finite.
+assuming \(\lambda''\) finite.
 
 The expression for the displacement of type II excitations is thus
 \begin{multline}
@@ -716,11 +721,23 @@ A very similar derivation for type II excitations leads to
 \end{align}
 
 
-\section{Correlation functions}
-Some success at exact form~\cite{Nardis2016,slavnov89_calcul_scalar_produc_wave_funct}
+\section{Form factors}
+As a final part of this chapter, we look at form factors for the Lieb-Liniger model, which we will require for calculation of dynamical structure functions (see \cref{chap:abacus}).
+Form factors or matrix elements may be obtained in by using the algebraic Bethe ansatz (until now we used a coordinate representation of the wave function known as the coordinate Bethe ansatz).
+We will briefly introduce this algebraic Bethe ansatz. \cite{Piroli2015}
 
+\subsection{The algebraic Bethe ansatz}
 
-\subsection{Form factor for $\rho(x=0)$}
+In the algebraic Bethe ansatz we define our operators in terms of fields.
+The quantized Hamiltonian of the Lieb-Liniger model is
+\begin{align}
+  \label{eq:30}
+  H = \int_0^L \dd x \left(\partial_x \Psi(x)^{\dag} \partial_x \Psi(x) + c \Psi^{\dag}(x)\Psi^{\dag}(x)\Psi(x)\Psi(x)\right),
+\end{align}
+with the field operators obeying the commutation relation \([\Psi^{\dag}(x),\Psi(y)] = \delta(x-y)\).
+
+\subsection{Form factor for \(\rho\)-operator}
+
 For the density operator\todo{Hamiltonian in second quantized form derivation to be found in~\cite{feynman}, around p. 190}
 \begin{align}
   \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
@@ -740,7 +757,7 @@ Including normalization we have~\cite{Nardis2015}
   \label{eq:21}
   \frac{\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}}{\innerproduct{\mu}{\mu}\innerproduct{\lambda}{\lambda}}.
 \end{align}
-If two states have the same momentum, the matrix element is 0, while if $\mu = \lambda$ we have (suppressing normalization factors) $\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}=\frac{N}{L}$.
+If two states have the same momentum, the matrix element is 0~\cite{slavnov90_noneq_time_curren_correl_funct}, while if $\mu = \lambda$ we have (suppressing normalization factors) $\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}=\frac{N}{L}$.
 
 The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
 We will generally set it to 0, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
@@ -751,6 +768,8 @@ Note that for the Lieb-Liniger model \(V(\lambda_j)^{-} = (V(\lambda_j)^{+})^{*}
 \epigraph{\textit{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
 
 The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
+Despite some analytic progress~\cite{Nardis2016,Nardis2015,slavnov90_noneq_time_curren_correl_funct}, this is still mostly a numerical affair.
+
 Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also capable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since the appearance of~\cite{Caux2009} in 2009), but we will not consider that here further.} correlation functions of the form
 \begin{equation}\label{eq:expval}
 	\expval{\mathcal{O}_j(t)\mathcal{O}_{j'}^{\dagger}(0)},
@@ -759,18 +778,18 @@ where \(j=1\ldots N\) denotes lattice sites.
 This is the expectation value for arbitrary time separations $t$ and distances $j-j'$.
 The equivalent Fourier transformed quantity is the dynamical structure factor (DSF)
 \begin{equation}\label{eq:DSF}
-	S(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\mathcal{O}_j(t)\mathcal{O}_{j'}^{\dagger}(0)}.
+	\mathcal{S}(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\mathcal{O}_j(t)\mathcal{O}_{j'}^{\dagger}(0)}.
 \end{equation}
 We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because it is the quantity directly accessible in experiments~\cite{Caux2009,Caux2007a}.
 
 Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:
 \begin{equation}
-  S(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
+  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
 \end{equation}
 where we sum over intermediate eigenstates of the Hamiltonian under consideration, with $E_0$ the energy of the ground state $\ket{\lambda^0}$.
 The matrix elements $\mel{\lambda}{\mathcal{O}}{\mu}$ are known as form factors.
 
-In order to calculate DSF we require
+In order to calculate DSFs we require
 \begin{itemize}
   \item an orthonormal eigenstate basis
   \item form factors for the operator $\mathcal{O}_k$ we are interested in
@@ -786,7 +805,7 @@ In fact, the accuracy can be measured using sum rules, and saturation in excess 
 \section{Numerically solving the Bethe equations}\label{sec:numer-solv-bethe}
 
 In general the computation of rapidities of Bethe integrable systems is a complex affair, with complex rapidities making the computation difficult.
-For the Lieb-Liniger model however there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}).
+For the Lieb-Liniger model however there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}), meaning there is a unique solution for a given set of quantum numbers.
 
 In this case we can use the matrix Newton method to calculate rapidities.
 To introduce this method we first look at the one-dimensional case.
@@ -1228,6 +1247,12 @@ PROBLEM: We never reward in the experience replay because we never reach a termi
 \epigraph{\textit{I may not have gone where I intended to go, but I think I have ended up where I needed to be.}}{Douglas Adams, The Long Dark Tea-Time of the Soul}
 
 
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=\textwidth]{increaseaiflops.png}
+  \caption{Log plot of petaflop/s-day used in training AI over time. Doubling time is 3.5 months. Figure taken from~\cite{amodei2018}}
+\end{figure}
+
 Transfer learning may be used to generalize from different states.
 
 Inadmissible states may be ignored.
@@ -1333,7 +1358,7 @@ where we used \(H\ket{\alpha}=E_{\alpha}\ket{\alpha}\) and \(\mathbbm{1}=\sum_{\
 
 We have thus derived~\cite{Cauxfsum}
 \begin{align}
-  \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{[[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma}.
+  \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{[[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma}.
 \end{align}
 
 
