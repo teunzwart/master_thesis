@@ -300,7 +300,7 @@ To show this is indeed a minimum we need to have a positive definite matrix of s
 \end{align}
 where we have the kernel
 \begin{align}
-	\mathcal{C}(\lambda - \mu) = \frac{\dd \phi(x)}{\dd x} \rVert_{x=\lambda-\mu} = \frac{2c}{c^2 + (\lambda - \mu)^2}.
+	\mathcal{C}(\lambda - \mu) = \left.\frac{\dd \phi(x)}{\dd x} \right|_{x=\lambda-\mu} = \frac{2c}{c^2 + (\lambda - \mu)^2}.
 \end{align}
 
 Introducing a vector \(v_j\) with real components we get~\cite{Korepin1993}
@@ -724,40 +724,113 @@ A very similar derivation for type II excitations leads to
 \section{Form factors}
 As a final part of this chapter, we look at form factors for the Lieb-Liniger model, which we will require for calculation of dynamical structure functions (see \cref{chap:abacus}).
 Form factors or matrix elements may be obtained in by using the algebraic Bethe ansatz (until now we used a coordinate representation of the wave function known as the coordinate Bethe ansatz).
-We will briefly introduce this algebraic Bethe ansatz. \cite{Piroli2015}
+We will briefly introduce this algebraic Bethe ansatz. 
 
 \subsection{The algebraic Bethe ansatz}
 
-In the algebraic Bethe ansatz we define our operators in terms of fields.
-The quantized Hamiltonian of the Lieb-Liniger model is
+In the algebraic Bethe ansatz (ABA) we define our operators in terms of fields.
+The quantized Hamiltonian of the Lieb-Liniger model is\footnote{The derivation of this is found in~\cite{feynman}.}
 \begin{align}
   \label{eq:30}
-  H = \int_0^L \dd x \left(\partial_x \Psi(x)^{\dag} \partial_x \Psi(x) + c \Psi^{\dag}(x)\Psi^{\dag}(x)\Psi(x)\Psi(x)\right),
+  H = \int_0^L \dd x \left(\partial_x \Psi^{\dag}(x) \partial_x \Psi(x) + c \Psi^{\dag}(x)\Psi^{\dag}(x)\Psi(x)\Psi(x)\right),
 \end{align}
 with the field operators obeying the commutation relation \([\Psi^{\dag}(x),\Psi(y)] = \delta(x-y)\).
 
+In the ABA a fundamental object is the monodromy matrix, consisting of operators \(A(\lambda), B(\lambda), C(\lambda), D(\lambda)\):
+\begin{align}
+  \label{eq:31}
+  T(\lambda) =
+  \begin{pmatrix}
+    A(\lambda) & B(\lambda) \\
+    C(\lambda) & D(\lambda)
+  \end{pmatrix},
+\end{align}
+where 
+\begin{align}
+  \label{eq:36}
+  A(\lambda) \ket{0} = a(\lambda)\ket{0},\qquad D(\lambda) \ket{0} = d(\lambda)\ket{0},
+\end{align}
+when acting on the vacuum \(\ket{0}\), while phyiscal states may be build using \(B(\lambda)\) and \(C(\lambda)\):
+\begin{align}
+  \label{eq:42}
+  \ket{\{\lambda\}} = \prod_{j=1}^{N} B(\lambda_j) \ket{0} \quad \mathrm{and} \quad \bra{\{\lambda\}} = \bra{0} \prod_{j=1}^N C(\lambda_j).
+\end{align}
+In the Lieb-Liniger model~\cite{Piroli2015}
+\begin{align}
+  \label{eq:43}
+  a(\lambda) = e^{-i\frac{L}{2}\lambda}, \qquad d(\lambda) = e^{i\frac{L}{2}\lambda}.
+\end{align}
+
+The commutation relations between the operators are encoded in the Yang-Baxter equation~\cite{Korepin1993}, which depend on an object known as the \(R\)-matrix.
+In the case the case of the Lieb-Liniger model, the \(R\)-matrix is
+\begin{align}
+  \label{eq:45}
+  R(\lambda,\mu) = 
+  \begin{pmatrix}
+    f(\lambda, \mu) & 0 & 0 & 0\\
+    0 & g(\lambda, \mu) & 1 & 0\\
+    0 & 1 & g(\lambda, \mu) & 0 \\
+    0 & 0 & 0 & f(\lambda,\mu)
+  \end{pmatrix},
+\end{align}
+with
+\begin{align}
+  \label{eq:46}
+  f(\lambda,\mu) = \frac{\lambda-\mu+ic}{\lambda-\mu}, \qquad g(\lambda,\mu) = \frac{ic}{\lambda-\mu}.
+\end{align}
+
+To explicitly determine the action on states of the field operator, in terms of which physical operators are defined, we use the commutation relations
+\begin{align}
+  \label{eq:47}
+  [\Psi(0),B(\lambda)] = -i \sqrt{c} A(\lambda), \qquad [C(\lambda), \Psi^{\dag}(0)] = i \sqrt{c} D(\lambda).
+\end{align}
+This allows us to derive
+\begin{align}
+  \label{eq:48}
+  \Psi(0) \prod_{k=1}^N B(\lambda_k) \ket{0} &= -i\sqrt{c} \sum_{k=1}^N\Lambda_k a(\lambda_k) \prod_{\substack{m=1\\m\neq k}}^N B(\lambda_m) \ket{0},\\
+  \bra{0} \prod_{k=1}^N C(\lambda_k) \Psi^{\dag}(0) &= i \sqrt{c} \sum_{k=1}^N \bra{0} \prod_{\substack{m=1\\m\neq k}}^N C(\lambda_m) \widetilde{\Lambda} d(\lambda_k),
+\end{align}
+with~\cite{Piroli2015}
+\begin{align}
+  \label{eq:49}
+  \Lambda_k = \prod_{\substack{m=1\\m\neq k}}^N f(\lambda_k,\lambda_m), \qquad \widetilde{\Lambda}_k = \prod_{\substack{m=1\\m\neq k}}^N f(\lambda_m,\lambda_k).
+\end{align}
+
+With these tools form factors of operators may be calculated.
+We have only skimmed the surface of the ABA.
+A (much) more thorough introduction may be found in~\cite{Korepin1993} and~\cite{slavnov18_algeb_bethe_ansat}.
+
+
 \subsection{Form factor for \(\rho\)-operator}
 
-For the density operator\todo{Hamiltonian in second quantized form derivation to be found in~\cite{feynman}, around p. 190}
+Now we can calculate the form factor of the density operator.
+We only present here the result, referring to~\cite{slavnov90_noneq_time_curren_correl_funct} for the derivation.
+
+The density operator is~\cite{Nardis2015}
 \begin{align}
   \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
 \end{align}
-with \(\{x_k\}_{j=1}^N\) the positions of the particles in the gas, the form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
+with \(\{x_j\}_{j=1}^N\) the positions of the particles in the gas, or in terms of fields~\cite{slavnov90_noneq_time_curren_correl_funct}
+\begin{align}
+  \label{eq:44}
+  \hat{\rho}(x) = \Psi^{\dag}(x)\Psi(x).
+\end{align}
+The form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
 \begin{multline}
   \label{eq:rho_form_factor}
-  \matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
+  \matrixel{\{\mu\}}{\hat{\rho}(0)}{\{\lambda\}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
   \left(\sum_{j=1}^N(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+(\lambda_j) - V^-(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
 \end{multline}
 with element of the matrix \(U\) given by
 \begin{align}
-  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}} \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right).
+  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}}^N \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right).
 \end{align}
-Including normalization we have~\cite{Nardis2015}
+Including normalization we have for the form factors \(\mathcal{F}\)~\cite{Nardis2015}
 \begin{align}
   \label{eq:21}
-  \frac{\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}}{\innerproduct{\mu}{\mu}\innerproduct{\lambda}{\lambda}}.
+  \mathcal{F}(\{\mu\}, \{\lambda\}) = \frac{\matrixel{\{\mu\}}{\hat{\rho}(x)}{\{\lambda\}}}{\sqrt{\innerproduct{\{\mu\}}{\{\mu\}}\innerproduct{\{\lambda\}}{\{\lambda\}}}}.
 \end{align}
-If two states have the same momentum, the matrix element is 0~\cite{slavnov90_noneq_time_curren_correl_funct}, while if $\mu = \lambda$ we have (suppressing normalization factors) $\matrixel{\mathbf{\mu}}{\hat{\rho}(x)}{\mathbf{\lambda}}=\frac{N}{L}$.
+If two states have the same momentum, the matrix element is 0~\cite{slavnov90_noneq_time_curren_correl_funct}, while if $\{\mu\} = \{\lambda\}$ we have $\mathcal{F}=\frac{N}{L}$.
 
 The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
 We will generally set it to 0, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
@@ -765,7 +838,7 @@ Note that for the Lieb-Liniger model \(V(\lambda_j)^{-} = (V(\lambda_j)^{+})^{*}
 
 \chapter{The ABACUS algorithm}\label{chap:abacus}
 
-\epigraph{\textit{That's the thing about people who think they hate computers\ldots What they really hate are lousy programmers.}}{Larry Niven}
+\epigraph{\textit{That's the thing about people who think they hate computers. What they really hate are lousy programmers.}}{Larry Niven}
 
 The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
 Despite some analytic progress~\cite{Nardis2016,Nardis2015,slavnov90_noneq_time_curren_correl_funct}, this is still mostly a numerical affair.
