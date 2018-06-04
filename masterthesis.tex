@@ -336,7 +336,7 @@ Defining \(\textrm{Im}\,\lambda_{\min}\leq \lambda_j\) as the smallest imaginary
 Taking these statements together we see that \(\textrm{Im}\, \lambda_{j}=0\textrm{\,}\forall\textrm{\,} j\), and hence all  \(\lambda\)'s are real~\cite{Korepin1993}.
 \end{proof}
 
-\begin{theorem}
+\begin{theorem}\label{th:equalisequal}
 If \(I_j >I_k\), then \(\lambda_j > \lambda_k\). If \(I_j=I_k\) then \(\lambda_j=\lambda_k\).
 \end{theorem}
 
@@ -557,7 +557,7 @@ Assuming \(\lambda\) to be finite, the upper bound of the integral reduces to \(
 \end{sloppypar}
 
 \Cref{eq:integratedkerneldeltapart} is 0 if \(\abs{\lambda} > \lambda_F\), so the only \(\lambda\)'s we have to consider in the integral are \(\abs{\lambda}< \lambda_F\), but from the definition of the displacement we know \(\abs{\lambda_p}  >\lambda_F\), meaning \(\abs{\lambda_p} > \abs{\lambda}\) for all \(\lambda\) in the integral.
-Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
+Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).\todo{Check that this is true!}
 Thus we can rewrite \cref{eq:integratedkerneldeltapart} as
 \begin{align}
 	\theta(\lambda_F - \abs{\lambda}) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) &=
@@ -755,7 +755,7 @@ where
   \label{eq:36}
   A(\lambda) \ket{0} = a(\lambda)\ket{0},\qquad D(\lambda) \ket{0} = d(\lambda)\ket{0},
 \end{align}
-when acting on the vacuum \(\ket{0}\), while phyiscal states may be build using \(B(\lambda)\) and \(C(\lambda)\):
+when acting on the vacuum \(\ket{0}\), while physical states may be build using \(B(\lambda)\) and \(C(\lambda)\):
 \begin{align}
   \label{eq:42}
   \ket{\{\lambda\}} = \prod_{j=1}^{N} B(\lambda_j) \ket{0} \quad \mathrm{and} \quad \bra{\{\lambda\}} = \bra{0} \prod_{j=1}^N C(\lambda_j).
@@ -1127,7 +1127,7 @@ The Lieb-Liniger model itself is certainly Markovian, but the summation over sta
 Is this still valid?
 I don't know, I'm not a mathematician, but hopefully it works.
 
-Lets just try it and see what happens, chaning only the action selection to disallow repeat states.
+Lets just try it and see what happens, changing only the action selection to disallow repeat states.
 
 Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?
 
@@ -1153,73 +1153,66 @@ We have also seen how rapidities may be found numerically in~\cref{sec:numer-sol
 This method converges quadratically, but requires an initial guess for the rapidities.
 It is here that we may find an improvement by way of machine learning.
 
-In the naive case, where we simply start from scratch in calculating the rapidities, we base the initial values for the Newton method on a simplified first order version of the Bethe equations:
+In the naive case, where we simply start from scratch in calculating the rapidities, we base the initial values for the Newton method on a simplified first order version of the Bethe equations (\cref{eq:bethe_equations}):
 \begin{align}
   \label{eq:12}
   \lambda_j = \frac{2\pi}{L} I_j.
 \end{align}
 
-Since the Newton method converges quadratically we expect the number of iterations required for convergence to be reduced if the initial values are closer to their true values.
+We expect the number of iterations required for convergence of the Newton method to be reduced if the initial values are closer to their true values.
 Therefore, we use a neural network to act as a function approximator, feeding in an array of \(N\) Bethe numbers and outputting an array of \(N\) rapidities.
 
-The methodology is as follows: we generate a data set of 20000 sets of Bethe numbers and matching rapidities of length \(N\), for various values of \(N\).
+The methodology is as follows: we generate a data set of 20000 sets of Bethe numbers and calculate their corresponding rapidities of length \(N\), for various values of \(N\).
 The Bethe numbers are randomly drawn from a normal distribution centered on 0, with a variance of \(N\) (this corresponds to biasing the generated states to be close to the ground state).
 There is no additional UV cutoff employed.
 
-The generated data is used for training a neural network consisting of an input layer of size \(N\), a hidden layer of size \(N^2\), a second hidden layer of size \(N^2\) and an output layer of size \(N\).
+The generated data is used for training a neural network consisting of an input layer of size \(N\), two hidden layers of size \(N^2\) and an output layer of size \(N\).
 Apart from the output layer all layers use a hyperbolic tangent activation function.
 This architecture was arrived at through trial and error.
 More complex networks showed did not show improvements on rapidity estimation and took longer to train and to evaluate.
 
 \subsection{Results}
-We compare 4 different ways of determining initial values: using \cref{eq:12}, using the neural network described above, using a vector of random numbers drawn from a distribution with mean 0 and variance \(N\) and a vector of random numbers drawn from a distribution with mean 0 and variance \(N\) where entries are sorted.
+We compare 4 different ways of determining initial values: using \cref{eq:12} (denoted as ``Naive Bethe''), using the neural network described above (denoted ``ML''), using a vector of random numbers drawn from a normal distribution with mean 0 and variance \(N\) (``Random'') and a vector of random numbers drawn from a normal distribution with mean 0 and variance \(N\) where entries are sorted (``Random sorted'').
 
 We also compare all these methods with both damping (\cref{eq:dampednewton}) enabled and disabled. We use systems of sizes 5, 10 and 20.
 Of the 20000 data points, 19000 are used for training and 1000 for validation over 100 training epochs.
 
-
-\begin{table}[tb!]
-  \centering
-  \begin{tabular}{llrrr}
-    Methods & Damped & \(N=5\) & \(N=10\) & \(N=20\) \\\hline 
-    Naive Bethe & Yes & 5.08(30) & 5.03(17) & 5.03(17) \\ 
-           & No & 5.08(29) & 5.01(11) & 5.00(5) \\\hline
-    ML & Yes & 4.17(38) & 4.56(52) & 4.94(29) \\
-           & No & 4.17(38) & 4.57(70) & 4.93(27) \\\hline
-    Random & Yes & 6.80(69) & 7.07(58) & 7.13(58) \\
-           & No & 6.63(55) & 6.83(37) & 6.87(35) \\\hline
-    Random sorted  & Yes & 5.77(58) & 5.92(49) & 6.05(43)  \\
-           & No & 5.76(52) & 5.83(59) & 5.93(26)
-  \end{tabular}
-  \caption{Newton method iterations necessary for convergence for different intial value methods for \(N=5,10,20\).}
-\end{table}
-
-
-\begin{table}[tb!]
-  \centering
-  \begin{tabular}{lrrr}
-    Method & \(N=5\) & \(N=10\) & \(N=20\) \\\hline
-    Naive Bethe & 1.29(7) & 3.59(4) & 13.05(8)\\
-    ML & 1.54(1) & 3.82(1) & 13.50(5)\\
-    Random & 1.49(1) & 4.80(5) & 17.80(23) \\
-    Random sorted & 1.33(1) & 4.12(2) & 15.36(7) 
-  \end{tabular}
-  \caption{Time in seconds necessary to converge for 1000 sets of Bethe numbers. Only undamped results are shown. We use the average of 10 sets of 1000.}
-\end{table}
-
+We observe that the neural network learns the structure of the rapidities reasonably well, notably learning part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lambda_j > \lambda_k\) (see \cref{fig:rapidities}).
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.70\textwidth]{rapidities_20.pdf}
   \caption{Predicted and exact rapidities for the Lieb-Liniger model with 20 particles.}
+  \label{fig:rapidities}
 \end{figure}
+
+The real question however is whether the initial guesses of the neural network are better than those of the Naive Bethe approach.
+Comparing different initial guess methods in \cref{fig:iterations}, we see this being the case.
+We compare the average number of iterations to convergence over 1000 sets of Bethe numbers for each method.
+The difference between Naive Bethe and ML is most pronounced for \(N=5\), being on average \(0.91\) iterations.
+This difference decreases to \(0.44-0.47\) iterations for \(N=10\) and to \(0.07-0.09\) iterations for \(N=20\).
+This decrease is probably due to the inability of the neural network to capture the increasing number of cross interactions of the rapidities with increasing system size.
+Compared to random initialization (either sorted or unsorted), both Naive Bethe and ML perform better.
+We see that sorting random initial values improves convergence, probably because a sorted list of monotonically increasing initial values captures the basic structure of the rapidities.
+Damping does not appear to have a large impact on convergence and we will from here on only consider undamped rapidity calculations.
+
+Comparing time until convergence paints a different picture compared to that above.
+Looking at \cref{fig:convtimes} we see that the ML method is consistently slower than Naive Bethe, although the difference decreases as \(N\) increases.
+This is probably because during Newton iterations we use LU decompositions, which have an algorithmic complexity \(\mathcal{O}(N^3)\)~\cite{Press2007}.
+For large \(N\) this step outweighs the increased complexity introduced by the neural network compared to a naive guess, because the number of calculations necessary for evaluation in the neural network is determined by the number of parameters and is therefore of order \(\mathcal{O}(N^2)\).
+This also explains why the random initializations are generally slower. 
+The increased number of iterations with their associated operations of \(\mathcal{O}(N^3)\) makes reaching convergence take longer.
+Note that the durations \cref{fig:convtimes} for machine learning do not capture the time required for data set generation and training, making the actual times required to get predictions for the rapidities longer than those reported.
+
+The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be found in \cref{cha:rawvalues}.
 
 \begin{figure}[tb!]
   \centering
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_10.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_20.pdf}}\\
-  \caption{Number of iterations until convergence is reached for \(N=5\).}
+  \caption{Number of Newton iterations until convergence is reached for \(N=5,10,20\), averaged over 1000 sets of Bethe numbers. The black bars denote standard deviations.}
+  \label{fig:iterations}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1227,7 +1220,8 @@ Of the 20000 data points, 19000 are used for training and 1000 for validation ov
   \subfloat{\includegraphics[width=0.70\textwidth]{time_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_10.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_20.pdf}}\\
-  \caption{Number of iterations until convergence is reached for \(N=5\).}
+  \caption{Time in seconds until convergence is reached for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. The black bars denote standard deviations.}
+  \label{fig:convtimes}
 \end{figure}
 
 \section{Walking through state space}
@@ -1356,7 +1350,7 @@ For example, the ground state of the $N=3$ state with $I_{max} = 5$ is
   \begin{pmatrix} 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \end{pmatrix}
 \end{equation}
 
-Note that the learning is all tabula rase reinforcement learning
+Note that the learning is all tabula arse reinforcement learning
 
 \section{Exact saturation results}
 
@@ -1410,9 +1404,17 @@ why do algorithms do what they do? \url{http://science.sciencemag.org/content/35
 
 \url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
 
+\section{Conclusion}
+
+Based on measurements the prediction of rapidities does not improve the calculation.
+
 \section{Outlook}
 
 The field of machine learning and artificial intelligence in general is currently experiencing large changes.
+
+Reinforcment learning may also be used in rapidity determination.
+Given a set of Bethe numbers, the rapidities can be predicted, after which convergence to machine precision is achieved through Newton iterations.
+The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions.
 
 One of the limitations of the current approach of the system is that it requires a UV cutoff of the Bethe numbers in order to be able to represent possible moves in Hilbert space.
 Since the size of the action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\) this means that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
@@ -1646,6 +1648,40 @@ The f-sum rule for the dynamical structure factor of the Lieb-Liniger model for 
   \label{eq:16}
   \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{N}{L}k^2
 \end{align}
+
+\chapter{Convergence results for machine learning rapidities}\label{cha:rawvalues}
+
+Here we present the raw values for the number of iterations of the Newton method and time until convergence, as presented in \cref{chap:results}.
+
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{llrrr}
+    Methods & Damped & \(N=5\) & \(N=10\) & \(N=20\) \\\hline 
+    Naive Bethe & Yes & 5.08(30) & 5.03(17) & 5.03(17) \\ 
+           & No & 5.08(29) & 5.01(11) & 5.00(5) \\\hline
+    ML & Yes & 4.17(38) & 4.56(52) & 4.94(29) \\
+           & No & 4.17(38) & 4.57(70) & 4.93(27) \\\hline
+    Random & Yes & 6.80(69) & 7.07(58) & 7.13(58) \\
+           & No & 6.63(55) & 6.83(37) & 6.87(35) \\\hline
+    Random sorted  & Yes & 5.77(58) & 5.92(49) & 6.05(43)  \\
+           & No & 5.76(52) & 5.83(59) & 5.93(26)
+  \end{tabular}
+  \caption{Newton method iterations necessary for convergence for different intial value methods for \(N=5,10,20\).}
+\end{table}
+
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lrrr}
+    Method & \(N=5\) & \(N=10\) & \(N=20\) \\\hline
+    Naive Bethe & 1.29(7) & 3.59(4) & 13.05(8)\\
+    ML & 1.54(1) & 3.82(1) & 13.50(5)\\
+    Random & 1.49(1) & 4.80(5) & 17.80(23) \\
+    Random sorted & 1.33(1) & 4.12(2) & 15.36(7) 
+  \end{tabular}
+  \caption{Time in seconds necessary to converge for 1000 sets of Bethe numbers for \(N=5,10,20\). Only undamped results are shown. We use the average of 10 sets of 1000.}
+\end{table}
 
 
 \bibliographystyle{SciPost_bibstyle}
