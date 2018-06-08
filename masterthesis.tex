@@ -45,7 +45,7 @@
 \fancyhead[R]{}
 \setlength{\headheight}{14pt}
 
-\setcounter{tocdepth}{2}
+% \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{10}
 \setcounter{MaxMatrixCols}{20}
 
@@ -90,7 +90,7 @@
 \ 
 \vspace{4cm}
 
-\epigraph{\textit{Science is just magic that works.}}{Kurt Vonnegut}
+\epigraph{\textit{Science is just magic that works.}}{Kurt Vonnegut, Cat's Cradle}
 
 \epigraph{\textit{All sufficiently advanced technology is indistinguishable from magic.}}{Arthur C. Clark}
 
@@ -117,7 +117,7 @@ This is already efficient since only very small fractions of the state space are
 However, a more efficient summation is still desirable.
 
 In this work we consider reinforcement learning as a way to sum the state space in an efficient way.
-Inspired by computers playing both 1980's video games~\cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the board game Go~\cite{Silver2017a,Silver2017}, we create a neural network that can efficiently determine which states are the most promising to sum when scanning the state space of a model.
+Inspired by computers playing both 1980's video games~\cite{mnih13_playin_atari_with_deep_reinf_learn} and recent advances in machine learning approaches to the board game Go~\cite{Silver2017a,Silver2017,silver16_master_game_go_with_deep}, we create a neural network that can efficiently determine which states are the most promising to sum when scanning the state space of a model.
 
 This may also generalize to models beyond the Lieb-Liniger model.
 Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
@@ -143,9 +143,7 @@ Finally \cref{chap:conclusion} summarizes our results and makes recommendations 
   \item What would be the best neural network approach be to decide on the next best state to sum? \\ How do we choose? The number of edges grows linearly in time, making it difficult to have a probability distribution over them. We also have to keep in mind the constraints on the Bethe numbers of the Lieb-Liniger model.    
   \item How do we backpropagate the success/failure of a run through the network (see ALPHA GO)?
   \item Does this generalize to other models? It should, as long as you are able to find the DSFs you are interested in since you need them for the sum rule.
-  \item Would an RNN scanning over the history of the summation work better?
   \item Control: How does random sampling of the space perform in f-sum rule summation?
-  \item
   \item How does a neural net perform on predicting rapidities and matrix elements?
 \end{itemize}
 
@@ -557,7 +555,7 @@ Assuming \(\lambda\) to be finite, the upper bound of the integral reduces to \(
 \end{sloppypar}
 
 \Cref{eq:integratedkerneldeltapart} is 0 if \(\abs{\lambda} > \lambda_F\), so the only \(\lambda\)'s we have to consider in the integral are \(\abs{\lambda}< \lambda_F\), but from the definition of the displacement we know \(\abs{\lambda_p}  >\lambda_F\), meaning \(\abs{\lambda_p} > \abs{\lambda}\) for all \(\lambda\) in the integral.
-Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).\todo{Check that this is true!}
+Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
 Thus we can rewrite \cref{eq:integratedkerneldeltapart} as
 \begin{align}
 	\theta(\lambda_F - \abs{\lambda}) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) &=
@@ -680,7 +678,7 @@ which converges as long as
 \left(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c})\right)^{1/2} < 1.
 \end{equation}
 If we only wish to know the value of $\mathcal{L}^{(F)}$ at a single point we can
-use that at each iteration step $\mathcal{L}^{(F)}$ is simply a number, allowing us to take it out of the integral. 
+use that at each iteration step $\mathcal{L}^{(F)}$ is simply a number, allowing us to take it out of the integral. \todo{Add figures of Dp, Dh LF}
 We get
 \begin{gather}
   \mathcal{L}^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} (\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}(\lambda, \lambda')\\
@@ -863,6 +861,7 @@ We can construct \cref{eq:expval} from this given knowledge of the DSF for all e
 
 Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:
 \begin{equation}
+  \label{eq:lehman}
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
 \end{equation}
 where we sum over intermediate eigenstates of the Hamiltonian under consideration, with $E_0$ the energy of the ground state $\ket{\lambda^0}$.
@@ -909,7 +908,7 @@ To prevent the calculation of the inverse of the Jacobian, in practice Newton's 
   J(\mathbf{x^k})[x^{k+1} - x^k] = - \mathbf{f}(\mathbf{x}^k),
 \end{equation}
 where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x^k})\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
-This linear system can be solved using LU decomposition~\cite{Press2007}.
+This linear system can be solved using LU decomposition~\cite{Press2007}.\todo{Very briefly explain this.}
 
 In ABACUS we are of course interested in the Bethe equations.
 Here we will specifically look at those of the Lieb-Liniger model.
@@ -940,22 +939,24 @@ Additionally, damping may be employed while solving the system, with the updatin
 Defining the difference squared as
 \begin{align}
   \label{eq:51}
-  \Delta^2 = \sum_{i=1}^N \frac{(\Delta \lambda_i)^2}{\lambda_i^2},
+  \Delta^2 = \frac{1}{N}\sum_{i=1}^{N} \left(\frac{\Delta \lambda_i}{\lambda_i}\right)^2,
 \end{align}
 the update algorithm for \(\gamma\) at each iteration is
 \begin{algorithm}
   \begin{algorithmic}[0]
-    \If {$\Delta^2_{k+1} > \Delta_{k}^2$ \textbf{and} $\gamma_k >0.5$} 
-    \State $\gamma_{k+1} = 0.5 \gamma_{k}$
-    \ElsIf {$\Delta^2_{k+1} < \Delta_{k}^2$} 
-    \State $\gamma_{k+1} = 1$
-    \EndIf
+    \If{$\Delta^2_{k+1} > \Delta_{k}^2$ \textbf{and} $\gamma_k >0.5$} 
+    \State{$\gamma_{k+1} = 0.5 \gamma_{k}$}
+    \ElsIf{$\Delta^2_{k+1} < \Delta_{k}^2$} 
+    \State{$\gamma_{k+1} = 1$}
+    \Else{}
+    \State{$\gamma_{k+1} = \gamma_k$}
+    \EndIf{}
   \end{algorithmic}
 \end{algorithm}
 
 The Bethe equations for real rapidities are considered solved when~\cite{Caux2009}
 \begin{equation}
-	\frac{1}{N}\sum_{i=1}^{N} \left(\frac{\Delta \lambda_i}{\lambda_i}\right)^2 < 10^4 \times \epsilon^2,
+	\Delta^2 < 10^4 \times \epsilon^2,
 \end{equation}
 where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable''~\cite{cppstandard2016}.
 On machines implementing IEEE 754-2008 (the standard for floating-point arithmetic)~\cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
@@ -1004,7 +1005,8 @@ A suitable candidate of these is the f-sum rule~\cite{Caux2007a}, which relates 
 With this sum rule the intensity in individual momentum slices can be explicitly determined.
 For the density-density correlation function of the Lieb-Liniger model this becomes
 \begin{align}
-  \int \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2  = \frac{N}{L} k^2.
+  \label{eq:fsumrule}
+  \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2.
 \end{align}
 A full derivation of the generic formula, as well as the specific case above may be found in~\cref{cha:f-sum-rule}. 
 
@@ -1061,7 +1063,7 @@ Table reproduced from~\cite{Caux2009}.
 
 
 
-\chapter{Machine learning in the ABACUS algorithm}\label{chap:machine_learning}
+\chapter{Machine learning techniques}\label{chap:machine_learning}
 
 \epigraph{\textit{Real stupidity beats artificial intelligence every time.}}{Terry Pratchett, Hogfather}
 
@@ -1069,7 +1071,7 @@ Table reproduced from~\cite{Caux2009}.
 
 In the past decade machine learning has emerged as an important tool in many areas.
 The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commercial and academic side.
-Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017}.
+Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies) and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017,silver16_master_game_go_with_deep}.
 In the life sciences machine learning uses include detecting risk factors for cardiovascular diseases from pictures of the retina~\cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than hand crafted sequencers)~\cite{Poplin2016}.
 Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.\footnote{What the implications are of this brave new world where no image can be fully trusted is a discussion that is only just beginning.}
 
@@ -1083,7 +1085,7 @@ This technique has been extended to different systems such as the Hubbard model~
 Phase transitions and order parameters have also been successfully extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins~\cite{Nieuwenburg2017}.
 
 Reinforcement learning has been used to design setups for optical experiments in which complex entangled states are needed.
-Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if an `interesting' state is created~\cite{dunjko17_machin_learn_artif_intel_quant_domain}.
+Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if an `interesting' state is created~\cite{Dunjko2017}.
 
 There are also interesting links between deep learning and physics on a more fundamental level.
 For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similar way to the renormalization group~\cite{Mehta2014}. 
@@ -1111,8 +1113,9 @@ In many cases however the acquisition of expert data is difficult or impossible.
 In these cases reinforcement learning comes into play.
 Here, there is no a priori knowledge of the targets, only a reward function that, given a state and an action returns a reward.
 
-Have go like learning of appropriate states by considering a given state and determining whether it is a good ``close'' state.
-This requires some way to determine the value of a ``move'', a move being a mutation of a given vector of Bethe numbers\cite{Silver2017}
+Reinforcement learning based Go, chess and shogi programs have consistently beaten domain specific state of the art programs, while requiring a factor 1000 less moves to be considered~\cite{Silver2017}
+
+
 
 \subsection{Q-learning}
 
@@ -1138,7 +1141,7 @@ Does this mostly have to do with the proofs of convergence just becoming easier 
 
 \chapter{Methods and results}\label{chap:results}
 
-\epigraph{\textit{If you torture the data long enough, it will confess anything.}}{Ronald Coase}
+\epigraph{\textit{If you torture the data long enough, it will confess anything.}}{Ronald Coase (economist)}
 
 Now that we have introduced the theoretical tools necessary, we can combine them in a way applicable to integrable models.
 We start with simple regression to find rapidities and then turn to exploring the state space of the Lieb-Liniger model.
@@ -1206,7 +1209,7 @@ Note that the durations \cref{fig:convtimes} for machine learning do not capture
 
 The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be found in \cref{cha:rawvalues}.
 
-\begin{figure}[tb!]
+\begin{figure}[H]
   \centering
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_10.pdf}}\\
@@ -1215,7 +1218,7 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be
   \label{fig:iterations}
 \end{figure}
 
-\begin{figure}[tb!]
+\begin{figure}[H]
   \centering
   \subfloat{\includegraphics[width=0.70\textwidth]{time_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_10.pdf}}\\
@@ -1226,149 +1229,122 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be
 
 \section{Walking through state space}
 
-\subsection{Results}
+We now turn to exploring the state space of Bethe integrable models using machine learning.
+What we are in general interested in is that, given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible.
 
-What we are in general interested in is that, given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible, meaning we first visit those states in state space which have a large matrix element. 
-These contribute the most to the sum in the Lehman series representation of the dynamic structure function.
-
-
-
-
-
-Now we wish to define a new method to scan through the Hilbert space.
-Currently a 600 line function in ABACUS does this using heuristic methods, but this function is difficult to understand and verify.
-Machine learning may offer a new way of doing this scanning.
-
-The idea is to branch out from the ground state to all allowed states recursively.
-The matrix elements of the end point of the graph thus generated are estimated using a neural net: $NN(\{I\}) = \expval{\{\mu\}}{\mathcal{O}}{\{\lambda\}}$.
-The endpoint with the largest matrix element is selected, but all the others are stored since they may be useful later.
-The number of end points in the graph grows like $O(N)$ fir every iteration, so this allows us to evaluate only $O(N)$ guesses per iteration.
-For the selected nodes the rapidities and matrix elements are calculated to machine precision.
-Then the children of this node are determined and their approximate matrix elements
-Repeat until timeout or obtained sum rule is large enough.
-
-To compare against ABACUS we can use 2 metrics:
-time used to get to a certain sum rule percentage and number of states (or percentage of Hilbert space) visited.
-
-The guess for the matrix elements may be done with a convolutional neural network.
-We treat the Behten numbers as a 1D image over which we convolve.
-This may also allow for transfer learning ins size since the convolution -> max pooling step downsampled
-
-
-
-As an initial step, before exploring the intermediate state space, we create a neural network that predicts the \textit{best} or \textit{closest} state to a given base state.
-In this respect we follow the approach of the Deepmind team, which first based AlphaGo on expert data and only later used tabula rase reinforcement learning.
-
-We create a `expert' data set by generating 10000 states represented in Bethe number space for $N=10$.
-To constrain the required computation we implement a UV-cutoff in Bethe number space, with $\abs{I_{\max}}=15$.\footnote{Note that, since $N$ is even, the effective maximum is $\abs{I_{\max}}=14.5$.}
-Every possible legal state \textit{close} to this state was than generated, where closest meant that a state has a single change in a Bethe number, with size $\Delta I = 1$.
-For every adjacent state the matrix element for operator X is calculated.
-The adjacent state associated with the largest matrix element was then selected as the target state in the data set.
-
-Predicting the best next state is done by using two convolutional neural networks.
-One convolutional net predicts the best place to take a Bethe number from, while the other predicts the best place to deposit the particle.
-
-
-We use two approaches, one in which the tree of possible adjacent states is evaluated and traversed, and one in which only the predictions of the neural net are used for evaluation.
-
-Simple neural net
-
-
-Convolutional neural net
-Pooling or no pooling (zero padding) 
-Impact of data normalization on performance
-
-
-Rapidities are not sensitive to the absolute size of the Bethe numbers (additive scale invariance), only their relative structure.
-Therefore a vector encoding only the changed rapidities should in principle be enough to get the delta lambdas.
-
-
-TWO approaches: either maximize sum rule given an set number of states or minimize number of states to achieve given sum rule
-
-
-If a move is illegal the probability is set to zero and the probabilities are renormalized~\cite{pmlr-v37-clark15}.
-Illegal moves are those that try to remove a particle from a position where there is none, or placing a particle on an already occupied position.
-Also illegal are those moves that place particles too far away from other particles Is this necessary? Maybe it is interesting to see what the neural net does on its own, since maybe it will come up with good states based on the training set anyway.
-
-
-
-\section{Possible NN options}
-
-tree like descent: given the previously visited states, use a neural network to pick the best jumping off point, and another network to pick the best moves
-
-pro: similar to how ABACUS works now, allowing for non connected jumps through state space
-
-con: - number of states to pick from grows linearly in time, making it difficult to choose a state (but maybe mitigated by simply entering each state into the network separately and then picking the one with the highest fitness)
-
-- messy/complicated: two separate networks
-
-simple excitation change (used in tree like descent): a single particle position is changed
-con: only ``connected'' states may be visited in each iteration: you can only continue from the latest state
-\\
-full state prediction: full predict the next state given the previous state by picking N highest ranked position from a probability distribution
-
-pro:smaller output space
-
-con: unclear what to do with already visited states
-\\
-Add penalty in reward function for every visited state?
-\\
-ideas:
-use convolution over history of states
-
-use convolution over state
-
-reward may be either immediate or delayed
-
-\section{The Lieb-Liniger ``game''}
-
-To stay in the spirit of the results of Deepmind we will cast the stepping through the state-space of the Lieb-Liniger model in the form of a game with certain rules.
-The rules are:
-\begin{itemize}
-  \item no moves that lead to an already visited state
-  \item able to reach all states in the given momentum interval
-  \item sample important states first
-\end{itemize}
-
-The maximum momentum $I_{\max}$ is for the total momentum of the state, not the individual components, (so some particles can have high momentum, if it is compensated for by another particle with opposite negative momentum.)
-
-ABACUS can scan within an individual slice.
-What you got may work for the partition function, where only energies matter, since those are not spanning so many orders of magnitude.
-
-The number of possible 1 ph-pair states increase with k up to a certain k and then saturates at a level of order $N$.
-For 2 ph-pairs it saturations at $N^3$
-
-We use the neural net to tell us which move to make.
-To that end we use the same representation of moves as Alpha Zero uses in chess~\cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
-Available moves can be represented as a tuple, with the x-coordinate representing the location of the particle to remove and the y-coordinate being the new coordinate on which the particle is placed.
-This is represented by an $N_{sites} \times N_{sites}$ matrix, with the value of each matrix element coming from the neural net used for Q-learning.
-
-We represent state as vectors with length $N_{sites} = 2 I_{max} + 1$.
-Particles are denoted with 1's, and all other entries are zero.
-For example, the ground state of the $N=3$ state with $I_{max} = 5$ is 
+Recalling the Lehman representation of the dynamic structure function (DSF, \cref{eq:lehman})
 \begin{equation}
-  \begin{pmatrix} 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \end{pmatrix}
+  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
+\end{equation}
+we note that if we want to evaluate the above expression, we in principle have to sum over the entire Hilbert space of the model in question (potentially a space of  infinite size) to capture all behaviour of the DSF.
+Due to the impracticality of this we instead consider states that contribute a lot to the above sum.
+In general these are states with a large matrix element.
+More precisily they are states with large contributions to the f-sum rule (see \cref{eq:fsumrule}):
+\begin{align}
+  \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2,
+\end{align}
+where we specified to the case of the density operator \(\rho = \Psi^{\dag}\Psi\).\todo{Check what the numerical expression is and why it is different.}
+This allows us to determine which fraction of states have been summed in a given momentum slice \(k\).
+
+At present the scanning of the Hilbert space is implemented in ABACUS in the form of a large function of approximatly 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
+Looking at \cref{fig:orderedmagnitudes}, we see that the summation is at present not optimal, in that some important states are not captured early in the summation.
+This results in lower than possible saturation of the f-sum rule for a given running time of ABACUS.
+
+We therefore turn to machine learning to scan through the Hilbert space in a more efficient way.
+This also moves complexity from the handcrafted function into a neural network.
+While the neural network in more opaque in how it arrives at solutions, it may nevertheless present a more systemic way of arriving at an algorithm.
+
+We use reinforcement learning as a way to iteratively come to an optimal state summation, inspired by the recent success of Google Deepmind in playing Go~\cite{silver16_master_game_go_with_deep,Silver2017a}, Chess and Shogi~\cite{Silver2017} and 1980s computer games~\cite{mnih13_playin_atari_with_deep_reinf_learn,hasselt15_deep_reinf_learn_with_doubl_q_learn}.
+Specifically we will use Q-learning as in the last two references.
+We refer to \cref{chap:machine_learning} for an general explanation of Q-learning and focus here only on the specifics relevant to Hilbert space scanning of the Lieb-Liniger model.
+
+\subsection{State and move representation}
+
+When using neural networks we need a concrete representation of the state.
+A vector of Bethe numbers is too unwieldy as it hides some of the degrees of freedom of the system, notably not covering the holes that appear between particles.
+We therefore use a binary encoding for Lieb-Liniger model states, mapping the Bethe numbers to a vector where 1s represent particles and 0s represent empty locations in Bethe number space.
+Because the vector has to have a finite size this representation does force us to implement a UV-cutoff above which there are no Bethe numbers and which can not be occupied.
+We call this cutoff \(I_{\max}\).
+States in binary representation are then vectors of length $N_{\textrm{sites}} = 2 I_{\max} + 1$.
+For example, the ground state of the $N=3$ state with $I_{\max} = 5$ is 
+\begin{equation}
+  \begin{pmatrix} 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \end{pmatrix}.
 \end{equation}
 
-Note that the learning is all tabula arse reinforcement learning
+Moves are determined by a neural network consisting of an input layer of size \(N_{\textrm{world}} = 2 I_{\max}+1\), two hidden layers of size \(\lfloor N_{\textrm{world}}^{3/2}\rfloor\) and an output layer of size \(N_{\textrm{world}}\), with each layer having hyperbolic tangent activation functions.
+A move is represented in the same way as AlphaZero uses in chess~\cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
+Moves are represented as a tuple, with the \(x\)-coordinate representing the location of the particle to remove and the \(y\)-coordinate being the new coordinate on which the particle is placed.
+Moves are selected based on the output of the neural net with the highest value, subject to the constraints that
+\begin{itemize}
+\item a move does not lead to a state that has already been visited (to prevent double counting);
+\item a move does not remove a particle from an unoccupied position;
+\item a move does not place a particles on an already occupied position.
+\end{itemize}
+If the move with the largest Q-factor is illegal, the next highest move is selected, until a legal move is encountered.
 
-\section{Exact saturation results}
 
-Exact results of saturations in small systems.
 
-\section{The f-sum rule}
-To verify that we have summed form factors that contribute a lot to the density structure function, we can use the f-sum rule.
 
-\section{Results}
 
-PROBLEM: We never reward in the experience replay because we never reach a terminal state. The reward function has to be edited to take this into account.
+
+\subsection{Exact results}
+
+One problem that presents itself with the representation discussed above is that especially the higher pseudo-momentum states are less well represented than lower momentum states, since there are more possible combinations that result in a small momentum.
+We see this if we consider for example a Lieb-Liniger model with \(L=N=5\) and \(I_{\max} =12\).
+This choice of parameters allows for \(\binom{25}{5}=53510\) possible combinations, concentrated around the origin.
+Generating all possible permutations in the interval \((-12, 12)\) of length \(5\) results in a Gaussian distribution (\cref{fig:no_of_states}).
+The maximum possible momentum is given by
+\begin{align}
+  \label{eq:50}
+  P_{\max} = \sum_{i=0}^{N-1}(I_{\max}-i) = \frac{1}{2}N (2 I_{\max} -N +1)
+\end{align}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics{no_of_states}
+  \caption{The number of states in each momentum slice for the Lieb-Liniger model for \(N=5\) and \(I_{\max}=12\). Note that we dropped the prefactor \(\frac{2\pi}{L}\) for each entry.}
+  \label{fig:no_of_states}
+\end{figure}
+
+
+
+
+
+
+\subsection{Numerical results}
+
+
 
 \subsection{Random action selection}
 
 \subsection{Q-learning}
+- reward function
+- ph-pair minimization
+
+\section{Notes}
+\begin{itemize}
+\item PROBLEM: We never reward in the experience replay because we never reach a terminal state. The reward function has to be edited to take this into account.
+\item The number of possible 1 ph-pair states increase with k up to a certain k and then saturates at a level of order $N$. For 2 ph-pairs it saturations at $N^3$.
+\item Note that the learning is all tabula rasa reinforcement learning
+\item reward may be either immediate or delayed
+\item Add penalty in reward function for every visited state?
+\item TWO approaches: either maximize sum rule given an set number of states or minimize number of states to achieve given sum rule
+\item To compare against ABACUS we can use as metrics number of states visited.
+\item Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes
+\item 
+simple excitation change (used in tree like descent): a single particle position is changed
+con: only ``connected'' states may be visited in each iteration: you can only continue from the latest state
+\item 
+If a move is illegal the probability is set to zero and the probabilities are renormalized~\cite{pmlr-v37-clark15}.
+Also illegal are those moves that place particles too far away from other particles.
+\item
+The maximum momentum $I_{\max}$ is for the total momentum of the state, not the individual components, (so some particles can have high momentum, if it is compensated for by another particle with opposite negative momentum.)
+\item
+ABACUS can scan within an individual slice.
+What you got may work for the partition function, where only energies matter, since those are not spanning so many orders of magnitude.
+\end{itemize}
 
 
-\subsection{Verification}
 
 
 
@@ -1376,31 +1352,43 @@ PROBLEM: We never reward in the experience replay because we never reach a termi
 
 \epigraph{\textit{I may not have gone where I intended to go, but I think I have ended up where I needed to be.}}{Douglas Adams, The Long Dark Tea-Time of the Soul}
 
+\section{Discussion}
 
-\begin{figure}[tb!]
+\subsection{Deep learning is data inefficient}
+
+In general reinforcement learning is very data inefficient, leading to the conjecture that a well crafted function may work better in this domain~\cite{1710.02298}.
+
+\subsection{Reward functions are hard}
+
+\url{https://blog.openai.com/faulty-reward-functions/}
+
+\subsection{Reproducibility}
+
+Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
+reproducibility crisis (\url{http://science.sciencemag.org/content/359/6377/725})
+3.10. Deep learning thus far is difficult to engineer with \cite{marcus18_deep_learn}
+
+\subsection{Not transparent}
+why do algorithms do what they do? \url{http://science.sciencemag.org/content/357/6346/22}
+
+\subsection{AI safety}
+
+concrete problems in AI safety\cite{amodei16_concr_probl_ai_safet}
+
+AI is creative~\cite{1803.03453}.
+
+
+\begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{increaseaiflops.png}
+  \includegraphics[width=0.7\textwidth]{increaseaiflops.png}
   \caption{Log plot of petaflop/s-day used in training AI over time. Doubling time is 3.5 months. Figure taken from~\cite{amodei2018}}
 \end{figure}
 
 Transfer learning may be used to generalize from different states.
-
-concrete problems in AI safety\cite{amodei16_concr_probl_ai_safet}
-
 As mentioned in~\cite{Caux2009} the applicability of ABACUS for large systems stems from the preliminary information provided by integrability, built into the algorithm.
-
-AI is creative~\cite{1803.03453}.
-
-Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes
-
-In general reinforcement learning is very data inefficient, leading to the conjecture that a well crafted function may work better in this domain~\cite{1710.02298}.
-
-Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
-
 We are seeing an increase in the system sizes realizable with exact diagonalization \cite{wietek18_sublat_codin_algor_distr_memor}
 
-reproducibility crisis (\url{http://science.sciencemag.org/content/359/6377/725})
-why do algorithms do what they do? \url{http://science.sciencemag.org/content/357/6346/22}
+\cite{marcus18_deep_learn}
 
 \url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
 
@@ -1441,12 +1429,12 @@ Substituting \(x_+ = \frac{x_1+x_2}{2}\) and \(x_-=x_1-x_2\) this becomes
 Integrating over an interval \(x_-\in[-\epsilon,\epsilon]\) we get
 \begin{align}
   \label{eq:18}
-  -\frac{1}{2} \frac{\partial^2}{\partial x_+^2} \int_{-\epsilon}^{\epsilon} \psi \dd x_- - 2 \int_{-\epsilon}^{\epsilon} \frac{\partial^2}{\partial x_-^2}\psi \dd x_- + 2c\int_{\epsilon}^{\epsilon} \delta(x_-)\psi \dd x_- = E\int_{\epsilon}^{\epsilon} \psi \dd x_.
+  -\frac{1}{2} \frac{\partial^2}{\partial x_+^2} \int_{-\epsilon}^{\epsilon} \psi \dd x_- - 2 \int_{-\epsilon}^{\epsilon} \frac{\partial^2}{\partial x_-^2}\psi \dd x_- + 2c\int_{-\epsilon}^{\epsilon} \delta(x_-)\psi \dd x_- = E\int_{-\epsilon}^{\epsilon} \psi \dd x_.
 \end{align}
 The first term on the left hand sice becomes 0 on \(\lim_{\epsilon\to0^+}\) as well as the term on the right hand side, leaving us with
 \begin{align}
   \label{eq:19}
-  \left.- \frac{\partial}{\partial x_-} \psi \right|_{x_-=-0^+}^{x_-=0^+}  + \left.c\phi\right|_{x_-=0} = 0.
+  \left.- \frac{\partial}{\partial x_-} \psi \right|_{x_-=-0^+}^{x_-=0^+}  + \left.c\psi\right|_{x_-=0} = 0.
 \end{align}
 
 Given that we are dealing with the bosonic case we require symmetric wave functions, \(\psi(x_1,x_2)=\psi(x_2,x_1)\).
