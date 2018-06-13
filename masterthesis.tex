@@ -58,6 +58,7 @@
 
 \newtheorem{theorem}{Theorem}
 
+\graphicspath{{./figures/}}
 
 \begin{document}
 
@@ -1027,7 +1028,12 @@ A full derivation of the generic formula, as well as the specific case above may
 
 \Cref{fig:lieb_density_dsf} shows the DSF in energy-momentum space for the density-density correlator of the Lieb-Liniger model obtained from ABACUS runs.
 In \cref{table:saturation} the efficiency of ABACUS is showcased.
-It presents the number of states necessary to reach a given saturation in the XXZ model and the fraction of the Hilbert space necessary to reach this saturation.
+It presents the number of states necessary to reach a given saturation in the XXZ model\footnote{The XXZ model is another Bethe ansatz integrable model consisting of spins with Hamiltonian~\cite{Franchini2017}
+    \begin{align}
+      \label{eq:53}
+      H = - J \sum_{n=1}^N\left[S_{n}^xS_{n+1}^x+S_n^yS_{n+1}^y + \Delta S_n^zS_{n+1}^z\right].
+    \end{align}
+} and the fraction of the Hilbert space necessary to reach this saturation.
 Only very small fractions are necessary, although the algorithm is not perfect, with the second number in parentheses showing the number of states required if perfectly monotonically decreasing states were summed.
 
 \begin{figure}[tb!]
@@ -1068,8 +1074,8 @@ Only very small fractions are necessary, although the algorithm is not perfect, 
 % 99.99\% & 26724 (5.7e-10; 2182) & 932706 (6.8e-23; 84047) & & \\
 \end{tabular}
 }
-\caption{Number of states required for a given sum rule saturation in the XXZ model.
-In parentheses are the fraction Hilbert space fraction this represents., 
+\caption{Number of states required for a given sum rule saturation in the XXZ model with \(\Delta=0.6\) and \(S_{\mathrm{tot}}^z=0.1\).
+In parentheses are the fraction Hilbert space fraction this represents.
 % with the second number in parentheses the number of contributions needed if the algorithm was perfectly able to only sum monotonically decreasing form factors.
 Table reproduced from~\cite{Caux2009}.
 }
@@ -1197,7 +1203,7 @@ Of the 20000 data points, 19000 are used for training and 1000 for validation ov
 
 We observe that the neural network learns the structure of the rapidities reasonably well, notably learning part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lambda_j > \lambda_k\) (see \cref{fig:rapidities}).
 
-\begin{figure}[tb!]
+\begin{figure}[tb]
   \centering
   \includegraphics[width=0.70\textwidth]{rapidities_20.pdf}
   \caption{Predicted and exact rapidities for the Lieb-Liniger model with \(c=1\), \(L=N=20\).}
@@ -1224,20 +1230,20 @@ Note that the durations \cref{fig:convtimes} for machine learning do not capture
 
 The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be found in \cref{cha:rawvalues}.
 
-\begin{figure}[H]
+\begin{figure}[ph]
   \centering
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_10.pdf}}\\
-  \subfloat{\includegraphics[width=0.70\textwidth]{iterations_20.pdf}}\\
+  \subfloat{\includegraphics[width=0.70\textwidth]{iterations_20.pdf}}
   \caption{Number of Newton iterations until convergence is reached for \(N=5,10,20\), averaged over 1000 sets of Bethe numbers. The black bars denote standard deviations.}
   \label{fig:iterations}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[ph]
   \centering
   \subfloat{\includegraphics[width=0.70\textwidth]{time_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_10.pdf}}\\
-  \subfloat{\includegraphics[width=0.70\textwidth]{time_20.pdf}}\\
+  \subfloat{\includegraphics[width=0.70\textwidth]{time_20.pdf}}
   \caption{Time in seconds until convergence is reached for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. The black bars denote standard deviations.}
   \label{fig:convtimes}
 \end{figure}
@@ -1324,38 +1330,66 @@ This is not necessarily the best or only way to determine \(N_{\mathrm{ph}}\), b
 One problem that presents itself with the representation discussed above is that especially the higher pseudo-momentum states are less well represented than lower momentum states, since there are more possible combinations that result in a small momentum.
 We see this if we consider for example a Lieb-Liniger model with \(c=1\), \(L=N=5\) and \(I_{\max} =12\).
 This choice of parameters allows for \(\binom{N_{\mathrm{world}}}{N}=\binom{25}{5}=53510\) possible combinations, concentrated around the origin.
-Generating all possible permutations in the interval \((-12, 12)\) of length \(5\) results in a Gaussian distribution (\cref{fig:no_of_states}).
-The maximum possible momentum is given by
-\begin{align}
-  \label{eq:50}
-  P_{\max} = \frac{2\pi}{L}\sum_{i=0}^{N-1}(I_{\max}-i) = \frac{\pi}{L}N (2 I_{\max} -N +1) = \frac{\pi}{L}N (N_{\mathrm{world}} -N)
-\end{align}
-
-\begin{figure}[tb!]
+This is a number for which it is still feasible to generate all combinations and calculate the form factors of the associated states.
+Doing so for all possible permutations with individual particle momentum in the interval \((-12, 12)\) of length \(5\) results in a Gaussian distribution (\cref{fig:no_of_states}).
+\begin{figure}[tb]
   \centering
   \includegraphics[width=0.7\textwidth]{no_of_states}
   \caption{The number of states in each momentum slice for the Lieb-Liniger model for \(N=5\) and \(I_{\max}=12\). Note that we dropped the prefactor \(\frac{2\pi}{L}\) for each entry.}
   \label{fig:no_of_states}
 \end{figure}
+The maximum possible state momentum is given by
+\begin{align}
+  \label{eq:50}
+  P_{\max} = \frac{2\pi}{L}\sum_{i=0}^{N-1}(I_{\max}-i) = \frac{\pi}{L}N (2 I_{\max} -N +1) = \frac{\pi}{L}N (N_{\mathrm{world}} -N),
+\end{align}
+which in this case is \(\frac{L}{2\pi}P_{\max} = 35\).
+We see however that if we calculate the sum rule saturations for each momentum slice, the saturations quickly go to 0 as \(\frac{L}{2\pi}P\) becomes larger (\cref{fig:saturationsperslice}), falling off especially for \(\abs{\frac{L}{2\pi}P}>I_{\max}\).
+This is caused by the lack of states with larger momentum and proves especially problematic if we calculate total sum rule saturations over all states.
+The higher momentum slices will suppress the total possible attainable sum rule.
+\begin{figure}[tb!]
+  \centering
+   \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_momenta.pdf}}\\
+   \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_states.pdf}}
+   \caption{Sum rule saturation per momentum slice (top) and mean sum rule saturation contribution per momentum slice for \(I_{\max}=12\). Note how the saturations falloff sharply at around \(I_{\max}\). This is a result of the lack of states with the corresponding momentum. Not pictured are the saturations outside of the interval (-12,12), which decay exponentially.}
+   \label{fig:saturationsperslice}
+\end{figure}
 
+
+The problem can be somewhat mitigated by giving \(I_{\max}\) two roles in the scanning.
+It acts as both the cutoff for the momentum of individual particles as well as the total allowed momentum.
+This contrasts with ABACUS, where \(I_{\max}\) acts only as the cutoff for the total momentum, meaning that states could in principle be built from particles with momentum far in excess of \(I_{\max}\), as long as particles with approximately opposite momentum cancel each other out.
+Therefore ABACUS, when considering states, can always get high saturations in every momentum slice.
+ABACUS also has the advantage that it can scan within a individual slice.
 Due to this when calculating the f-sum rule saturation we only consider states for which \(\frac{L}{2\pi}P \in [-I_{\max},I_{\max}]\).
+If we take all states in this interval and use \(N = 5\), \(I_{\max}=12\) the total sumrule saturation is approximately 83.5\%.
 
+Furthermore we look at sum rule and form factor contributions for states with different number of particle-hole excitations, as calculated with~\cref{eq:52}.
+Looking at \cref{fig:meanffphpairs}, where we plot the mean form factor sizes for each possible number of particle-hole pairs, we see that it decreases exponentially as \(N_{\mathrm{ph}}\) increases.
 \begin{figure}[tb!]
   \centering
-  \subfloat{\includegraphics[width=.5\textwidth]{ave_sum_rule_saturation_ph_pairs.pdf}}
-  \subfloat{\includegraphics[width=.5\textwidth]{no_states_ph_pairs.pdf}}\\
-  \subfloat{\includegraphics[width=.5\textwidth]{ave_form_factor_ph_pairs.pdf}}
+  \includegraphics[width=.7\textwidth]{ave_form_factor_ph_pairs.pdf}
+  \caption{Mean form factor per number of particle-hole pairs.}
+  \label{fig:meanffphpairs}
 \end{figure}
 
+We see the same pattern of exponential decay when plotting the mean sum rule saturation per \(N_{\mathrm{ph}}\) (\cref{fig:meansumrulesaturation}). 
 \begin{figure}[tb!]
   \centering
-   \subfloat{\includegraphics[width=.5\textwidth]{saturations_over_states.pdf}}
-   \subfloat{\includegraphics[width=.5\textwidth]{saturations_over_momenta.pdf}}\\
+  \includegraphics[width=.7\textwidth]{ave_sum_rule_saturation_ph_pairs.pdf}
+  \caption{Mean sum rule saturation per given number of particle-hole pairs.}
+  \label{fig:meansumrulesaturation}
 \end{figure}
 
+Even though the number of states with a given \(N_{\mathrm{ph}}\) increases for increasing \(N_{\mathrm{ph}}\), this only happens approximately linearly (\cref{fig:numberofstatesph}), meaning that only the states with \(N_{\mathrm{ph}}=1,2\) have a large contribution.
+This validates the use of \cref{eq:52} while training to select for states with large matrix elements.
+\begin{figure}[tb!]
+  \centering
+  \subfloat{\includegraphics[width=.7\textwidth]{no_states_ph_pairs.pdf}}
+  \caption{Number of states with a given number of particle-hole pairs.}
+  \label{fig:numberofstatesph}
+\end{figure}
 
-
-With \(N = 5\), \(I_{\max}=12\) we have a total sumrule saturation of approximatly 83.5\%.
 
 
 
@@ -1364,12 +1398,12 @@ With \(N = 5\), \(I_{\max}=12\) we have a total sumrule saturation of approximat
 
 We consider a number of different possible ways of determining states:
 \begin{itemize}
-\item a neural network trained with and without checkin the number of particle hole pairs
-\item Random state selection, with and without particle hole pair counting. In this case we simply set \(\epsilon=1\) in the epsilon greedy algoritm and do not decrease it over the course of the run.
+\item A neural network trained with and without checking the number of particle hole pairs for states;
+\item Random state selection. In this case we simply set \(\epsilon=1\) in the epsilon greedy algoritm and do not decrease it over the course of the run.
 \end{itemize}
-
+For both methods we calculate the DSFs both with and without minimizing \(N_{\mathrm{ph}}\).
 The measure we use to compare methods is how many states are required to reach a given f-sum rule saturation.
-Due to the representation of the states direct comparison with ABACUS is difficult (\cref{sec:exact}), but we do give some results for a rough estimate of relative performance.
+Due to the representation of the states and the cutoff used, direct comparison with ABACUS is difficult (\cref{sec:exact}), but we do give some results for a rough estimate of relative performance.
 
 \begin{table}
   \centering
@@ -1388,13 +1422,18 @@ Due to the representation of the states direct comparison with ABACUS is difficu
 
 
 A nice illustration of the learned behaviour is visible when considering the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
-When evaluating the ground state (\cref{fig{binarygroundstate}}), we clearly see a structure occurring in the resulting Q-matrix.
-Actions that are not permitted
+When evaluating the ground state (\cref{fig:binarygroundstate}), we clearly see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
+Unoccupied positions should not be selected for removal, while occupied positions should not be selected for particle placement.
+We see this occurring in the form of bands of high and low Q-factors.
+The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval deposit somewhere outside.
+In contrast the vertical blue band corresponds to forbidden actions that would take a particle from an unoccupied position and place it on an already occupied site.
+These actions with two forbidden subactions are more strongly disfavored than the actions represented by the corner quadrants, which represent taking a particle from an unoccupied position and placing it at another unoccupied site.
+The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) Q-factors.
 
 \begin{figure}[tb!]
   \centering
   \includegraphics{state.pdf}
-e  \caption{Ground state of the Lieb-Liniger model in binary represenation with \(N=11\) and \(I_{\max}=20\). The yellow dots represent particles.}
+  \caption{Ground state of the Lieb-Liniger model in binary represenation with \(N=11\) and \(I_{\max}=20\). The yellow dots represent particles.}
   \label{fig:binarygroundstate}
 \end{figure}
 
@@ -1408,14 +1447,27 @@ e  \caption{Ground state of the Lieb-Liniger model in binary represenation with 
 \end{figure}
 
 
-\section{Notes}
-\begin{itemize}
-\item
-The maximum momentum $I_{\max}$ is for the total momentum of the state, not the individual components, (so some particles can have high momentum, if it is compensated for by another particle with opposite negative momentum.)
-\item
-ABACUS can scan within an individual slice.
-What you got may work for the partition function, where only energies matter, since those are not spanning so many orders of magnitude.
-\end{itemize}
+Finally, we compare with ABACUS.
+We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\).
+This yields a state space of size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
+The desired sum rule saturation of 99.9\% is achieved with 9376 states, summed over approximately 7 seconds.
+This is a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{abacus_ff_sq.pdf}
+  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}
+  \label{fig:abacusformfactors}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{abacus_saturations.pdf}
+  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}
+\end{figure}
+
+
+
 
 
 
@@ -1503,6 +1555,7 @@ The tree-like approach may be considered for further research.
 \section*{Acknowledgemnts}
 Sam Kuypers
 
+``Eternity is a very long time, especially towards the end.'' Woody Allen
 \appendix
 
 \chapter{Boundary term of the Lieb-Liniger model}\label{cha:boundary}
