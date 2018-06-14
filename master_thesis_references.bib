@@ -1073,3 +1073,175 @@ Eprint = {arXiv:1709.06560},
   primaryClass = {cs.AI},
 }
 
+@article{heess17_emerg_locom_behav_rich_envir,
+  author =       {Heess, Nicolas and TB, Dhruva and Sriram, Srinivasan
+                  and Lemmon, Jay and Merel, Josh and Wayne, Greg and
+                  Tassa, Yuval and Erez, Tom and Wang, Ziyu and
+                  Eslami, S. M. Ali and Riedmiller, Martin and Silver,
+                  David},
+  title =        {Emergence of Locomotion Behaviours in Rich
+                  Environments},
+  journal =      {CoRR},
+  year =         2017,
+  url =          {http://arxiv.org/abs/1707.02286v2},
+  abstract =     {The reinforcement learning paradigm allows, in
+                  principle, for complex behaviours to be learned
+                  directly from simple reward signals. In practice,
+                  however, it is common to carefully hand-design the
+                  reward function to encourage a particular solution,
+                  or to derive it from demonstration data. In this
+                  paper explore how a rich environment can help to
+                  promote the learning of complex
+                  behavior. Specifically, we train agents in diverse
+                  environmental contexts, and find that this
+                  encourages the emergence of robust behaviours that
+                  perform well across a suite of tasks. We demonstrate
+                  this principle for locomotion -- behaviours that are
+                  known for their sensitivity to the choice of
+                  reward. We train several simulated bodies on a
+                  diverse set of challenging terrains and obstacles,
+                  using a simple reward function based on forward
+                  progress. Using a novel scalable variant of policy
+                  gradient reinforcement learning, our agents learn to
+                  run, jump, crouch and turn as required by the
+                  environment without explicit reward-based
+                  guidance. A visual depiction of highlights of the
+                  learned behavior can be viewed following
+                  https://youtu.be/hx_bgoTF7bs .},
+  archivePrefix ={arXiv},
+  eprint =       {1707.02286},
+  primaryClass = {cs.AI},
+}
+
+@article{whitehead95_reinf_learn_non_markov_decis_proces,
+  author =       {Steven D. Whitehead and Long-Ji Lin},
+  title =        {Reinforcement Learning of Non-Markov Decision
+                  Processes},
+  journal =      {Artificial Intelligence},
+  volume =       73,
+  number =       {1-2},
+  pages =        {271-306},
+  year =         1995,
+  doi =          {10.1016/0004-3702(94)00012-p},
+  url =          {https://doi.org/10.1016/0004-3702(94)00012-p},
+  DATE_ADDED =   {Thu Jun 14 17:10:50 2018},
+}
+
+
+@article{popov17_data_effic_deep_reinf_learn_dexter_manip,
+  author =       {Popov, Ivaylo and Heess, Nicolas and Lillicrap,
+                  Timothy and Hafner, Roland and Barth-Maron, Gabriel
+                  and Vecerik, Matej and Lampe, Thomas and Tassa,
+                  Yuval and Erez, Tom and Riedmiller, Martin},
+  title =        {Data-Efficient Deep Reinforcement Learning for
+                  Dexterous Manipulation},
+  journal =      {CoRR},
+  year =         2017,
+  url =          {http://arxiv.org/abs/1704.03073v1},
+  abstract =     {Deep learning and reinforcement learning methods
+                  have recently been used to solve a variety of
+                  problems in continuous control domains. An obvious
+                  application of these techniques is dexterous
+                  manipulation tasks in robotics which are difficult
+                  to solve using traditional control theory or
+                  hand-engineered approaches. One example of such a
+                  task is to grasp an object and precisely stack it on
+                  another. Solving this difficult and practically
+                  relevant problem in the real world is an important
+                  long-term goal for the field of robotics. Here we
+                  take a step towards this goal by examining the
+                  problem in simulation and providing models and
+                  techniques aimed at solving it. We introduce two
+                  extensions to the Deep Deterministic Policy Gradient
+                  algorithm (DDPG), a model-free Q-learning based
+                  method, which make it significantly more
+                  data-efficient and scalable. Our results show that
+                  by making extensive use of off-policy data and
+                  replay, it is possible to find control policies that
+                  robustly grasp objects and stack them. Further, our
+                  results hint that it may soon be feasible to train
+                  successful stacking policies by collecting
+                  interactions on real robots.},
+  archivePrefix ={arXiv},
+  eprint =       {1704.03073},
+  primaryClass = {cs.LG},
+}
+
+@article{gu16_contin_deep_q_learn_with,
+  author =       {Gu, Shixiang and Lillicrap, Timothy and Sutskever,
+                  Ilya and Levine, Sergey},
+  title =        {Continuous Deep Q-Learning With Model-Based
+                  Acceleration},
+  journal =      {CoRR},
+  year =         2016,
+  url =          {http://arxiv.org/abs/1603.00748v1},
+  abstract =     {Model-free reinforcement learning has been
+                  successfully applied to a range of challenging
+                  problems, and has recently been extended to handle
+                  large neural network policies and value
+                  functions. However, the sample complexity of
+                  model-free algorithms, particularly when using
+                  high-dimensional function approximators, tends to
+                  limit their applicability to physical systems. In
+                  this paper, we explore algorithms and
+                  representations to reduce the sample complexity of
+                  deep reinforcement learning for continuous control
+                  tasks. We propose two complementary techniques for
+                  improving the efficiency of such algorithms. First,
+                  we derive a continuous variant of the Q-learning
+                  algorithm, which we call normalized adantage
+                  functions (NAF), as an alternative to the more
+                  commonly used policy gradient and actor-critic
+                  methods. NAF representation allows us to apply
+                  Q-learning with experience replay to continuous
+                  tasks, and substantially improves performance on a
+                  set of simulated robotic control tasks.  To further
+                  improve the efficiency of our approach, we explore
+                  the use of learned models for accelerating
+                  model-free reinforcement learning. We show that
+                  iteratively refitted local linear models are
+                  especially effective for this, and demonstrate
+                  substantially faster learning on domains where such
+                  models are applicable.},
+  archivePrefix ={arXiv},
+  eprint =       {1603.00748},
+  primaryClass = {cs.LG},
+}
+
+@article{houthooft16_vime,
+  author =       {Houthooft, Rein and Chen, Xi and Duan, Yan and
+                  Schulman, John and Turck, Filip De and Abbeel,
+                  Pieter},
+  title =        {Vime: Variational Information Maximizing
+                  Exploration},
+  journal =      {CoRR},
+  year =         2016,
+  url =          {http://arxiv.org/abs/1605.09674v4},
+  abstract =     {Scalable and effective exploration remains a key
+                  challenge in reinforcement learning (RL). While
+                  there are methods with optimality guarantees in the
+                  setting of discrete state and action spaces, these
+                  methods cannot be applied in high-dimensional deep
+                  RL scenarios. As such, most contemporary RL relies
+                  on simple heuristics such as epsilon-greedy
+                  exploration or adding Gaussian noise to the
+                  controls. This paper introduces Variational
+                  Information Maximizing Exploration (VIME), an
+                  exploration strategy based on maximization of
+                  information gain about the agent's belief of
+                  environment dynamics. We propose a practical
+                  implementation, using variational inference in
+                  Bayesian neural networks which efficiently handles
+                  continuous state and action spaces. VIME modifies
+                  the MDP reward function, and can be applied with
+                  several different underlying RL algorithms. We
+                  demonstrate that VIME achieves significantly better
+                  performance compared to heuristic exploration
+                  methods across a variety of continuous control tasks
+                  and algorithms, including tasks with very sparse
+                  rewards.},
+  archivePrefix ={arXiv},
+  eprint =       {1605.09674},
+  primaryClass = {cs.LG},
+}
+

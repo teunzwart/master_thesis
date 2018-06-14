@@ -103,7 +103,7 @@
 
 \begin{itemize}
 \item The number of possible 1 ph-pair states increase with k up to a certain k and then saturates at a level of order $N$. For 2 ph-pairs it saturations at $N^3$.
-\item Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes
+\item Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes 
 \end{itemize}
 
 \vfill
@@ -1351,7 +1351,7 @@ The higher momentum slices will suppress the total possible attainable sum rule.
   \centering
    \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_momenta.pdf}}\\
    \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_states.pdf}}
-   \caption{Sum rule saturation per momentum slice (top) and mean sum rule saturation contribution per momentum slice for \(I_{\max}=12\). Note how the saturations falloff sharply at around \(I_{\max}\). This is a result of the lack of states with the corresponding momentum. Not pictured are the saturations outside of the interval (-12,12), which decay exponentially.}
+   \caption{Sum rule saturation per momentum slice (top) and mean sum rule saturation contribution per momentum slice for \(I_{\max}=12\). Note how the saturations fall off sharply at around \(I_{\max}\). This is a result of the lack of states with the corresponding momentum. Not pictured are the saturations outside of the interval (-12,12), which decay exponentially.}
    \label{fig:saturationsperslice}
 \end{figure}
 
@@ -1479,30 +1479,32 @@ This is a fraction \(7.7\times 10^{-10}\) of the Hilbert space under considerati
 
 \section{Discussion}
 
+\subsection{Non-Markovian nature of DSF Hilbert scanning}
+
+\cite{whitehead95_reinf_learn_non_markov_decis_proces}
+
 \subsection{Deep learning is data inefficient}
 
 In general reinforcement learning is very data inefficient, leading to the conjecture that a well crafted function may work better in this domain~\cite{1710.02298}.
 
 In the Deepmind Atari experiments 50 million frames were used for training, which is 38 days of game time~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}.
+Locomotion training took 100 hours on 64 workers~\cite{heess17_emerg_locom_behav_rich_envir}
 
 \subsection{Reward functions are hard}
 
-\url{https://blog.openai.com/faulty-reward-functions/}
+Lego stacking paper, difficult reward funtions~\cite{popov17_data_effic_deep_reinf_learn_dexter_manip}
+concrete problems in AI safety\cite{amodei16_concr_probl_ai_safet}
+AI is creative~\cite{1803.03453}.
+
 
 \subsection{Reproducibility}
 
 Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
-reproducibility crisis (\url{http://science.sciencemag.org/content/359/6377/725})
 3.10. Deep learning thus far is difficult to engineer with \cite{marcus18_deep_learn}
 
-\subsection{Not transparent}
-why do algorithms do what they do? \url{http://science.sciencemag.org/content/357/6346/22}
+Has plot with performance, performance 25th percentile is almost 0\cite{houthooft16_vime}
 
-\subsection{AI safety}
 
-concrete problems in AI safety\cite{amodei16_concr_probl_ai_safet}
-
-AI is creative~\cite{1803.03453}.
 
 
 \begin{figure}[h]
@@ -1511,17 +1513,14 @@ AI is creative~\cite{1803.03453}.
   \caption{Log plot of petaflop/s-day used in training AI over time. Doubling time is 3.5 months. Figure taken from~\cite{amodei2018}}
 \end{figure}
 
-Transfer learning may be used to generalize from different states.
 As mentioned in~\cite{Caux2009} the applicability of ABACUS for large systems stems from the preliminary information provided by integrability, built into the algorithm.
 We are seeing an increase in the system sizes realizable with exact diagonalization \cite{wietek18_sublat_codin_algor_distr_memor}
 
 \cite{marcus18_deep_learn}
 
-\url{https://www.alexirpan.com/2018/02/14/rl-hard.html}
 
 temporal structuring in planning is still difficult, for example Montezuma's revenge\cite{mnih15_human_level_contr_throug_deep_reinf_learn}
 
-\url{https://www.youtube.com/watch?v=_zbg9rs5QZY}
 
 \section{Conclusion}
 
@@ -1538,7 +1537,7 @@ The number of iterations may be used as part of a reward function, with the goal
 One of the limitations of the current approach of the system is that it requires a UV cutoff of the Bethe numbers in order to be able to represent possible moves in Hilbert space.
 Since the size of the action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\) this means that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
 A possible solution is the extension of the value function to a continuous domain.
-This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn}.
+This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn}.\todo{See also \cite{gu16_contin_deep_q_learn_with}}
 
 Another improvement may come from using experience replay\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
 This allows for a way to deal with high correlation between consecutive states, by saving a tuple consisting of the current state, the action taken, the observed reward and the new state.
