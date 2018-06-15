@@ -12,3 +12,4 @@ masterthesis.pdf
 *.fdb_latexmk
 auto/
 *-eps-converted-to.pdf
+*.pyg

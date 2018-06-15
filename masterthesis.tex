@@ -20,6 +20,7 @@
 \usepackage{graphicx} % Include graphics. Use '\graphicspath' to locate files in a different folder.
 \usepackage[utf8]{inputenc} % Special characters (e.g. trema) can be entered directly: .tex file has to be saved using UTF-8 encoding.
 \usepackage{lmodern} % Alternative font because 'fontenc' package does not work with default.
+\usepackage{listings}
 \usepackage{microtype} % Improves character spacing.
 \usepackage{physics} % Provides physics macros such as Dirac notation.
 \usepackage{tikz} % Draw diagrams and figures.
@@ -94,12 +95,6 @@
 \newpage
 \thispagestyle{empty}
 
-\ 
-\vspace{4cm}
-
-\epigraph{\textit{Science is just magic that works.}}{Kurt Vonnegut, Cat's Cradle}
-
-\epigraph{\textit{All sufficiently advanced technology is indistinguishable from magic.}}{Arthur C. Clark}
 
 \begin{itemize}
 \item The number of possible 1 ph-pair states increase with k up to a certain k and then saturates at a level of order $N$. For 2 ph-pairs it saturations at $N^3$.
@@ -109,6 +104,17 @@
 \vfill
 \noindent
 \textbf{Cover image credit:} Randall Munroe, \textit{Machine Learning}, xkcd, \href{https://xkcd.com/1838/}{https://xkcd.com/1838/}.
+
+\newpage
+\thispagestyle{empty}
+
+\vspace{10cm}
+
+\epigraph{\textit{Science is just magic that works.}}{Kurt Vonnegut, Cat's Cradle}
+
+\epigraph{\textit{All sufficiently advanced technology is indistinguishable from magic.}}{Arthur C. Clark}
+
+
 
 \tableofcontents
 
@@ -1124,7 +1130,7 @@ Integrate with the reinforcement learning, to get the training data. Try differe
 Stochastic gradient descent
 training, validation, testing
 Feedforward
-
+\cite{Bishop2006}
 
 \section{Reinforcement learning}
 
@@ -1140,9 +1146,10 @@ Reinforcement learning based Go, chess and shogi programs have consistently beat
 
 \subsection{Q-learning}
 
-Deep Q-networks interesting\cite{mnih13_playin_atari_with_deep_reinf_learn}\\
--Recurrent Q learning\cite{hausknecht15_deep_recur_q_learn_partial_obser_mdps}\\
--Double Q-learning\cite{hasselt15_deep_reinf_learn_with_doubl_q_learn}\\
+model free, off-policy
+
+sgd used~\cite{mnih13_playin_atari_with_deep_reinf_learn}
+
 
 This fucking thing is non-Markovian, does it even make sense then?
 
@@ -1156,13 +1163,13 @@ Lets just try it and see what happens, changing only the action selection to dis
 Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?
 
 
-
+\cite{Sutton}
 
 
 
 \chapter{Methods and results}\label{chap:results}
 
-\epigraph{\textit{If you torture the data long enough, it will confess anything.}}{Ronald Coase (economist)}
+\epigraph{\textit{If you torture the data long enough, it will confess anything.}}{Ronald Coase}
 
 Now that we have introduced the theoretical tools necessary, we can combine them in a way applicable to integrable models.
 We start with simple regression to find rapidities and then turn to exploring the state space of the Lieb-Liniger model.
@@ -1414,12 +1421,135 @@ Due to the representation of the states and the cutoff used, direct comparison w
           & No &  &\\
     & Yes & No & \\
     & No &  & \\\hline
-    Random & - & Yes & \\
-          & - & No & \\
+    Random & - & Yes & 722(146)\\
+          & - & No & 3000 (no convergence)\\
   \end{tabular}
 \end{table}
 
+Required sum rule saturation is set at 83\%, which in the given subspace corresponds to approximately \(83/83.5\approx99.5\%\) (~\cref{sec:exact}).
+We average the number of states necessary over 5 runs with random initial seed.
+We set the hyperparameters \(\alpha=0.1\) and \(\gamma = 0.975\).
+If convergence has not been reached after 3000 states, the scanning is terminated.
 
+As an approximate measure of the average size of matrix elements, we consider a linear trendline trough the data.
+The value of the base offset acts as a proxy for the average size.
+
+For the reward function we do not use the obvious choice of form factors or sum rule saturation, since these measures span many decades.
+Instead we use the distance from the reference state;
+\begin{lstlisting}[language=Python,basicstyle=\small]
+def distance_to_rstate(lstate, rstate):
+    distance = 0
+    for i, n in enumerate(np.argwhere(np.array(rstate) == 1)):
+        distance += np.abs(n[0] - np.where(np.array(lstate) == 1)[0][i])
+    return distance
+\end{lstlisting}
+This is encapsulated in the reward function as follows
+\begin{lstlisting}[language=Python]
+def get_reward_for_close_states(ff, lstate, rstate, N_world):
+    if np.abs(ff) > 0.00001:
+        return np.abs(ff)**0.1
+    elif distance_to_rstate(lstate, rstate) < N_world**0.5:
+        return distance_to_rstate(lstate, rstate)**0.1
+    else:
+        return -1
+\end{lstlisting}
+
+
+
+\subsubsection{Random no check}
+
+The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs.
+
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_history_rand_no_check.pdf}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ffsizes_rand_no_check.pdf}
+\end{figure}
+mid: 3.855e-16(1.346e-16)
+coeff: 5.209e-16(3.700e-16)
+sum rule: 5.011e-02(1.508e-02)
+steps to convergence: 3.000e+03(0.000e+00)
+
+\subsubsection{Random check}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_history_rand_check.pdf}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ffsizes_rand_check.pdf}
+\end{figure}
+
+The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states.
+mid: 1.286e-07(6.839e-08)
+coeff: 8.280e-06(6.666e-06)
+sum rule: 8.302e-01(1.374e-04)
+steps to convergence: 7.222e+02(1.459e+02)
+
+\subsubsection{Random check, desired 0.82}
+
+effective sr \(0.82/0.835\approx98\%\)
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_history_rand_check_lower.pdf}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ffsizes_rand_check_lower.pdf}
+\end{figure}
+
+mid: 5.990e-04(3.780e-04)
+coeff: 6.001e-03(8.048e-03)
+sum rule: 8.219e-01(1.480e-03)
+steps to convergence: 1.010e+02(1.361e+01)
+
+\subsubsection{Not random, check training, check dsf}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_history_nn_check_train_check_eval.pdf}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ffsizes_nn_check_train_check_eval.pdf}
+\end{figure}
+
+
+mid: 1.097e-07(3.657e-08)
+coeff: 4.026e-06(3.100e-06)
+sum rule: 8.302e-01(1.455e-04)
+steps to convergence: 7.890e+02(1.000e+02)
+
+\subsubsection{Not random, check training, no check dsf}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_history_nn_check_train_nocheck_eval.pdf}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ffsizes_nn_check_train_nocheck_eval.pdf}
+\end{figure}
+
+mid: 1.612e-09(2.296e-09)
+coeff: 9.024e-08(1.069e-07)
+sum rule: 8.235e-01(1.581e-02)
+steps to convergence: 1.932e+03(8.582e+02)
+
+\subsubsection{Not random, no check training, check dsf}
+
+\subsubsection{Not random, no check training, no check dsf}
 
 A nice illustration of the learned behaviour is visible when considering the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
 When evaluating the ground state (\cref{fig:binarygroundstate}), we clearly see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
@@ -1452,6 +1582,8 @@ We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\)
 This yields a state space of size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
 The desired sum rule saturation of 99.9\% is achieved with 9376 states, summed over approximately 7 seconds.
 This is a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
+
+With trendline coefficients: mid 2.844409954044678e-06 coeff 8.013222874850417e-05
 
 \begin{figure}[tb!]
   \centering
@@ -1495,6 +1627,11 @@ Locomotion training took 100 hours on 64 workers~\cite{heess17_emerg_locom_behav
 Lego stacking paper, difficult reward funtions~\cite{popov17_data_effic_deep_reinf_learn_dexter_manip}
 concrete problems in AI safety\cite{amodei16_concr_probl_ai_safet}
 AI is creative~\cite{1803.03453}.
+
+We also see this in the DSF scanning developed here.
+The obvious choice for the reward function is the absolute form factor squared for the operator under consideration.
+The problem with this approach comes from the many decades spanned by the form factors.
+This makes the 
 
 
 \subsection{Reproducibility}
