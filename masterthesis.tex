@@ -71,7 +71,6 @@
 
 \begin{titlepage}
 	\begin{center}
-		% \includegraphics[width=\textwidth]{\UNIVERSITYLOGO}
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
 		\huge{\textbf{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}}
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
@@ -101,12 +100,13 @@
 \newpage
 \thispagestyle{empty}
 
+%%% NOTES
+% \begin{itemize}
+% \item The number of possible 1 ph-pair states increase with k up to a certain k and then saturates at a level of order $N$. For 2 ph-pairs it saturations at $N^3$.
+% \item Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes 
+% \end{itemize}
 
-\begin{itemize}
-\item The number of possible 1 ph-pair states increase with k up to a certain k and then saturates at a level of order $N$. For 2 ph-pairs it saturations at $N^3$.
-\item Better averaging state: high entropy state as averaging state because that makes the matrix element space flatter in sizes 
-\end{itemize}
-
+\ 
 \vfill
 \noindent
 \textbf{Cover image credit:} Randall Munroe, \textit{Machine Learning}, xkcd, \href{https://xkcd.com/1838/}{https://xkcd.com/1838/}.
@@ -1157,16 +1157,6 @@ model free, off-policy
 sgd used~\cite{mnih13_playin_atari_with_deep_reinf_learn}
 
 
-This fucking thing is non-Markovian, does it even make sense then?
-
-Note however that we are working with a non-Markovian problem.
-The Lieb-Liniger model itself is certainly Markovian, but the summation over states in the dynamical structure function is not, since states may not be doubly counted.
-Is this still valid?
-I don't know, I'm not a mathematician, but hopefully it works.
-
-Lets just try it and see what happens, changing only the action selection to disallow repeat states.
-
-Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?
 
 
 \cite{Sutton}
@@ -1335,7 +1325,8 @@ To that end we define the number of particle-hole pairs \(N_{\mathrm{ph}}\) as
 where \(s\) is the state for which the number of particle-hole pairs is determined and \(r\) is the reference state, in this case the ground state.
 \(J(s)_{s_i=1}\) denotes the set of indices for which \(s_i = 1\) (likewise for \(r\)).
 Both the state and the reference state are in the representation of \cref{eq:representation}.
-This is not necessarily the best or only way to determine \(N_{\mathrm{ph}}\), but does have the desired properties of being 0 when \(r=s\) and \(N_{\mathrm{ph}} = N\) when no two particles are in the same place for \(s\) and \(r\).\todo{Only file to check for interesting things is deepqlearning.py and reward function}
+In other words, it is the number of particles that have left the Fermi interval
+It has the desired properties of being 0 when \(r=s\) and \(N_{\mathrm{ph}} = N\) when no two particles are in the same place for \(s\) and \(r\).\todo{Only file to check for interesting things is deepqlearning.py and reward function}
 
 
 \subsection{Exact results}\label{sec:exact}
@@ -1417,6 +1408,44 @@ For both methods we calculate the DSFs both with and without minimizing \(N_{\ma
 The measure we use to compare methods is how many states are required to reach a given f-sum rule saturation.
 Due to the representation of the states and the cutoff used, direct comparison with ABACUS is difficult (\cref{sec:exact}), but we do give some results for a rough estimate of relative performance.
 
+Required sum rule saturation is set at 83\%, which in the given subspace corresponds to approximately \(83/83.5\approx99.5\%\) (\cref{sec:exact}).
+We average the number of states necessary over 5 runs with random initial seed.
+We set the hyperparameters \(\alpha=0.1\) and \(\gamma = 0.975\).
+If convergence has not been reached after 3000 states, the scanning is terminated.
+
+As an approximate measure of the average size of matrix elements, we consider a linear trendline trough the data.
+The value of the base offset acts as a proxy for the average size, allowing for a comparison between different methods.
+
+For the reward function we do not use the obvious choice of form factors or sum rule saturation, since these measures span many decades.
+Instead we use
+\begin{algorithm}[H]
+   \hspace*{\algorithmicindent} \textbf{Input} $\mathcal{F}, \mu, \lambda, N_{\mathrm{world}}$ 
+   \begin{algorithmic}[1]
+     \If{$\abs{\mathcal{F}}>10^{-5}$} 
+     \State \Return $\abs{\mathcal{F}}^{1/10}$
+     \ElsIf{$d(\mu, \lambda)<\sqrt{N_{\mathrm{world}}}$} 
+     \State \Return $\sqrt{d(\mu, \lambda)}$
+     \Else{}
+     \State \Return -1
+     \EndIf{}
+  \end{algorithmic}
+\end{algorithm}
+\noindent
+where \(\mathcal{F}\) is the form factor of the current state \(\mu\), \(\lambda\) is the reference state and \(d(\mu, \lambda)\) is the distance between the current state and the reference state, defines as
+\begin{algorithm}[H]
+   \hspace*{\algorithmicindent} \textbf{Input} $\mu, \lambda$ 
+   \begin{algorithmic}[1]
+     \State $d = 0$
+     \For{$i$ such that $J(I_{\mu})_{I_i=1}$}
+     \State $d = d + \abs{i - \left[J(I_{\lambda})_{I_j=1}\right]_i}$
+     \EndFor{}
+     \State \Return $d$
+  \end{algorithmic}
+\end{algorithm}
+\noindent
+with \(J\) an index set.
+In other words, it is the distance each particle has traveled in Bethe number space from its original position in the reference state.
+
 
 \begin{table}
   \centering
@@ -1430,126 +1459,111 @@ Due to the representation of the states and the cutoff used, direct comparison w
     & No & Yes & \num{752 \pm 136} & \num{5.26(347)e-06}\\
     & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.33(351)e-15}\\
   \end{tabular}
-  \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration.}
+  \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration. The reported errors are standard errors.}
+  \label{tab:noofstates}
 \end{table}
 
-
-Required sum rule saturation is set at 83\%, which in the given subspace corresponds to approximately \(83/83.5\approx99.5\%\) (~\cref{sec:exact}).
-We average the number of states necessary over 5 runs with random initial seed.
-We set the hyperparameters \(\alpha=0.1\) and \(\gamma = 0.975\).
-If convergence has not been reached after 3000 states, the scanning is terminated.
-
-As an approximate measure of the average size of matrix elements, we consider a linear trendline trough the data.\todo{Redo with log mean, to account for wide range of possible values.}
-The value of the base offset acts as a proxy for the average size.
-
-For the reward function we do not use the obvious choice of form factors or sum rule saturation, since these measures span many decades.
-Instead we use the distance from the reference state;
-\begin{lstlisting}[language=Python,basicstyle=\small]
-def distance_to_rstate(lstate, rstate):
-    distance = 0
-    for i, n in enumerate(np.argwhere(np.array(rstate) == 1)):
-        distance += np.abs(n[0] - np.where(np.array(lstate) == 1)[0][i])cc\cos{}
-    return distance
-\end{lstlisting}
-This is encapsulated in the reward function as follows
-\begin{lstlisting}[language=Python]
-def get_reward_for_close_states(ff, lstate, rstate, N_world):
-    if np.abs(ff) > 0.00001:
-        return np.abs(ff)**0.1
-    elif distance_to_rstate(lstate, rstate) < N_world**0.5:
-        return distance_to_rstate(lstate, rstate)**0.1
-    else:
-        return -1
-\end{lstlisting}
-
-
-
-\subsubsection{Random no check}
-
-
-
-
-The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs.
-
-
-\begin{figure}[tb!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_False.pdf}
-\end{figure}
+\Cref{tab:noofstates} show the results for the 6 methods under consideration.
+The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs during DSF calculation.
+As long as an action is valid, meaning it does not add or remove particles where that is not possible, revisit a state or create a state with too large a momentum.
+Looking at \cref{fig:saturation_rand_True_check_train_False_check_eval_False} we see that none of the runs converge after 3000 steps.
+Average square form factor sizes are of order \(10^{-16}\), as seen in \cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}.
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_False.pdf}
+  \caption{Square form factors as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}
+  \label{fig:ff_sizes_rand_True_check_train_False_check_eval_False}
 \end{figure}
 
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_False.pdf}
+  \caption{Saturation as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for 5 runs of DSF calculation.}
+  \label{fig:saturation_rand_True_check_train_False_check_eval_False}
+\end{figure}
 
-\subsubsection{Random check}
+If we enforce particle-hole pair minimization, the picture changes.
+Now only approximately 700 states are necessary to reach saturation, and average form factor size is of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
+The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states.
+We see that enforcing particle-hole minimization is an important measure in selecting states with large form factors.
+Note the plateauing of the sum rule saturation that occurs for many runs (\cref{fig:saturation_rand_True_check_train_False_check_eval_False}). 
+This probably happens because most of the large form factors have already been selected and the last few percentage points have to be made up by many form factors with small contributions.
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_True.pdf}
+  \caption{Saturation as a function of order of computation for random state selection while minimizing \(N_{\mathrm{ph}}\) for 5 runs of DSF calculation.}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_True.pdf}
+  \caption{Square form factors as a function of order of computation for random state selection while minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}
 \end{figure}
 
-The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states.
+Now we come to the results of using Q-learning.
+If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an averge number of states to convergence of 630 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
+The average form factor also has the largest value at order $10^{-5}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
 
 
-
-\subsubsection{Not random, check training, check dsf}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_True.pdf}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for 5 runs of DSF calculation.}
+  \label{fig:saturation_histories_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_True.pdf}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for a selected DSF calculation.}
+  \label{fig:ff_sizes_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
 
 
-\subsubsection{Not random, check training, no check dsf}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False.pdf}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for 5 runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.5\%$ saturation after 3000 states.}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_False.pdf}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for a selected DSF calculation.}
 \end{figure}
 
 
 
-\subsubsection{Not random, no check training, check dsf}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_True.pdf}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for 5 runs of DSF calculation.}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_True.pdf}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for a selected DSF calculation.}
 \end{figure}
 
 
-\subsubsection{Not random, no check training, no check dsf}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_False.pdf}
+  \caption{Saturation as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for 5 runs of DSF calculation.}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_False.pdf}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for a selected DSF calculation.}
 \end{figure}
 
 
@@ -1584,8 +1598,8 @@ We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\)
 This yields a state space of size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
 The desired sum rule saturation of 99.9\% is achieved with 9376 states, summed over approximately 7 seconds.
 This is a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
+The form factor size proxy has a value of \num{8.01e-05}
 
-With trendline coefficients: mid 2.844409954044678e-06 coeff 8.013222874850417e-05
 
 \begin{figure}[tb!]
   \centering
@@ -1614,6 +1628,18 @@ With trendline coefficients: mid 2.844409954044678e-06 coeff 8.013222874850417e-
 \section{Discussion}
 
 \subsection{Non-Markovian nature of DSF Hilbert scanning}
+
+This fucking thing is non-Markovian, does it even make sense then?
+
+Note however that we are working with a non-Markovian problem.
+The Lieb-Liniger model itself is certainly Markovian, but the summation over states in the dynamical structure function is not, since states may not be doubly counted.
+Is this still valid?
+I don't know, I'm not a mathematician, but hopefully it works.
+
+Lets just try it and see what happens, changing only the action selection to disallow repeat states.
+
+Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?
+
 
 \cite{whitehead95_reinf_learn_non_markov_decis_proces}
 
@@ -1653,9 +1679,9 @@ GenProg, which used digital evolution to generate debugging programs, fixed a so
 
 Solutions may also depend on bugs in the simulation platform being used, acting in a way as automated bug discovery.
 In a simulation in which swimming strategies were evolved, the simulation used inaccurate numerical simulation.
-Fast motion would lead to the accumulation of errors, which was exploited by creatures by twitching bodyparts rapidly, which provide free energy.
+Fast motion would lead to the accumulation of errors, which was exploited by creatures by twitching bodyparts rapidly, providing free energy.
 In a similar vein buggy collision detection was used by creatures to obtain free energy by penetrating the ground.
-When the simulation picked this up and corrected it, the upward force led to forward locomotion~\cite{1803.03453}.\footnote{\cite{1803.03453} contains many more examples, with references to the relevant papers.} 
+When the simulation picked this up and corrected it, the upward force led to forward locomotion~\cite{1803.03453}.\footnote{Reference~\cite{1803.03453} contains many more examples.} 
 
 Preventing such reward function hacking and undesired side effects is an emerging field of study within AI, foreshadowing the possible eventual emergence of artificial general intelligence~\cite{amodei16_concr_probl_ai_safet}.\todo{Read this paper, see if it says anything interesting.}
 
@@ -1695,7 +1721,7 @@ Based on measurements the prediction of rapidities does not improve the calculat
 
 In general reinforcement learning is very data inefficient, leading to the conjecture that a well crafted function may work better in this domain.
 As mentioned in~\cite{Caux2009} the applicability of ABACUS for large systems stems from the preliminary information provided by integrability, built into the algorithm.
-We are seeing an increase in the system sizes realizable with exact diagonalization \cite{wietek18_sublat_codin_algor_distr_memor}
+We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible~\cite{wietek18_sublat_codin_algor_distr_memor}.
 
 \subsection{Outlook}
 
@@ -1722,10 +1748,12 @@ With this we mean states that differ only by a single particle move from the cur
 This differs from ABACUS, in which a tree of states is descended and at any point any previously reached state may be used as the base for a new expansion into Hilbert space.
 The tree-like approach may be considered for further research.
 
-\section*{Acknowledgemnts}
-Sam Kuypers
+\section*{Acknowledgements}
+I would like to thank Jean-Sébastien Caux for his supervision and valuable suggestions.
+Sam Kuypers is thanked for help in understanding some derivations.
+I would also like to thank Sam, along with the rest of the J-S master gang (Jorran de Wit and Rebekka Koch), for providing a fun environment to work in and their willingness to hear me grumble about my project.
+Once a Bethe bitch, always a Bethe bitch.
 
-``Eternity is a very long time, especially towards the end.'' Woody Allen
 \appendix
 
 \chapter{Boundary term of the Lieb-Liniger model}\label{cha:boundary}
