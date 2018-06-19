@@ -28,6 +28,7 @@
 \usepackage{siunitx} % SI unit formatting and scientific notation.
 % \usepackage{subcaption} % Allow subcaptions.
 \usepackage{subfig}
+\usepackage{footnote}
 \usepackage[nottoc]{tocbibind} % Include references in table of contents.
 \usepackage[colorinlistoftodos,textsize=tiny]{todonotes} % Add todo notes.
 \usepackage{algorithm}
@@ -54,7 +55,8 @@
 \setcounter{secnumdepth}{10}
 \setcounter{MaxMatrixCols}{20}
 
-
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
 
 % Prevent all line breaks in inline equations.
 \binoppenalty=10000
@@ -1360,9 +1362,8 @@ This is caused by the lack of states with larger momentum and proves especially 
 The higher momentum slices will suppress the total possible attainable sum rule.
 \begin{figure}[tb!]
   \centering
-   \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_momenta.pdf}}\\
-   \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_states.pdf}}
-   \caption{Sum rule saturation per momentum slice (top) and mean sum rule saturation contribution per momentum slice for \(I_{\max}=12\). Note how the saturations fall off sharply at around \(I_{\max}\). This is a result of the lack of states with the corresponding momentum. Not pictured are the saturations outside of the interval (-12,12), which decay exponentially.}
+   \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_momenta.pdf}}
+   \caption{Sum rule saturation per momentum slice for \(I_{\max}=12\). Note how the saturations fall off sharply at around \(I_{\max}\). This is a result of the lack of states with the corresponding momentum. Not pictured are the saturations outside of the interval (-12,12), which decay exponentially.}
    \label{fig:saturationsperslice}
 \end{figure}
 
@@ -1419,20 +1420,19 @@ Due to the representation of the states and the cutoff used, direct comparison w
 
 \begin{table}
   \centering
-  \begin{tabular}{l|cc|rr}
+  \begin{tabular}{l|cc|rl}
     & \multicolumn{2}{c|}{Particle-hole minimization} & \\\hline
-    Method & in training & in DSF calculation & States to saturation & Form factor size proxy \\\hline
-    Random & - & Yes & 696(126) & \num{5.28(256)e-06}\\
-    & - & No & 3000 (no convergence) & \num{5.52(442)e-16}\\\hline
-    Neural network & Yes & Yes & & \num{1.48e-08 \pm 7.99e-09}\\
-    & No &  & &\\
-    & Yes & No && \\
-    & No &  & 3000 (no convergence) & \\
-
+    Method & training & DSF calculation & Number of states & Form factor size proxy \\\hline
+    Random & - & Yes & \num{696 \pm 127} & \num{5.28(256)e-06} \\
+    & - & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{5.52(442)e-16} \\\hline
+    Q-learning & Yes & Yes & \num{630 \pm 111} & \num{2.09(212)e-05}\\
+    & & No & \num{2081 \pm 483}\footnote{One out of five runs did not converge, reaching $\sim79.5\%$ saturation after 3000 steps.} & \num{1.48(80)e-08}\\
+    & No & Yes & \num{752 \pm 136} & \num{5.26(347)e-06}\\
+    & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.33(351)e-15}\\
   \end{tabular}
+  \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration.}
 \end{table}
 
-\footnote{One out of five runs did not converge, reaching saturation of $~79.5\%$ after 3000 steps.} 
 
 Required sum rule saturation is set at 83\%, which in the given subspace corresponds to approximately \(83/83.5\approx99.5\%\) (~\cref{sec:exact}).
 We average the number of states necessary over 5 runs with random initial seed.
@@ -1466,98 +1466,92 @@ def get_reward_for_close_states(ff, lstate, rstate, N_world):
 
 \subsubsection{Random no check}
 
+
+
+
 The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs.
 
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{saturation_history_rand_no_check.pdf}
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_False.pdf}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{ffsizes_rand_no_check.pdf}
+  \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_False.pdf}
 \end{figure}
-mid: 3.855e-16(1.346e-16)
-coeff: 5.209e-16(3.700e-16)
-sum rule: 5.011e-02(1.508e-02)
-steps to convergence: 3.000e+03(0.000e+00)
+
 
 \subsubsection{Random check}
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{saturation_history_rand_check.pdf}
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_True.pdf}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{ffsizes_rand_check.pdf}
+  \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_True.pdf}
 \end{figure}
 
 The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states.
-mid: 1.286e-07(6.839e-08)
-coeff: 8.280e-06(6.666e-06)
-sum rule: 8.302e-01(1.374e-04)
-steps to convergence: 7.222e+02(1.459e+02)
 
-\subsubsection{Random check, desired 0.82}
 
-effective sr \(0.82/0.835\approx98\%\)
-
-\begin{figure}[tb!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{saturation_history_rand_check_lower.pdf}
-\end{figure}
-
-\begin{figure}[tb!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{ffsizes_rand_check_lower.pdf}
-\end{figure}
-
-mid: 5.990e-04(3.780e-04)
-coeff: 6.001e-03(8.048e-03)
-sum rule: 8.219e-01(1.480e-03)
-steps to convergence: 1.010e+02(1.361e+01)
 
 \subsubsection{Not random, check training, check dsf}
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{saturation_history_nn_check_train_check_eval.pdf}
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_True.pdf}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{ffsizes_nn_check_train_check_eval.pdf}
+  \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_True.pdf}
 \end{figure}
 
 
-mid: 1.097e-07(3.657e-08)
-coeff: 4.026e-06(3.100e-06)
-sum rule: 8.302e-01(1.455e-04)
-steps to convergence: 7.890e+02(1.000e+02)
 
 \subsubsection{Not random, check training, no check dsf}
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{saturation_history_nn_check_train_nocheck_eval.pdf}
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False.pdf}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{ffsizes_nn_check_train_nocheck_eval.pdf}
+  \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_False.pdf}
 \end{figure}
 
-mid: 1.612e-09(2.296e-09)
-coeff: 9.024e-08(1.069e-07)
-sum rule: 8.235e-01(1.581e-02)
-steps to convergence: 1.932e+03(8.582e+02)
+
 
 \subsubsection{Not random, no check training, check dsf}
 
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_True.pdf}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_True.pdf}
+\end{figure}
+
+
 \subsubsection{Not random, no check training, no check dsf}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_False.pdf}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_False.pdf}
+\end{figure}
+
 
 A nice illustration of the learned behaviour is visible when considering the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
 When evaluating the ground state (\cref{fig:binarygroundstate}), we clearly see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
