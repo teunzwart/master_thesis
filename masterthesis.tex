@@ -158,7 +158,7 @@ As a corollary we also use supervised learning to try to optimize the numerical 
 The evaluation time added by the neural network makes this method unfit for finding rapidities.
 
 \begin{savequote}[50mm]
-The future is already here --- it's just not very evenly distributed.
+The future is already here --- it's just not very evenly distributxed.
 \qauthor{William Gibson}
 \end{savequote}
 
@@ -1367,7 +1367,7 @@ More precisely they are states with large contributions to the f-sum rule (see \
   \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2,
 \end{align}
 where we specified to the case of the density operator \(\rho = \Psi^{\dag}\Psi\) for the Lieb-Liniger model.
-This allows us to determine which fraction of states have been summed in a given momentum slice \(k\).
+This allows us to determine which fraction of states have been summed in a given slice of momentum \(k\).
 
 At present the scanning of the Hilbert space is implemented in ABACUS in the form of a large function of approximately 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
 Looking at \cref{fig:orderedmagnitudes}, we see that the summation is not yet optimal, in that some important states are not captured early in the summation.
@@ -1399,7 +1399,6 @@ For example, the ground state of the $N=3$ state with $I_{\max} = 5$ is\footnote
 
 Moves are determined by a neural network consisting of an input layer of size \(N_{\textrm{world}}\), two hidden layers of size \(\lfloor N_{\textrm{world}}^{3/2}\rfloor\) and an output layer of size \(N_{\textrm{world}}^2\), with each layer having hyperbolic tangent activation functions.
 This is an implementation of the idea to change the \(Q\)-function from the form \(Q(s,a)\) to \(Q(s)\), with an output over all possible actions\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
-
 This simplifies the process in that only a single evaluation of the neural net is required for each step, instead of an evaluation for all possible actions.
 We calculate loss using the mean-square error.
 
@@ -1555,14 +1554,14 @@ In other words, it is the distance each particle has traveled in Bethe number sp
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{statestoconv.pdf}
-  \caption{tg}
+  \caption{Number of states needed to reach 83\% sum rule saturation averaged over five runs. The error bars denote standard errors.}
   \label{fig:statestoconv}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ffsizesproxy.pdf}
-  \caption{tg}
+  \caption{Mean square form factor size proxy average over five runs. The error bars denote standard errors.}
   \label{fig:ffsizeproxy}
 \end{figure}
 
@@ -1570,8 +1569,6 @@ In other words, it is the distance each particle has traveled in Bethe number sp
 \Cref{fig:statestoconv} and \cref{fig:ffsizeproxy} show the results.
 We consider states with \(c=1\), \(L=N=5\) and \(I_{\max}=12\).
 Full results are found in \cref{chap:qlearningresults}.
-
-\Cref{tab:noofstates} show the results for the 6 methods under consideration.
 The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs during DSF calculation.
 As long as an action is valid, meaning it does not add or remove particles where that is not possible, revisit a state or create a state with too large a momentum.
 Looking at \cref{fig:saturation_rand_True_check_train_False_check_eval_False} we see that none of the runs converge after 3000 steps.
@@ -1593,7 +1590,7 @@ Average square form factor sizes are of order \(10^{-16}\), as seen in \cref{fig
 
 If we enforce particle-hole pair minimization, the picture changes.
 Now only approximately 700 states are necessary to reach saturation, and average form factor size is of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
-The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states.
+The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states with the same value for \(N_{\mathrm{ph}}\).
 We see that enforcing particle-hole minimization is an important measure in selecting states with large form factors.
 Note the plateauing of the sum rule saturation that occurs for many runs (\cref{fig:saturation_rand_True_check_train_False_check_eval_False}). 
 This probably happens because most of the large form factors have already been selected and the last few percentage points have to be made up by many form factors with small contributions.
@@ -1615,7 +1612,6 @@ If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calcula
 The average form factor also has the largest value at order $10^{-5}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
 
 
-
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_True.pdf}
@@ -1630,56 +1626,68 @@ The average form factor also has the largest value at order $10^{-5}$, although 
   \label{fig:ff_sizes_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
-
+The most interesting result is seen when we do enable \(N_{\mathrm{ph}}\)-minimization during training but not during evaluation.
+In this case the number of states required to reach saturation is 2081, although a large error of 483 states is present and one of the runs did not saturate after 3000 states (\cref{fig:saturation_histories_rand_False_check_train_True_check_eval_False}).
+Average form factors are of order \(10^{-8}\) and visually comparing the results of this run (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_False}) with those of the random evaluation without \(N_{\mathrm{ph}}\)-minimization (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}) confirms this.
+The performance of this method confirms that learning is occurring since there is no \(N_{\mathrm{ph}}\)-minimization occurring during evaluation, meaning that all decisions are based on the information present during training.
 
 
 \begin{figure}[tb!]
   \centering
-  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False.pdf}
+  \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False}
   \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for 5 runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.5\%$ saturation after 3000 states.}
+  \label{fig:saturation_histories_rand_False_check_train_True_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_False.pdf}
   \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for a selected DSF calculation.}
+  \label{fig:ff_sizes_rand_False_check_train_True_check_eval_False}
 \end{figure}
 
-
+That these results come from learning is further confirmed when considering the evaluation with particle-hole minimization disabled in training and enabled in evaluation.
+The average number of states required is 752 (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_True}), with matrix elements of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_True}).
+This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, pointing to a possibility that the minimization leads the model to learn about states with large contributions and consequently high rewards.
 
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_True.pdf}
   \caption{Saturation as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for 5 runs of DSF calculation.}
+  \label{fig:saturation_histories_rand_False_check_train_False_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_True.pdf}
   \caption{Square form factors as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for a selected DSF calculation.}
+  \label{fig:ff_sizes_rand_False_check_train_False_check_eval_True}
 \end{figure}
 
-
+Finally we come to an evaluation with \(N_{\mathrm{ph}}\)-minimization disabled in both training and evaluation.
+Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) and the average form factor is of order \(10^{-15}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}).
+The poor results of this method shows that using only the reward function to shape action selection does not provide enough feedback for learning.
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_False.pdf}
   \caption{Saturation as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for 5 runs of DSF calculation.}
+  \label{fig:saturation_histories_rand_False_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_False.pdf}
   \caption{Square form factors as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for a selected DSF calculation.}
+  \label{fig:ff_sizes_rand_False_check_train_False_check_eval_False}
 \end{figure}
 
-
-A nice illustration of the learned behaviour is visible when considering the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
+An illustration of the learned behaviour is visible when considering the trained model of the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
 When evaluating the ground state (\cref{fig:binarygroundstate}), we clearly see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
 Unoccupied positions should not be selected for removal, while occupied positions should not be selected for particle placement.
 We see this occurring in the form of bands of high and low Q-factors.
-The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval deposit somewhere outside.
+The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval and deposit it somewhere outside.
 In contrast the vertical blue band corresponds to forbidden actions that would take a particle from an unoccupied position and place it on an already occupied site.
 These actions with two forbidden sub-actions are more strongly disfavored than the actions represented by the corner quadrants, which represent taking a particle from an unoccupied position and placing it at another unoccupied site.
 The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) Q-factors.
@@ -1689,10 +1697,7 @@ The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmat
   \includegraphics{state.pdf}
   \caption{Ground state of the Lieb-Liniger model in binary representation with \(N=11\) and \(I_{\max}=20\). The yellow dots represent particles.}
   \label{fig:binarygroundstate}
-\end{figure}
-
-\begin{figure}[tb!]
-  \centering
+  \vspace*{\floatsep}
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_no_highlight.pdf}}\\
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_worst_highlighted.pdf}}
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_best_highlighted.pdf}}
@@ -1704,10 +1709,21 @@ The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmat
 Finally, we compare with ABACUS.
 We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\).
 This yields a state space of size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
-The desired sum rule saturation of 99.9\% is achieved with 9376 states, summed over approximately 7 seconds.
-This is a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
-The form factor size proxy has a value of \num{8.01e-05}
+The desired sum rule saturation of 99.9\% (\cref{fig:abacus_saturations}) is achieved with 9376 states, summed over approximately 7 seconds.
+This is at most a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
+The form factor size proxy has a value of \num{8.01e-05} (\cref{fig:abacusformfactors})
+This shows that ABACUS is highly efficient in summing matrix elements.
 
+In conclusion we can say that learning does occur when using Q-learning to sum matrix elements, but that this method is far outclassed by the current implementation of ABACUS.
+Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training.
+
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{abacus_saturations.pdf}
+  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}
+  \label{fig:abacus_saturations}
+\end{figure}
 
 \begin{figure}[tb!]
   \centering
@@ -1716,11 +1732,7 @@ The form factor size proxy has a value of \num{8.01e-05}
   \label{fig:abacusformfactors}
 \end{figure}
 
-\begin{figure}[tb!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{abacus_saturations.pdf}
-  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}
-\end{figure}
+
 
 
 
@@ -1735,21 +1747,17 @@ I may not have gone where I intended to go, but I think I have ended up where I 
 
 \chapter{Discussion and conclusion}\label{chap:conclusion}
 
-% \epigraph{\textit{I may not have gone where I intended to go, but I think I have ended up where I needed to be.}}{Douglas Adams, The Long Dark Tea-Time of the Soul}
-\noindent
 
 \section{Discussion}
 
+A number of difficulties may be identified with the results mentioned.
+
 \subsection{Non-Markovian nature of DSF Hilbert scanning}
 
-This fucking thing is non-Markovian, does it even make sense then?
+Firstly, while the Lieb-Liniger model is Markovian, the Hilbert space scanning used to calculate DSFs is not.
+This is because, to prevent overcounting, the entire history of previously visited states must be taken into consideration during each state selection.
 
-Note however that we are working with a non-Markovian problem.
-The Lieb-Liniger model itself is certainly Markovian, but the summation over states in the dynamical structure function is not, since states may not be doubly counted.
-Is this still valid?
-I don't know, I'm not a mathematician, but hopefully it works.
 
-Lets just try it and see what happens, changing only the action selection to disallow repeat states.
 
 Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?
 
@@ -1759,7 +1767,7 @@ Does this mostly have to do with the proofs of convergence just becoming easier 
 \subsection{Problems with reinforcement learning}
 
 
-Apart from the problem of applying reinforcement learning to a non-Markovian system, there are also a number of issues with reinforcement learning more generally.
+There are also a number of issues with reinforcement learning more generally.
 On of those is that reinforcement learning is data inefficient, sometimes extremely so.
 In~\cite{1710.02298} a study was made of performance in the Atari learning environment by combining different techniques beyond those used in \cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
 Even in the best case approximately 15 million frames (at 60 Hertz) were required to reach human-level performance, corresponding to 3 days of gametime.
