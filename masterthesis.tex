@@ -6,13 +6,13 @@
 
 %%% General formatting packages (order is important, so don't sort) %%%
 \usepackage{amsmath} % More equation formatting.
-\usepackage{amssymb}
+% \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage[english]{babel} % Language specific quirks.
 \usepackage{cite}
-\usepackage{epigraph}
+% \usepackage{epigraph}
 \usepackage{booktabs} % Improved tables.
-\usepackage[font=small,width=0.9\linewidth]{caption} % Better caption formatting.
+\usepackage[font=small,width=0.9\linewidth,format=hang]{caption} % Better caption formatting.
 \usepackage{fancyhdr} % Modification of headers and footers.
 \usepackage[T1]{fontenc} % Makes one unicode character of special input (e.g. ö).
 \usepackage[margin=1.25in]{geometry} % Control page layout.
@@ -31,12 +31,20 @@
 \usepackage{footnote}
 \usepackage[nottoc]{tocbibind} % Include references in table of contents.
 \usepackage[colorinlistoftodos,textsize=tiny]{todonotes} % Add todo notes.
-\usepackage{algorithm}
+\usepackage[boxed]{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage[linktocpage=true]{hyperref}
 \usepackage[noabbrev]{cleveref} % Automate "equation (...)" reference. Use \cref.
 \usepackage{doi}
 \usepackage{bbm}
+\usepackage{quotchap}
+
+\usepackage[bitstream-charter]{mathdesign}
+\urlstyle{sf}
+
+% Fix \cal and \mathcal characters look (so it's not the same as \mathscr)
+\DeclareSymbolFont{usualmathcal}{OMS}{cmsy}{m}{n}
+\DeclareSymbolFontAlphabet{\mathcal}{usualmathcal}
 
 \hypersetup{colorlinks, citecolor=blue, filecolor=black, linkcolor=blue, urlcolor=blue} 
 
@@ -47,9 +55,11 @@
 
 %%% Additional options %%%
 \pagestyle{fancy} % Set header style.
-\fancyhead[L]{\rightmark}
+\fancyhead[L]{\leftmark}
 \fancyhead[R]{}
 \setlength{\headheight}{14pt}
+\pagestyle{headings}
+
 
 % \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{10}
@@ -111,14 +121,21 @@
 \noindent
 \textbf{Cover image credit:} Randall Munroe, \textit{Machine Learning}, xkcd, \href{https://xkcd.com/1838/}{https://xkcd.com/1838/}.
 
-\newpage
-\thispagestyle{empty}
-\ 
-\vspace{6cm}
 
-\epigraph{\textit{Science is just magic that works.}}{Kurt Vonnegut, Cat's Cradle}
 
-\epigraph{\textit{All sufficiently advanced technology is indistinguishable from magic.}}{Arthur C. Clark}
+\begin{savequote}[50mm]
+Science is just magic that works.
+\qauthor{Kurt Vonnegut, Cat's Cradle}
+All sufficiently advanced technology is indistinguishable from magic.
+\qauthor{Arthur C. Clark}
+In the distance, the cat hears the sound of lobster minds singing in the void, a distant feed streaming from their cometary home as it drifts silently out through the asteroid belt, en route to a chilly encounter beyond Neptune. The lobsters sing of alienation and obsolescence, of intelligence too slow and tenuous to support the vicious pace of change that has sandblasted the human world until all the edges people cling to are jagged and brittle.
+\qauthor{Charles Stross, Accelerando}
+\end{savequote}
+\chapter*{ }
+
+% \epigraph{\textit{Science is just magic that works.}}{Kurt Vonnegut, Cat's Cradle}
+
+% \epigraph{\textit{All sufficiently advanced technology is indistinguishable from magic.}}{Arthur C. Clark}
 
 
 
@@ -130,9 +147,15 @@
 \section*{Abstract}
 
 
+\begin{savequote}[50mm]
+The future is already here --- it's just not very evenly distributed.
+\qauthor{William Gibson}
+\end{savequote}
+
+
 \chapter{Introduction}
 
-\epigraph{\textit{The future is already here --- it's just not very evenly distributed.}}{William Gibson}
+% \epigraph{\textit{The future is already here --- it's just not very evenly distributed.}}{William Gibson}
 
 \noindent
 Correlation functions are one of the central pillars of theoretical physics.
@@ -189,9 +212,14 @@ Finally \cref{chap:conclusion} discusses some of the difficulties inherent in re
 The code used to produce the results in this thesis may be found at \href{https://github.com/teunzwart/deepscanning}{https://github.com/teunzwart/deepscanning}.
 \end{sloppypar}
 
+\begin{savequote}[50mm]
+You haff to vork very very hard.
+\qauthor{Hans Bethe}
+\end{savequote}
+
 \chapter{The Bethe Ansatz}\label{chap:bethe_ansatz}
 
-\epigraph{\textit{You haff to vork very very hard.}}{Hans Bethe}
+% \epigraph{\textit{You haff to vork very very hard.}}{Hans Bethe}
 
 \noindent
 The Bethe Ansatz allows for a way to solve certain one-dimensional systems exactly.
@@ -906,10 +934,15 @@ Including normalization we have for the form factors \(\mathcal{F}\)~\cite{Nardi
 \end{align}
 If two states have the same momentum, the matrix element vasishes~\cite{slavnov90_noneq_time_curren_correl_funct}, while if $\{\mu\} = \{\lambda\}$ we have $\mathcal{F}=\frac{N}{L}$.
 
+\begin{savequote}[50mm]
+Hilbert space is a big place.
+\qauthor{Unknown}
+\end{savequote}
+
 
 \chapter{The ABACUS algorithm}\label{chap:abacus}
 
-\epigraph{\textit{Hilbert space is a big place.}}{Unknown}
+% \epigraph{\textit{Hilbert space is a big place.}}{Unknown}
 
 \noindent
 The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
@@ -1115,7 +1148,7 @@ Although the algorithm is not perfect, only very small fractions are necessary.
 \end{figure}
 
 
-\begin{table}
+\begin{table}[tb!]
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{c|c|c|c|c}
@@ -1141,11 +1174,15 @@ Table reproduced from~\cite{Caux2009}.
 \label{table:saturation}
 \end{table}
 
+\begin{savequote}[50mm]
+Real stupidity beats artificial intelligence every time.
+\qauthor{Terry Pratchett, Hogfather}
+\end{savequote}
 
 
 \chapter{Machine learning techniques}\label{chap:machine_learning}
 
-\epigraph{\textit{Real stupidity beats artificial intelligence every time.}}{Terry Pratchett, Hogfather}
+% \epigraph{\textit{Real stupidity beats artificial intelligence every time.}}{Terry Pratchett, Hogfather}
 \noindent
 \section{Machine learning in physics}
 
@@ -1208,11 +1245,15 @@ sgd used~\cite{mnih13_playin_atari_with_deep_reinf_learn}
 
 \cite{Sutton}
 
+\begin{savequote}[50mm]
+If you torture the data long enough, it will confess anything.
+\qauthor{Ronald Coase}
+\end{savequote}
 
 
 \chapter{Methods and results}\label{chap:results}
 
-\epigraph{\textit{If you torture the data long enough, it will confess anything.}}{Ronald Coase}
+% \epigraph{\textit{}}{}
 \noindent
 
 Now that we have introduced the theoretical tools necessary, we can combine them in a way applicable to integrable models.
@@ -1277,7 +1318,8 @@ This is probably because during Newton iterations we use LU decompositions, whic
 For large \(N\) this step outweighs the increased complexity introduced by the neural network compared to a naive guess, because the number of calculations necessary for evaluation in the neural network is determined by the number of parameters and is therefore of order \(\mathcal{O}(N^2)\).
 This also explains why the random initializations are generally slower. 
 The increased number of iterations with their associated operations of \(\mathcal{O}(N^3)\) makes reaching convergence take longer.
-Note that the durations \cref{fig:convtimes} for machine learning do not capture the time required for data set generation and training, making the actual times required to get predictions for the rapidities longer than those reported.
+Note that the durations in \cref{fig:convtimes} for machine learning do not capture the time required for data set generation and training, making the actual times required to get predictions for the rapidities longer than those reported.
+Machine learning thus does not aid in determining rapidities more efficiently.
 
 The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be found in \cref{cha:rawvalues}.
 
@@ -1495,21 +1537,25 @@ with \(J\) an index set.
 In other words, it is the distance each particle has traveled in Bethe number space from its original position in the reference state.
 
 
-\begin{table}
+
+\begin{figure}[tb!]
   \centering
-  \begin{tabular}{l|cc|rl}
-    & \multicolumn{2}{c|}{Particle-hole minimization} & \\\hline
-    Method & training & DSF calculation & Number of states & Form factor size proxy \\\hline
-    Random & - & Yes & \num{696 \pm 127} & \num{5.28(256)e-06} \\
-    & - & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{5.52(442)e-16} \\\hline
-    Q-learning & Yes & Yes & \num{630 \pm 111} & \num{2.09(212)e-05}\\
-    & & No & \num{2081 \pm 483}\footnote{One out of five runs did not converge, reaching $\sim79.5\%$ saturation after 3000 steps.} & \num{1.48(80)e-08}\\
-    & No & Yes & \num{752 \pm 136} & \num{5.26(347)e-06}\\
-    & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.33(351)e-15}\\
-  \end{tabular}
-  \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration. The reported errors are standard errors.}
-  \label{tab:noofstates}
-\end{table}
+  \includegraphics[width=0.7\textwidth]{statestoconv.pdf}
+  \caption{tg}
+  \label{fig:statestoconv}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ffsizesproxy.pdf}
+  \caption{tg}
+  \label{fig:ffsizeproxy}
+\end{figure}
+
+
+\Cref{fig:statestoconv} and \cref{fig:ffsizeproxy} show the results.
+We consider states with \(c=1\), \(L=N=5\) and \(I_{\max}=12\).
+Full results are found in \cref{chap:qlearningresults}.
 
 \Cref{tab:noofstates} show the results for the 6 methods under consideration.
 The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs during DSF calculation.
@@ -1666,12 +1712,16 @@ The form factor size proxy has a value of \num{8.01e-05}
 
 
 
+\begin{savequote}[50mm]
+I may not have gone where I intended to go, but I think I have ended up where I needed to be.
+\qauthor{Douglas Adams, The Long Dark Tea-Time of the Soul}
+\end{savequote}
 
 
 
 \chapter{Discussion and conclusion}\label{chap:conclusion}
 
-\epigraph{\textit{I may not have gone where I intended to go, but I think I have ended up where I needed to be.}}{Douglas Adams, The Long Dark Tea-Time of the Soul}
+% \epigraph{\textit{I may not have gone where I intended to go, but I think I have ended up where I needed to be.}}{Douglas Adams, The Long Dark Tea-Time of the Soul}
 \noindent
 
 \section{Discussion}
@@ -1816,6 +1866,11 @@ Once a Bethe bitch, always a Bethe bitch.
 
 \appendix
 
+\begin{savequote}[50mm]
+If this goes badly and I make a crater, I want it named after me!
+\qauthor{Iain M. Banks, Against a Dark Background}
+\end{savequote}
+
 \chapter{Boundary term of the Lieb-Liniger model}\label{cha:boundary}
 
 Here we explicitly derive the boundary term (\cref{eq:lieblinigerboundary}) of the Lieb-Liniger model~\cite{Caux2015}.
@@ -1845,6 +1900,11 @@ This simplifies the result to
   \label{eq:20}
   \left.(\partial_{x_2} - \partial_{x_1} - c) \psi(x_1, x_2)\right|_{x_2-x_1=0^+} = 0.
 \end{align}
+
+\begin{savequote}[50mm]
+It's an ancient and honorable term for the final step in any engineering project. Turn it on, see if it smokes.
+\qauthor{Lois McMaster Bujold, Falling Free}
+\end{savequote}
 
 \chapter{The f-sum rule}\label{cha:f-sum-rule}
 
@@ -2039,6 +2099,11 @@ The f-sum rule for the dynamical structure factor of the Lieb-Liniger model for 
   \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{N}{L}k^2
 \end{align}
 
+\begin{savequote}[50mm]
+I'm not dumb. I just have a command of thoroughly useless information.
+\qauthor{Bill Waterson}
+\end{savequote}
+
 \chapter{Convergence results for machine learning rapidities}\label{cha:rawvalues}
 
 Here we present the raw values for the number of iterations of the Newton method and time until convergence, as presented in \cref{chap:results}.
@@ -2071,6 +2136,31 @@ Here we present the raw values for the number of iterations of the Newton method
     Random sorted & 1.43(1) & 4.68(2) & 16.60(21) 
   \end{tabular}
   \caption{Time in seconds necessary to converge for 1000 sets of Bethe numbers for \(N=5,10,20\). Only undamped results are shown. We use the average of 10 sets of 1000.}
+\end{table}
+
+\begin{savequote}[50mm]
+Sometimes the questions are complicated and the answers are simple.
+\qauthor{Dr. Seuss}
+\end{savequote}
+
+\chapter{Q-learning results}\label{chap:qlearningresults}
+
+Here we present the raw values for the number of states necessary to reach 83\% sum rule saturation for \(c=1\), \(L=N=5\) and \(I_{\max}=12\).
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|cc|rl}
+    & \multicolumn{2}{c|}{Particle-hole minimization} & \\\hline
+    Method & training & DSF calculation & Number of states & Form factor size proxy \\\hline
+    Random & - & Yes & \num{696 \pm 127} & \num{5.28(256)e-06} \\
+    & - & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{5.52(442)e-16} \\\hline
+    Q-learning & Yes & Yes & \num{630 \pm 111} & \num{2.09(212)e-05}\\
+    & & No & \num{2081 \pm 483}\footnote{One out of five runs did not converge, reaching $\sim79.5\%$ saturation after 3000 steps.} & \num{1.48(80)e-08}\\
+    & No & Yes & \num{752 \pm 136} & \num{5.26(347)e-06}\\
+    & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.33(351)e-15}\\
+  \end{tabular}
+  \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration. The reported errors are standard errors.}
+  \label{tab:noofstates}
 \end{table}
 
 
