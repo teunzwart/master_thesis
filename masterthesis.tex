@@ -146,6 +146,16 @@ In the distance, the cat hears the sound of lobster minds singing in the void, a
 
 \section*{Abstract}
 
+Correlation functions play an important role in physics, but analytical results do not exist for many models.
+For Bethe ansatz solvable models the ABACUS algorithm can be used to numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
+This occurs through summing of matrix elements in the Lehmann series representation of the DSF.
+This summing is not optimal, in that it does not sum matrix elements in strictly  monotonically decreasing order.
+
+In this thesis we apply reinforcement learning to the summing of matrix elements, hoping to develop a strategy that leads to more optimal summation than done by ABACUS.
+We develop a representation of the Lieb-Liniger model suitable for use in machine learning and use Q-learning to learn the summation strategy.
+We find that the algorithm is able to learn to sum in such a way that it gives preference to highly contributing states, but that performance is far inferior to that shown by ABACUS.
+As a corollary we also use supervised learning to try to optimize the numerical evaluation of Bethe ansatz parameters known as rapidities, but find that any advantage this method has declines considerably with system size.
+The evaluation time added by the neural network makes this method unfit for finding rapidities.
 
 \begin{savequote}[50mm]
 The future is already here --- it's just not very evenly distributed.
@@ -165,7 +175,7 @@ These functions, generally of the form
   \expval{\mathcal{O}(x,t)\mathcal{O}(0,0)},
 \end{align}
 describe the correlations in time and space of microscopic variables.
-Much work has been put in finding correlation functions for various models, but for many there is as yet no closedform solution or this solution may not even exist.
+Much work has been put in finding correlation functions for various models, but for many there is as yet no closed-form solution or this solution may not even exist.
 
 In this thesis we consider the numerical evaluation of correlation functions for a class of models which are exactly solvable using the Bethe ansatz.
 Solutions of Bethe ansatz solvable models take the form of (superpositions of) plane waves, parameterized by numbers known as rapidities.
@@ -921,7 +931,12 @@ The form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
 \end{multline}
 with element of the matrix \(U\) given by
 \begin{align}
-  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}}^N \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right).
+  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}}^N \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right),
+\end{align}
+and 
+\begin{align}
+  \label{eq:56}
+  V(\lambda_j)^{\pm} = \prod_{k=1}^N \frac{\mu_k-\lambda_j\pm ic}{\lambda_k-\lambda_j\pm ic}.
 \end{align}
 The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
 We will generally set it to zero, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
@@ -932,7 +947,7 @@ Including normalization we have for the form factors \(\mathcal{F}\)~\cite{Nardi
   \label{eq:21}
   \mathcal{F}(\{\mu\}, \{\lambda\}) = \frac{\matrixel{\{\mu\}}{\hat{\rho}(x)}{\{\lambda\}}}{\sqrt{\innerproduct{\{\mu\}}{\{\mu\}}\innerproduct{\{\lambda\}}{\{\lambda\}}}}.
 \end{align}
-If two states have the same momentum, the matrix element vasishes~\cite{slavnov90_noneq_time_curren_correl_funct}, while if $\{\mu\} = \{\lambda\}$ we have $\mathcal{F}=\frac{N}{L}$.
+If two states have the same momentum, the matrix element vanishes~\cite{slavnov90_noneq_time_curren_correl_funct}, while if $\{\mu\} = \{\lambda\}$ we have $\mathcal{F}=\frac{N}{L}$.
 
 \begin{savequote}[50mm]
 Hilbert space is a big place.
@@ -1098,7 +1113,7 @@ ABACUS thus keeps track of the already scanned states in the Hilbert space to al
 
 In practice we are therefore descending a ``mountain'' of form factors as slowly as possible, always trying to move in the direction of smallest change.
 This proves especially difficult since the form factors are not monotonically decreasing while moving around in Hilbert space.
-ABACUS can not fully compensate for this non-monotinicty, as is seen in \cref{fig:orderedmagnitudes}, where the absolute magnitude of form factors is plotted as a function of their order in the computation.
+ABACUS can not fully compensate for this non-monotonicity, as is seen in \cref{fig:orderedmagnitudes}, where the absolute magnitude of form factors is plotted as a function of their order in the computation.
 We see both that some highly contributing form factors are missed early on, appearing as spikes in the distribution later, as well as see small form factors spuriously being considered early, resulting in wasted computations.
 \begin{figure}[tb!]
   \centering
@@ -1188,9 +1203,9 @@ Real stupidity beats artificial intelligence every time.
 
 In the past decade machine learning has emerged as an important tool in many areas.
 The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commercial and academic side.
-Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies~\cite{levinson11_towar}) and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017,silver16_master_game_go_with_deep}.
-In the life sciences machine learning uses include detecting risk factors for cardiovascular diseases from pictures of the retina~\cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than hand crafted sequencers)~\cite{Poplin2016}.
-Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.\footnote{What the implications are of this brave new world where no image can be fully trusted is a discussion that is only just beginning.}
+Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies)~\cite{levinson11_towar} and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017,silver16_master_game_go_with_deep}.
+In the life sciences machine learning uses include detecting risk factors for cardiovascular diseases from pictures of the retina~\cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than handcrafted sequencers)~\cite{Poplin2016}.
+Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.
 
 In physics applications have also been found in a variety of fields.
 CERN is exploring ways of tagging particles in LHC collisions using deep learning~\cite{paganini17_machin_learn_algor_jet_taggin}.
@@ -1207,15 +1222,13 @@ Since the setups are often difficult to design, reinforcement learning is used, 
 There are also interesting links between deep learning and physics on a more fundamental level.
 For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similar way to the renormalization group~\cite{Mehta2014}. 
 
-In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see~\cite{Dunjko2017} for that).}
+In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see~\cite{Dunjko2017}).}
 
 
 \section{Machine learning: the basics}
 In many cases we would like to find patterns in data.
 The 
 
-useful for getting better initial guesses for rapidities!
-Integrate with the reinforcement learning, to get the training data. Try different neural net architectures.
 \subsection{Neural networks}
 Stochastic gradient descent
 training, validation, testing
@@ -1225,14 +1238,10 @@ Feedforward
 \section{Reinforcement learning}
 
 The machine learning techniques we have described until now all rely on large data sets to function, being supervised algorithms.
-They use expert data to train and this (hopefully) allows for generalization to new data.\footnote{Unsupervised algorithms that do not map an input to an output exist and are widely used, but are more suitable for tasks such as clustering.}
+They use expert data to train and this (hopefully) allows for generalization to new data.
 In many cases however the acquisition of expert data is difficult or impossible.
 In these cases reinforcement learning comes into play.
 Here, there is no a priori knowledge of the targets, only a reward function that, given a state and an action returns a reward.
-
-Reinforcement learning based Go, chess and shogi programs have consistently beaten domain specific state of the art programs, while requiring a factor 1000 less moves to be considered~\cite{Silver2017}
-
-
 
 \subsection{Q-learning}
 
@@ -1353,14 +1362,14 @@ Recalling the Lehman representation of the dynamic structure function (DSF, \cre
 we note that if we want to evaluate the above expression, we in principle have to sum over the entire Hilbert space of the model in question (potentially a space of  infinite size) to capture all behaviour of the DSF.
 Due to the impracticality of this we instead consider states that contribute a lot to the above sum.
 In general these are states with a large matrix element.
-More precisily they are states with large contributions to the f-sum rule (see \cref{eq:fsumrule}):
+More precisely they are states with large contributions to the f-sum rule (see \cref{eq:fsumrule}):
 \begin{align}
   \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2,
 \end{align}
 where we specified to the case of the density operator \(\rho = \Psi^{\dag}\Psi\) for the Lieb-Liniger model.
 This allows us to determine which fraction of states have been summed in a given momentum slice \(k\).
 
-At present the scanning of the Hilbert space is implemented in ABACUS in the form of a large function of approximatly 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
+At present the scanning of the Hilbert space is implemented in ABACUS in the form of a large function of approximately 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
 Looking at \cref{fig:orderedmagnitudes}, we see that the summation is not yet optimal, in that some important states are not captured early in the summation.
 This results in lower than possible saturation of the f-sum rule for a given running time of ABACUS.
 
@@ -1455,7 +1464,7 @@ This contrasts with ABACUS, where \(I_{\max}\) acts only as the cutoff for the t
 Therefore ABACUS, when considering states, can always get high saturations in every momentum slice.
 ABACUS also has the advantage that it can scan within a individual slice.
 Due to this when calculating the f-sum rule saturation we only consider states for which \(\frac{L}{2\pi}P \in [-I_{\max},I_{\max}]\).
-If we take all states in this interval and use \(N = 5\), \(I_{\max}=12\) the total sumrule saturation is approximately 83.5\%.
+If we take all states in this interval and use \(N = 5\), \(I_{\max}=12\) the total sum rule saturation is approximately 83.5\%.
 
 Furthermore we look at sum rule and form factor contributions for states with different number of particle-hole excitations, as calculated with~\cref{eq:52}.
 Looking at \cref{fig:meanffphpairs}, where we plot the mean form factor sizes for each possible number of particle-hole pairs, we see that it decreases exponentially as \(N_{\mathrm{ph}}\) increases.
@@ -1492,7 +1501,7 @@ This validates the use of \cref{eq:52} while training to select for states with 
 We consider a number of different possible ways of determining states:
 \begin{itemize}
 \item A neural network trained with and without checking the number of particle hole pairs for states;
-\item Random state selection. In this case we simply set \(\epsilon=1\) in the epsilon greedy algoritm and do not decrease it over the course of the run.
+\item Random state selection. In this case we simply set \(\epsilon=1\) in the epsilon greedy algorithm and do not decrease it over the course of the run.
 \end{itemize}
 For both methods we calculate the DSFs both with and without minimizing \(N_{\mathrm{ph}}\).
 The measure we use to compare methods is how many states are required to reach a given f-sum rule saturation.
@@ -1500,10 +1509,15 @@ Due to the representation of the states and the cutoff used, direct comparison w
 
 Required sum rule saturation is set at 83\%, which in the given subspace corresponds to approximately \(83/83.5\approx99.5\%\) (\cref{sec:exact}).
 We average the number of states necessary over 5 runs with random initial seed.
+If training occurs we do so for 25 epochs of 500 states.
+We set \(\epsilon=0.1\) and do not change it during training.
+We do not start from full exploration (\(\epsilon=1\)) because many states will contribute very little to sum rule saturations, leading to poor results.
+In evaluation we also have \(\epsilon=0.1\).
 We set the hyperparameters \(\alpha=0.1\) and \(\gamma = 0.975\).
 If convergence has not been reached after 3000 states, the scanning is terminated.
+Encountered states are stored for later analysis as well as to prevent double counting.
 
-As an approximate measure of the average size of matrix elements, we consider a linear trendline trough the data.
+As an approximate measure of the average size of matrix elements, we consider a linear trend line trough the data.
 The value of the base offset acts as a proxy for the average size, allowing for a comparison between different methods.
 
 For the reward function we do not use the obvious choice of form factors or sum rule saturation, since these measures span many decades.
@@ -1597,7 +1611,7 @@ This probably happens because most of the large form factors have already been s
 \end{figure}
 
 Now we come to the results of using Q-learning.
-If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an averge number of states to convergence of 630 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
+If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an average number of states to convergence of 630 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
 The average form factor also has the largest value at order $10^{-5}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
 
 
@@ -1667,13 +1681,13 @@ Unoccupied positions should not be selected for removal, while occupied position
 We see this occurring in the form of bands of high and low Q-factors.
 The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval deposit somewhere outside.
 In contrast the vertical blue band corresponds to forbidden actions that would take a particle from an unoccupied position and place it on an already occupied site.
-These actions with two forbidden subactions are more strongly disfavored than the actions represented by the corner quadrants, which represent taking a particle from an unoccupied position and placing it at another unoccupied site.
+These actions with two forbidden sub-actions are more strongly disfavored than the actions represented by the corner quadrants, which represent taking a particle from an unoccupied position and placing it at another unoccupied site.
 The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) Q-factors.
 
 \begin{figure}[tb!]
   \centering
   \includegraphics{state.pdf}
-  \caption{Ground state of the Lieb-Liniger model in binary represenation with \(N=11\) and \(I_{\max}=20\). The yellow dots represent particles.}
+  \caption{Ground state of the Lieb-Liniger model in binary representation with \(N=11\) and \(I_{\max}=20\). The yellow dots represent particles.}
   \label{fig:binarygroundstate}
 \end{figure}
 
@@ -1778,7 +1792,7 @@ GenProg, which used digital evolution to generate debugging programs, fixed a so
 
 Solutions may also depend on bugs in the simulation platform being used, acting in a way as automated bug discovery.
 In a simulation in which swimming strategies were evolved, the simulation used inaccurate numerical simulation.
-Fast motion would lead to the accumulation of errors, which was exploited by creatures by twitching bodyparts rapidly, providing free energy.
+Fast motion would lead to the accumulation of errors, which was exploited by creatures by twitching body parts rapidly, providing free energy.
 In a similar vein buggy collision detection was used by creatures to obtain free energy by penetrating the ground.
 When the simulation picked this up and corrected it, the upward force led to forward locomotion~\cite{1803.03453}.\footnote{Reference~\cite{1803.03453} contains many more examples.} 
 
@@ -1833,7 +1847,7 @@ We are seeing an increase in the system sizes realizable with exact diagonalizat
 
 The field of machine learning and artificial intelligence in general is currently experiencing large changes.
 
-Reinforcment learning may also be used in rapidity determination.
+Reinforcement learning may also be used in rapidity determination.
 Given a set of Bethe numbers, the rapidities can be predicted, after which convergence to machine precision is achieved through Newton iterations.
 The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions.
 
@@ -1843,7 +1857,7 @@ A possible solution is the extension of the value function to a continuous domai
 This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
 Another improvement may come from using experience replay\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
 This allows for a way to deal with high correlation between consecutive states, by saving a tuple consisting of the current state, the action taken, the observed reward and the new state.
-Training is then performed on minibatches of this set of transitions.
+Training is then performed on mini-batches of this set of transitions.
 This has the advantage that data is used multiple times during training, improving efficiency.
 Furthermore the correlations between consecutive states are broken, reducing the variance of updates.
 We did not use it here because in DSF calculation states may only be seen once to prevent double counting, thus making individual states not independent of the states that came before.
@@ -1888,7 +1902,7 @@ Integrating over an interval \(x_-\in[-\epsilon,\epsilon]\) we get
   \label{eq:18}
   -\frac{1}{2} \frac{\partial^2}{\partial x_+^2} \int_{-\epsilon}^{\epsilon} \psi \dd x_- - 2 \int_{-\epsilon}^{\epsilon} \frac{\partial^2}{\partial x_-^2}\psi \dd x_- + 2c\int_{-\epsilon}^{\epsilon} \delta(x_-)\psi \dd x_- = E\int_{-\epsilon}^{\epsilon} \psi \dd x_.
 \end{align}
-The first term on the left hand sice becomes 0 on \(\lim_{\epsilon\to0^+}\) as well as the term on the right hand side, leaving us with
+The first term on the left hand side becomes 0 on \(\lim_{\epsilon\to0^+}\) as well as the term on the right hand side, leaving us with
 \begin{align}
   \label{eq:19}
   \left.- \frac{\partial}{\partial x_-} \psi \right|_{x_-=-0^+}^{x_-=0^+}  + \left.c\psi\right|_{x_-=0} = 0.
@@ -2122,7 +2136,7 @@ Here we present the raw values for the number of iterations of the Newton method
     Random sorted  & Yes & 5.92(49) & 5.92(49) & 6.03(42)  \\
            & No & 5.74(50) & 5.83(59) & 5.92(28)
   \end{tabular}
-  \caption{Newton method iterations necessary for convergence for different intial value methods for \(N=5,10,20\).}
+  \caption{Newton method iterations necessary for convergence for different initial value methods for \(N=5,10,20\).}
 \end{table}
 
 
