@@ -46,7 +46,15 @@
 \DeclareSymbolFont{usualmathcal}{OMS}{cmsy}{m}{n}
 \DeclareSymbolFontAlphabet{\mathcal}{usualmathcal}
 
-\hypersetup{colorlinks, citecolor=blue, filecolor=black, linkcolor=blue, urlcolor=blue} 
+% \hypersetup{colorlinks, citecolor=blue, filecolor=black, linkcolor=blue, urlcolor=blue} 
+
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
 
 \sisetup{
   separate-uncertainty=true
@@ -223,21 +231,20 @@ The code used to produce the results in this thesis may be found at \href{https:
 \end{sloppypar}
 
 \begin{savequote}[50mm]
-You haff to vork very very hard.
+You haff to vork fery feery haaard.
 \qauthor{Hans Bethe}
 \end{savequote}
 
-\chapter{The Bethe Ansatz}\label{chap:bethe_ansatz}
+\chapter{The Bethe ansatz}\label{chap:bethe_ansatz}
 
-% \epigraph{\textit{You haff to vork very very hard.}}{Hans Bethe}
 
 \noindent
-The Bethe Ansatz allows for a way to solve certain one-dimensional systems exactly.
+The Bethe ansatz allows for a way to solve certain one-dimensional systems exactly.
 It was put forth by Bethe in 1931 to solve the Heisenberg model, refining and correcting the earlier work of Bloch~\cite{Bethe1931}.
 
 \section{The Lieb-Liniger model}
 
-Here, to introduce and understand the Bethe Ansatz, we focus on the Lieb-Liniger model, finding its eigenfunctions and excitation spectrum.
+Here, to introduce and understand the Bethe ansatz, we focus on the Lieb-Liniger model, finding its eigenfunctions and excitation spectrum.
 The Lieb-Liniger model, first introduced by Lieb and Liniger in 1963~\cite{Lieb1963, Lieb1963a}, consists of bosons interacting through a delta-function potential.
 This model is described by the Hamiltonian
 \begin{equation}
@@ -1024,7 +1031,7 @@ To prevent the calculation of the inverse of the Jacobian, in practice Newton's 
   J(\mathbf{x}^k)[\mathbf{x}^{k+1} - \mathbf{x}^k] = - \mathbf{f}(\mathbf{x}^k),
 \end{equation}
 where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x}^k)\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
-This linear system can be solved using LU decomposition~\cite{Press2007}.\footnote{In an LU decomposition we can rewrite the set of linear equations:
+This linear system can be solved using LU decomposition~\cite{Press2007}.\footnote{In an LU decomposition we rewrite the set of linear equations:
   \begin{align}
     \label{eq:54}
     \mathbf{A}\cdot\mathbf{x} = (\mathbf{L}\cdot\mathbf{U}) \cdot \mathbf{x} =\mathbf{L}\cdot(\mathbf{U}) \cdot \mathbf{x}) = \mathbf{b},
@@ -1089,32 +1096,33 @@ On machines implementing IEEE 754-2008 (the standard for floating-point arithmet
 
 With the rapidities in hand (and the form factors and Gaudin norm readily computed therefrom, see~\cref{chap:bethe_ansatz}), we are now faced with the summation over states.
 At face value we may now hit a wall, since we are tasked with exploring a factorially large space and find eigenstates with monotonically decreasing absolute numerical form factor values.
-The dimensionality of the state space is equal to the number of allowable choices of quantum numbers because a Pauli-like principle is at work.
-For the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator), given $M$ particles and a UV cutoff for the upper, respectively lower bound of the quantum number $I_{\infty+}$, $I_{\infty-}$, the number of states is~\cite{Caux2009}\footnote{This is the number of states if particle Bethe numbers can not exceed the UV-cutoffs. In the current implementation of ABACUS scanning within a single momentum slice is possible, which may include states in which individual particles exceed \(I_{\max}\), but which sum to lie within the allowed interval. Therefore this number may now be seen as a lower limit on the size of the Hilbert space under consideration.}
+The dimensionality of the state space is equal to the number of allowed choices of quantum numbers because a Pauli-like principle is at work.
+For the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator), given $M$ particles and a UV cutoff for the upper bound, $I_{\infty+}$, and lower bound of the quantum number $I_{\infty-}$, the number of states is~\cite{Caux2009}\footnote{This is the number of states if particle Bethe numbers can not exceed the UV-cutoffs. In the current implementation of ABACUS scanning within a single momentum slice is possible, which may include states in which individual particles exceed \(I_{\max}\), but which sum to lie within the allowed interval. Therefore this number may now be seen as a lower limit on the size of the Hilbert space under consideration.}
 \begin{equation}
   \binom{I_{\infty+} + I_{\infty-} + 1}{M} = \frac{(I_{\infty+} + I_{\infty-} + 1)!}{M!(I_{\infty+} + I_{\infty-} + 1 - M)!}.
 \end{equation}
 Luckily, there are some principles that allow for the definition of an efficient algorithm for scanning the Hilbert space.
 
-First, form factors for large enough systems are approximately continuous, meaning the changing of a single quantum number does not change the form factor a lot.
+Firstly, form factors for large enough systems are approximately continuous, meaning the changing of a single quantum number does not change the form factor a lot.
 Therefore, given an eigenstate with a large form factor and thus a large contribution to the DSF, we can scan states close to this given state to find other large contributions.
 
-Second, form factors between the ground state and excited states generally decrease when more particle-hole excitations are created in the area in pseudo-momentum space clamped by the Fermi level.
+Secondly, form factors between the ground state and excited states generally decrease when more particle-hole excitations are created in the area in pseudo-momentum space clamped by the Fermi level.
 
-Third, as quantum numbers become larger, moving further from the Fermi level in quantum number space, the form factors also decrease~\cite{Caux2009}.
+Thirdly, as quantum numbers become larger, moving further from the Fermi level in quantum number space, the form factors also decrease~\cite{Caux2009}.
 
-With these principles we can start to define a way for scanning the Hilbert space.
-Starting from the lowest-energy state we generate states with low-lying particle-hole pair excitations in the Fermi interval (low-lying meaning they are close to the center of the interval).
+With these principles we can start to define a protocol for scanning the Hilbert space.
+Starting from the lowest-energy state we generate states with low-lying particle-hole pair excitations in the Fermi interval (low-lying meaning the states are close to the center of the interval).
 If the contributions from these states to the chosen sum rule are large enough, further scanning of this state commences, with increasing complexity of the state in the form of more particle-hole pairs.
 
-Large enough, in the context above, means that the form factor associated with the state is above the so-called \textit{running threshold}, with initial value such that the number of intermediate states is of order \(N^2\).
-The form factors are kept, and the threshold is lowered after a scan and a new scan is initiated of those sectors in the Hilbert space for which the average form factor is above the current running threshold.
-ABACUS thus keeps track of the already scanned states in the Hilbert space to allow knowledge to be gathered on where to scan next as well as to avoid doubly counting states~\cite{Caux2009}.
+In the context above, large enough means that the form factor associated with the state is above the so-called \textit{running threshold}, with initial value such that the number of intermediate states is of order \(N^2\).
+The form factors are kept, and the threshold is lowered after a scan. 
+A new scan is initiated of those sectors in the Hilbert space for which the average form factor is above the current running threshold.
+ABACUS thus keeps track of the already scanned states in the Hilbert space to gather knowledge on where to scan next as well as to avoid doubly counting states~\cite{Caux2009}.
 
 In practice we are therefore descending a ``mountain'' of form factors as slowly as possible, always trying to move in the direction of smallest change.
-This proves especially difficult since the form factors are not monotonically decreasing while moving around in Hilbert space.
+This proves especially difficult since the form factors are not monotonically decreasing while moving around in the Hilbert space.
 ABACUS can not fully compensate for this non-monotonicity, as is seen in \cref{fig:orderedmagnitudes}, where the absolute magnitude of form factors is plotted as a function of their order in the computation.
-We see both that some highly contributing form factors are missed early on, appearing as spikes in the distribution later, as well as see small form factors spuriously being considered early, resulting in wasted computations.
+We see both that some highly contributing form factors are missed early on, appearing as spikes in the distribution later, and we see small form factors spuriously being considered early, resulting in wasted computations.
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
@@ -1205,7 +1213,7 @@ In the past decade machine learning has emerged as an important tool in many are
 The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commercial and academic side.
 Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies)~\cite{levinson11_towar} and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017,silver16_master_game_go_with_deep}.
 In the life sciences machine learning uses include detecting risk factors for cardiovascular diseases from pictures of the retina~\cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than handcrafted sequencers)~\cite{Poplin2016}.
-Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.
+Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.\footnote{The implications of this brave new world in which no picture is to be trusted are part of a discussion that is only just beginning.}
 
 In physics applications have also been found in a variety of fields.
 CERN is exploring ways of tagging particles in LHC collisions using deep learning~\cite{paganini17_machin_learn_algor_jet_taggin}.
@@ -1288,7 +1296,7 @@ We expect the number of iterations required for convergence of the Newton method
 Therefore, we use a neural network to act as a function approximator, feeding in an array of \(N\) Bethe numbers and outputting an array of \(N\) rapidities.
 
 The methodology is as follows: we generate a data set of 20000 sets of Bethe numbers and calculate their corresponding rapidities of length \(N\), for various values of \(N\).
-The Bethe numbers are randomly drawn from a normal distribution centered on 0, with a variance of \(N\) (this corresponds to biasing the generated states to be close to the ground state).
+The Bethe numbers are randomly drawn from a normal distribution centered on zero, with a variance of \(N\) (this corresponds to biasing the generated states to be close to the ground state).
 There is no additional UV cutoff employed.
 
 The generated data is used for training a neural network consisting of an input layer of size \(N\), two hidden layers of size \(N^2\) and an output layer of size \(N\).
@@ -1297,12 +1305,13 @@ This architecture was arrived at through trial and error.
 More complex networks showed did not show improvements on rapidity estimation and took longer to train and to evaluate.
 
 \subsection{Results}
-We compare 4 different ways of determining initial values: using \cref{eq:12} (denoted as ``Naive Bethe''), using the neural network described above (denoted ``ML''), using a vector of random numbers drawn from a normal distribution with mean 0 and variance \(N\) (``Random'') and a vector of random numbers drawn from a normal distribution with mean 0 and variance \(N\) where entries are sorted (``Random sorted'').
+We compare 4 different ways of determining initial values: using \cref{eq:12} (denoted as ``Naive Bethe''), using the neural network described above (denoted ``ML''), using a vector of random numbers drawn from a normal distribution with mean zero and variance \(N\) (``Random'') and a vector of random numbers drawn from a normal distribution with mean zero and variance \(N\) where entries are sorted (``Random sorted'').
 
 We also compare all these methods with both damping (\cref{eq:dampednewton}) enabled and disabled. We use systems with \(c=1\) and \(L=N=5,10\) and 20.
 Of the 20000 data points, 19000 are used for training and 1000 for validation over 100 training epochs.
 
-We observe that the neural network learns the structure of the rapidities reasonably well, notably learning part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lambda_j > \lambda_k\) (see \cref{fig:rapidities}).
+We observe that the neural network learns the structure of the rapidities reasonably well.
+Notably it learned part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lambda_j > \lambda_k\) (see \cref{fig:rapidities}).
 
 \begin{figure}[tb]
   \centering
@@ -1319,9 +1328,9 @@ This difference decreases to \(0.43-0.45\) iterations for \(N=10\) and to \(0.07
 This decrease is probably due to the inability of the neural network to capture the increasing number of cross interactions of the rapidities with increasing system size.
 Compared to random initialization (either sorted or unsorted), both Naive Bethe and ML perform better.
 We see that sorting random initial values improves convergence, probably because a sorted list of monotonically increasing initial values captures the basic structure of the rapidities.
-Damping does not appear to have a large impact on convergence and we will from here on only consider undamped rapidity calculations.
+Damping does not appear to have a large impact on convergence, and we will from here on only consider undamped rapidity calculations.
 
-Comparing time until convergence paints a different picture compared to that above.
+When we compare the time until convergence, a different picture emerges.
 Looking at \cref{fig:convtimes} we see that the ML method is consistently slower than Naive Bethe, although the difference decreases as \(N\) increases.
 This is probably because during Newton iterations we use LU decompositions, which have an algorithmic complexity \(\mathcal{O}(N^3)\)~\cite{Press2007}.
 For large \(N\) this step outweighs the increased complexity introduced by the neural network compared to a naive guess, because the number of calculations necessary for evaluation in the neural network is determined by the number of parameters and is therefore of order \(\mathcal{O}(N^2)\).
@@ -1353,7 +1362,7 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be
 \section{Walking through state space}
 
 We now turn to exploring the state space of Bethe integrable models using machine learning.
-What we are in general interested in is that, given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible.
+Given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible.
 
 Recalling the Lehman representation of the dynamic structure function (DSF, \cref{eq:lehman})
 \begin{equation}
@@ -1370,22 +1379,22 @@ where we specified to the case of the density operator \(\rho = \Psi^{\dag}\Psi\
 This allows us to determine which fraction of states have been summed in a given slice of momentum \(k\).
 
 At present the scanning of the Hilbert space is implemented in ABACUS in the form of a large function of approximately 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
-Looking at \cref{fig:orderedmagnitudes}, we see that the summation is not yet optimal, in that some important states are not captured early in the summation.
+Looking at \cref{fig:orderedmagnitudes}, we see that the summation is not yet optimal: some important states are not captured early in the summation.
 This results in lower than possible saturation of the f-sum rule for a given running time of ABACUS.
 
-We therefore turn to machine learning to scan through the Hilbert space in a hopefully more efficient way.
+Thus, we turn to machine learning to scan through the Hilbert space in a hopefully more efficient way.
 This also moves complexity from the handcrafted function into a neural network.
-While the neural network in more opaque in how it arrives at solutions, it may nevertheless present a more systemic way of arriving at an algorithm.
+While the neural network in more opaque in how it arrives at solutions, it may nevertheless present a more systematic way of arriving at an algorithm.
 
-We use reinforcement learning as a way to iteratively come to an optimal state summation, inspired by the recent success of Google Deepmind in playing Go~\cite{silver16_master_game_go_with_deep,Silver2017a}, chess and shogi~\cite{Silver2017} and 1980s computer games~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
-The methods of these papers are especially notable because they do not require handcrafting the inputs to the neural networks, but learn higher level representations from scratch.
-Specifically we will use Q-learning as in the last two references.
+We use reinforcement learning as a way to iteratively come to an optimal state summation, inspired by the recent success of Google Deepmind in playing Go~\cite{silver16_master_game_go_with_deep,Silver2017a}, chess, and shogi~\cite{Silver2017}, and 1980s computer games~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
+These methods are especially notable because they do not require handcrafting the inputs to the neural networks, but learn higher level representations from scratch.
+Specifically, we will use Q-learning as in the last two references.
 We refer to \cref{chap:machine_learning} for an general explanation of Q-learning and focus here only on the specifics relevant to Hilbert space scanning of the Lieb-Liniger model.
 Note that the learning we employ is tabula rasa, meaning that there is no pretraining on a known data set and all learning occurs from scratch.
 
 \subsection{State and move representation}
 
-When using neural networks we need a concrete representation of the state.
+When using neural networks, we need a concrete representation of the state.
 A vector of Bethe numbers has a resolution that is too low as it hides some of the degrees of freedom of the system, notably not covering the holes that appear between particles.
 We therefore use a binary encoding for Lieb-Liniger model states, mapping the Bethe numbers to a vector where 1s represent particles and 0s represent empty locations in Bethe number space.
 Because the vector has to have a finite size this representation does force us to implement a UV-cutoff above which there are no Bethe numbers and which can not be occupied.
@@ -1398,8 +1407,8 @@ For example, the ground state of the $N=3$ state with $I_{\max} = 5$ is\footnote
 \end{equation}
 
 Moves are determined by a neural network consisting of an input layer of size \(N_{\textrm{world}}\), two hidden layers of size \(\lfloor N_{\textrm{world}}^{3/2}\rfloor\) and an output layer of size \(N_{\textrm{world}}^2\), with each layer having hyperbolic tangent activation functions.
-This is an implementation of the idea to change the \(Q\)-function from the form \(Q(s,a)\) to \(Q(s)\), with an output over all possible actions\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
-This simplifies the process in that only a single evaluation of the neural net is required for each step, instead of an evaluation for all possible actions.
+The network implements the idea of changing the \(Q\)-function from the form \(Q(s,a)\) to \(Q(s)\), with an output over all possible actions\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
+This simplifies the decision-making process in that only a single evaluation of the neural net is required for each step, instead of an evaluation for all possible actions.
 We calculate loss using the mean-square error.
 
 A move is represented in the same way as AlphaZero uses in chess~\cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
@@ -1415,10 +1424,10 @@ If the move with the largest Q-factor is illegal, the move with the next-highest
 Note that during training we use \(\epsilon\)-greedy state selection, with random (legal) action being selected a fraction \(\epsilon\) of the time and \(Q\)-network mediated actions being chosen during the remaining \(1-\epsilon\) fraction.
 
 We also consider what happens when the number of particle-hole pairs is minimized.
-To that end we define the number of particle-hole pairs \(N_{\mathrm{ph}}\) as
+To that end, we define the number of particle-hole pairs \(N_{\mathrm{ph}}\) as
 \begin{align}
   \label{eq:52}
-  N_{\mathrm{ph}}(s, r) = N - \mathrm{len}(J(s)_{s_i=1}\cap J(r)_{r_i=1}) 
+  N_{\mathrm{ph}}(s, r) = N - \mathrm{len}(J(s)_{s_i=1}\cap J(r)_{r_i=1}), 
 \end{align}
 where \(s\) is the state for which the number of particle-hole pairs is determined and \(r\) is the reference state, in this case the ground state.
 \(J(s)_{s_i=1}\) denotes the set of indices for which \(s_i = 1\) (likewise for \(r\)).
@@ -1429,7 +1438,8 @@ It has the desired properties of being 0 when \(r=s\) and \(N_{\mathrm{ph}} = N\
 
 \subsection{Exact results}\label{sec:exact}
 
-One problem that presents itself with the representation discussed above is that especially the higher pseudo-momentum states are less well represented than lower momentum states, since there are more possible combinations that result in a small momentum.
+A problem now presents itself.
+In the representation discussed above the higher pseudo-momentum states are less well represented than lower momentum states, since there are more possible combinations that result in a small momentum.
 We see this if we consider for example a Lieb-Liniger model with \(c=1\), \(L=N=5\) and \(I_{\max} =12\).
 This choice of parameters allows for \(\binom{N_{\mathrm{world}}}{N}=\binom{25}{5}=53510\) possible combinations, concentrated around the origin.
 This is a number for which it is still feasible to generate all combinations and calculate the form factors of the associated states.
@@ -1534,20 +1544,20 @@ Instead we use
   \end{algorithmic}
 \end{algorithm}
 \noindent
-where \(\mathcal{F}\) is the form factor of the current state \(\mu\), \(\lambda\) is the reference state and \(d(\mu, \lambda)\) is the distance between the current state and the reference state, defines as
+where \(\mathcal{F}\) is the form factor of the current state \(\mu\), \(\lambda\) is the reference state and \(d(\mu, \lambda)\) is the distance between the current state and the reference state, defined as
 \begin{algorithm}[H]
    \hspace*{\algorithmicindent} \textbf{Input} $\mu, \lambda$ 
    \begin{algorithmic}[1]
      \State $d = 0$
-     \For{$i$ such that $J(I_{\mu})_{I_i=1}$}
-     \State $d = d + \abs{i - \left[J(I_{\lambda})_{I_j=1}\right]_i}$
+     \For{$i=1$ to $N$}
+     \vspace{3mm}
+     \State $d = d + \abs{I_{\mu}^i-I_{\lambda}^i}$
      \EndFor{}
      \State \Return $d$
   \end{algorithmic}
 \end{algorithm}
 \noindent
-with \(J\) an index set.
-In other words, it is the distance each particle has traveled in Bethe number space from its original position in the reference state.
+In other words, it is sum of the distance each particle has traveled in Bethe number space from its original position in the reference state.
 
 
 
@@ -1756,13 +1766,13 @@ A number of difficulties may be identified with the results mentioned.
 
 Firstly, while the Lieb-Liniger model is Markovian, the Hilbert space scanning used to calculate DSFs is not.
 This is because, to prevent overcounting, the entire history of previously visited states must be taken into consideration during each state selection.
+It is an example of a hidden state task, because not all relevant information required for selecting the best action is present when only considering the current state.
+Applying reinforcement learning algorithms to non-Markovian tasks (which are the norm when considering real world control tasks) may lead to suboptimal performance~\cite{whitehead95_reinf_learn_non_markov_decis_proces}.
+For the problem at hand however the use of a history over states is essential.
 
+Furthermore the proof of convergence of the Q-learning algorithm to an optimal policy depends on the Markovian nature of a problem~\cite{watkins92_q_learn}.
+Note though that convergence happens only in the \(t\to\infty\) limit, and therefore of questionable relevance when Q-learning is actually used.
 
-
-Does this mostly have to do with the proofs of convergence just becoming easier when considering Markovian problems?
-
-
-\cite{whitehead95_reinf_learn_non_markov_decis_proces}
 
 \subsection{Problems with reinforcement learning}
 
@@ -1774,6 +1784,11 @@ Even in the best case approximately 15 million frames (at 60 Hertz) were require
 This was however already an improvement on the original work done in~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, where only 1 in 4 frames where used to improve computational efficiency and which required 38 days of gametime to train on 50 million sample frames.
 A similar data inefficiency is seen in~\cite{heess17_emerg_locom_behav_rich_envir}.
 Although the results are impressive (an agent learns to navigate a challenging environment consisting of hurdles and gaps using only a simple reward function), training took 100 hours of wall clock time on 64 workers~\cite[Figure 1]{heess17_emerg_locom_behav_rich_envir}.
+This all in contrast to humans, who are often able to able to learn from a single example~\cite{marcus18_deep_learn}.
+
+This leads to the conjecture that a well-engineered handcrafted function may outperform a reinforcement learning solution, if such a function can be created.
+This is the case for ABACUS, where the applicability to large systems stems from the preliminary information provided by integrability, built into the algorithm~\cite{Caux2009}.
+Learning the structure of the form factor space by reinforcement would therefore probably take an inordinate number of samples.
 
 At the same time state of the art machine learning setups are experiencing an large increase in compute power used.
 Data~\cite{amodei2018} compiled by the nonprofit OpenAI\footnote{OpenAI was founded with the goal of doing research in finding safe ways towards the realization of artificial general intelligence (see \href{https://openai.com/about/}{https://openai.com/about/}).} shows an increase of a factor 300000 in the number of petaflop/s-day\footnote{A petaflop/s-day is defined as doing $10^{15}$ neural network operations per second for one day, or approximately $10^{20}$ operations per day~\cite{amodei2018}.} used in training machine learning systems between 2012 and the end of 2017 (\cref{fig:increasedaiflops}). 
@@ -1783,7 +1798,7 @@ This is far in excess of the doubling time of 18 to 24 months predicted by Moore
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{increaseaiflops.png}
-  \caption{Log plot of petaflop/s-day used in training AI over time. Doubling time is 3.5 months. Figure taken from~\cite{amodei2018}}
+  \caption{Log plot of petaflop/s-day used in training AI over time. Doubling time is 3.5 months. Figure taken from~\cite{amodei2018}}.
   \label{fig:increasedaiflops}
 \end{figure}
 
@@ -1815,47 +1830,60 @@ A reward function based only on score performs poorly in this game~\cite{mnih15_
 We also see this in the DSF scanning developed here.
 The obvious choice for the reward function is the absolute form factor squared for the operator under consideration.
 The problem with this approach comes from the many decades spanned by the form factors.
-This makes the rewards for many transition very small, meaning it will often not even register as noise.
+This makes the rewards for many transition very small, meaning it will often only even register as noise.
 
-Finally machine learning research is currently facing problems with regards to reproducibility of findings.
-This is caused by non-determinism in the research environment, for example by the effects different random seeds have on the weight initialization of models.
-Different initializations may lead to large 
+Finally reinforcement learning research is currently facing problems with regards to reproducibility of findings.
+This is largely caused by non-determinism in the research environment.
+In~\cite{1709.06560} a systematic study was made of factors impacting performance.
+They found that simple changes, such as changing the activation function used in neural networks, can have a large effect on model performance.
+This makes the comparison between different models difficult if those effects are not taken into account.
+
+Another source of non-determinism are the random seeds used to initialize weights of neural networks.
+In \cref{fig:halfcheetahdifferentresults} two averages, each taken over a set of five random seeds, are shown for performance in the HalfCheetah environment.\footnote{HalfCheetah is a research environment for reinforcement learning in which a cheetah-like creature has the goal of learning to walk.}
+The exact seeds chosen make a large difference in performance, as can be seen.
+This may lead to inaccuracy when reporting on the performance of algorithms, because performance is often based on the average over five runs.
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{HalfCheetah-v1__TRPO,_Different_Random_Seeds_.pdf}
+  \caption{Performance of a reinforcement alogrithm in the HalfCheetah environment, averaged over two different sets of five random seeds each. Note the large difference in performance, even though only the seeds differ between runs. Figure taken from~\cite{1709.06560}.}
+  \label{fig:halfcheetahdifferentresults}
+\end{figure}
 
 
-Reproducibility of RL solutions is often an issue~\cite{1709.06560}.
-3.10. Deep learning thus far is difficult to engineer with \cite{marcus18_deep_learn}
+Another aspect of this can be seen in \cref{fig:halfcheetah}.
+This shows the performance over time of a new exploration method developed in~\cite{houthooft16_vime} and applied to HalfCheetah.
+The solid line is the median reward at each iteration, averaged over ten random seeds, with the shaded area showing the quartiles.
+Notice that the lowest quartile (the white area beneath the light orange shaded area) lies close to zero even after 1000 training iterations.
+This means that in almost a quarter of cases, performance of the trained model is poor, which is caused solely by the initial random seed.
 
-Has plot with performance, performance 25th percentile is almost 0\cite{houthooft16_vime}
-A visualization of this problem is seen in \cref{fig:halfcheetah}.\footnote{HalfCheetah is a research environment for reinforcement learning in which a cheetah like creature has the goal of learning to walk.}
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{rllearningtrouble.png}
-  \caption{Taken from~\cite{houthooft16_vime}.}
+  \caption{Reward in the HalfCheetah environment over time. The solid line is the median of ten random seeds, with shaded area denoting quartiles. The lowest quartile (the white area below the light orange shaded area) shows that little learning takes place for those seeds. Taken from~\cite{houthooft16_vime}.}
   \label{fig:halfcheetah}
 \end{figure}
 
 
 
-
-
-\cite{marcus18_deep_learn}
-
-
+Finally, deep learning has currently no way of learning high level concepts about the environments it is applied to.
+In learning Pong~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}, there is no knowledge about the concepts of a ``ball'' or a ``paddle'', only an input vector of pixels.
+Hierarchical structures also pose a problem, leading to difficulties when dealing with areas like language~\cite{marcus18_deep_learn}. 
 
 
 \section{Conclusion}
 
+In this thesis we considered ways in which to numerically calculate the Fourier transform of correlation functions, known as dynamical structure functions or DSFs.
+In the Lehmann series representation DSFs are a sum over matrix elements
+
 Based on measurements the prediction of rapidities does not improve the calculation.
 
-In general reinforcement learning is very data inefficient, leading to the conjecture that a well crafted function may work better in this domain.
-As mentioned in~\cite{Caux2009} the applicability of ABACUS for large systems stems from the preliminary information provided by integrability, built into the algorithm.
-We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible~\cite{wietek18_sublat_codin_algor_distr_memor}.
+
 
 \subsection{Outlook}
 
-The field of machine learning and artificial intelligence in general is currently experiencing large changes.
-
-Reinforcement learning may also be used in rapidity determination.
+In this thesis we used supervised learning to offer an initial guess for the numerical evaluation of rapidities.
+Reinforcement learning may also be used in this.
 Given a set of Bethe numbers, the rapidities can be predicted, after which convergence to machine precision is achieved through Newton iterations.
 The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions.
 
@@ -1863,7 +1891,7 @@ One of the limitations of the current approach of the system is that it requires
 Since the size of the action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\) this means that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
 A possible solution is the extension of the value function to a continuous domain.
 This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
-Another improvement may come from using experience replay\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
+Another improvement may come from using experience replay~\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
 This allows for a way to deal with high correlation between consecutive states, by saving a tuple consisting of the current state, the action taken, the observed reward and the new state.
 Training is then performed on mini-batches of this set of transitions.
 This has the advantage that data is used multiple times during training, improving efficiency.
@@ -1880,11 +1908,23 @@ Does this generalize to other models? It should, as long as you are able to find
 This may also generalize to models beyond the Lieb-Liniger model.
 Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
 
-\section*{Acknowledgements}
+We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible~\cite{wietek18_sublat_codin_algor_distr_memor}.
+
+Finally, the fields of machine learning and artificial intelligence in general are currently experiencing large changes and advances.
+New methods and techniques are constantly developed and may also be applicable to the problem of DSF calculation.\footnote{They may also lead to paperclip maximizers, uncooperative spaceship computers and Arnold Schwarzenegger being sent back in time.}
+
+\section{Acknowledgements}
 I would like to thank Jean-Sébastien Caux for his supervision and valuable suggestions.
 Sam Kuypers is thanked for help in understanding some derivations.
-I would also like to thank Sam, along with the rest of the J-S master gang (Jorran de Wit and Rebekka Koch), for providing a fun environment to work in and their willingness to hear me grumble about my project.
+I would also like to thank Sam, along with the rest of the J-S master gang (Jorran de Wit and Rebekka Koch), for always being there to have lunch with and their willingness to hear me grumble about my project.
 Once a Bethe bitch, always a Bethe bitch.
+On the same note I would like to thank all the other people in the master room, in particular Miró van der Worp, who was always organizing lectures and talks to distract us from our thesis.
+
+To my theatre friends, I would like to say: thanks for being non-physicists and for all the parties.
+
+Finally I would like to thank my parents.
+Without their emotional support this past year this thesis would never have been finished.
+Erik, maybe I should have followed you advice: ``leer een echt vak''~\cite{erik}.
 
 \appendix
 
@@ -1952,14 +1992,14 @@ we can rewrite part of this equation:
 
 Now we look at the first frequency moment:
 \begin{align}
-  I_k &= \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega)\\
-  &= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{[\mathcal{O}_k(t),\mathcal{O}_{k}^{\dagger}(0)]}\\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \left(\matrixel{\gamma}{\mathcal{O}_k(t)\mathcal{O}_{k}^{\dagger}(0)}{\gamma} - \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)\mathcal{O}_k(t)}{\gamma}\right) \\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{\mathcal{O}_k(t)}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}(0)}{\gamma} \right.\nonumber\\
+  I_k &= \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega)\\
+  &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{[\mathcal{O}_k(t),\mathcal{O}_{k}^{\dagger}(0)]}\\
+&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \left(\matrixel{\gamma}{\mathcal{O}_k(t)\mathcal{O}_{k}^{\dagger}(0)}{\gamma} - \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)\mathcal{O}_k(t)}{\gamma}\right) \\
+&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{\mathcal{O}_k(t)}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}(0)}{\gamma} \right.\nonumber\\
 &\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)}{\alpha}\matrixel{\alpha}{\mathcal{O}_k(t)}{\gamma}\right)\\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\mathcal{O}_ke^{-iHt}}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\
+&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\mathcal{O}_ke^{-iHt}}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\
 &\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{e^{iHt}\mathcal{O}_ke^{-iHt}}{\gamma}\right)\\
-&= \frac{1}{2N} \int_{\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
+&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
 &\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- e^{i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right), \label{eq:fourierfreqmoment}
 \end{align}
 where we used the Heisenberg relation \(\mathcal{O}(t) = e^{iHt}\mathcal{O}e^{-iHt}\) and introduced a complete set of states \(\alpha\), \(\mathbbm{1}=\sum_{\alpha}\ket{\alpha}\bra{\alpha}\).
@@ -1970,7 +2010,7 @@ With the identity
 \end{equation}
 we can rewrite \cref{eq:fourierfreqmoment} as 
 \begin{align}
-  \frac{1}{2N} \sum_{\alpha} \int_{\infty}^{\infty}&\dd \omega  \left(\delta(\omega-E_{\alpha}+E_{\gamma})\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma}\right. \nonumber\\
+  \frac{1}{2N} \sum_{\alpha} \int_{-\infty}^{\infty}&\dd \omega  \left(\delta(\omega-E_{\alpha}+E_{\gamma})\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma}\right. \nonumber\\
 &\qquad\left.- \delta(\omega+E_{\alpha}-E_{\gamma})\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
 &=\frac{1}{2N} \sum_{\alpha} (E_{\alpha} - E_{\gamma}) \left(\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
 &=\frac{1}{2N} \sum_{\alpha}  \left(-\matrixel{\gamma}{[H,\mathcal{O}_k]}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{[H,\mathcal{O}_k]}{\gamma}\right)\\
