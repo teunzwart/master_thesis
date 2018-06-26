@@ -1600,6 +1600,64 @@ As long as an action is valid, meaning it does not add or remove particles where
 Looking at \cref{fig:saturation_rand_True_check_train_False_check_eval_False} we see that none of the runs converge after 3000 steps.
 Average square form factor sizes are of order \(10^{-16}\), as seen in \cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}.
 
+
+
+If we enforce particle-hole pair minimization, the picture changes.
+Now only approximately 700 states are necessary to reach saturation, and average form factor size is of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
+The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states with the same value for \(N_{\mathrm{ph}}\).
+We see that enforcing particle-hole minimization is an important measure in selecting states with large form factors.
+Note the plateauing of the sum rule saturation that occurs for many runs (\cref{fig:saturation_rand_True_check_train_False_check_eval_False}). 
+This probably happens because most of the large form factors have already been selected and the last few percentage points have to be made up by many form factors with small contributions.
+
+
+Now we come to the results of using Q-learning.
+If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an average number of states to convergence of 630 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
+The average form factor also has the largest value at order $10^{-5}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
+
+
+
+The most interesting result is seen when we do enable \(N_{\mathrm{ph}}\)-minimization during training but not during evaluation.
+In this case the number of states required to reach saturation is 2081, although a large error of 483 states is present and one of the runs did not saturate after 3000 states (\cref{fig:saturation_histories_rand_False_check_train_True_check_eval_False}).
+Average form factors are of order \(10^{-8}\) and visually comparing the results of this run (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_False}) with those of the random evaluation without \(N_{\mathrm{ph}}\)-minimization (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}) confirms this.
+The performance of this method confirms that learning is occurring since there is no \(N_{\mathrm{ph}}\)-minimization occurring during evaluation, meaning that all decisions are based on the information present during training.
+
+
+That these results come from learning is further confirmed when considering the evaluation with particle-hole minimization disabled in training and enabled in evaluation.
+The average number of states required is 752 (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_True}), with matrix elements of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_True}).
+This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, pointing to a possibility that the minimization leads the model to learn about states with large contributions and consequently high rewards.
+
+Finally we come to an evaluation with \(N_{\mathrm{ph}}\)-minimization disabled in both training and evaluation.
+Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) and the average form factor is of order \(10^{-15}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}).
+The poor results of this method shows that using only the reward function to shape action selection does not provide enough feedback for learning.
+
+
+An illustration of the learned behaviour is visible when considering the trained model of the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
+When evaluating the ground state (\cref{fig:binarygroundstate}), we clearly see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
+Unoccupied positions should not be selected for removal, while occupied positions should not be selected for particle placement.
+We see this occurring in the form of bands of high and low Q-factors.
+The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval and deposit it somewhere outside.
+In contrast the vertical blue band corresponds to forbidden actions that would take a particle from an unoccupied position and place it on an already occupied site.
+These actions with two forbidden sub-actions are more strongly disfavored than the actions represented by the corner quadrants, which represent taking a particle from an unoccupied position and placing it at another unoccupied site.
+The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) Q-factors.
+
+\begin{sloppypar}
+Finally, we compare with ABACUS.
+When we use the same settings as above~(\(L=N=5, I_{\max}=12\)), we find that only 137 states are necessary for 99.5\% sum rule saturation, with a form factor size proxy of 0.08 (\cref{fig:abacusformfactors_12_5}).
+It should be noted that, because ABACUS can scan within momentum slices, uniformly high saturations can be achieved (\cref{fig:abacus_saturations_12_5}).
+\end{sloppypar}
+
+If we consider a larger system the power ABACUS becomes even more apparent.
+We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\).
+This yields a state space of at least size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
+The desired sum rule saturation of 99.9\% (\cref{fig:abacus_saturations}) is achieved with 9376 states, summed over approximately 7 seconds.
+This is at most a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
+The form factor size proxy has a value of \num{8.01e-05} (\cref{fig:abacusformfactors})
+This shows that ABACUS is highly efficient in summing matrix elements.
+
+In conclusion we can say that learning does occur when using Q-learning to sum matrix elements, but that this method is far outclassed by the current implementation of ABACUS.
+Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training for smaller systems.
+
+
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_False.pdf}
@@ -1614,13 +1672,6 @@ Average square form factor sizes are of order \(10^{-16}\), as seen in \cref{fig
   \label{fig:saturation_rand_True_check_train_False_check_eval_False}
 \end{figure}
 
-If we enforce particle-hole pair minimization, the picture changes.
-Now only approximately 700 states are necessary to reach saturation, and average form factor size is of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
-The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states with the same value for \(N_{\mathrm{ph}}\).
-We see that enforcing particle-hole minimization is an important measure in selecting states with large form factors.
-Note the plateauing of the sum rule saturation that occurs for many runs (\cref{fig:saturation_rand_True_check_train_False_check_eval_False}). 
-This probably happens because most of the large form factors have already been selected and the last few percentage points have to be made up by many form factors with small contributions.
-
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_True.pdf}
@@ -1632,11 +1683,6 @@ This probably happens because most of the large form factors have already been s
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_True.pdf}
   \caption{Square form factors as a function of order of computation for random state selection while minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}
 \end{figure}
-
-Now we come to the results of using Q-learning.
-If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an average number of states to convergence of 630 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
-The average form factor also has the largest value at order $10^{-5}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
-
 
 \begin{figure}[tb!]
   \centering
@@ -1652,12 +1698,6 @@ The average form factor also has the largest value at order $10^{-5}$, although 
   \label{fig:ff_sizes_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
-The most interesting result is seen when we do enable \(N_{\mathrm{ph}}\)-minimization during training but not during evaluation.
-In this case the number of states required to reach saturation is 2081, although a large error of 483 states is present and one of the runs did not saturate after 3000 states (\cref{fig:saturation_histories_rand_False_check_train_True_check_eval_False}).
-Average form factors are of order \(10^{-8}\) and visually comparing the results of this run (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_False}) with those of the random evaluation without \(N_{\mathrm{ph}}\)-minimization (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}) confirms this.
-The performance of this method confirms that learning is occurring since there is no \(N_{\mathrm{ph}}\)-minimization occurring during evaluation, meaning that all decisions are based on the information present during training.
-
-
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False}
@@ -1671,11 +1711,6 @@ The performance of this method confirms that learning is occurring since there i
   \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for a selected DSF calculation.}
   \label{fig:ff_sizes_rand_False_check_train_True_check_eval_False}
 \end{figure}
-
-That these results come from learning is further confirmed when considering the evaluation with particle-hole minimization disabled in training and enabled in evaluation.
-The average number of states required is 752 (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_True}), with matrix elements of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_True}).
-This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, pointing to a possibility that the minimization leads the model to learn about states with large contributions and consequently high rewards.
-
 
 \begin{figure}[tb!]
   \centering
@@ -1691,9 +1726,7 @@ This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, po
   \label{fig:ff_sizes_rand_False_check_train_False_check_eval_True}
 \end{figure}
 
-Finally we come to an evaluation with \(N_{\mathrm{ph}}\)-minimization disabled in both training and evaluation.
-Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) and the average form factor is of order \(10^{-15}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}).
-The poor results of this method shows that using only the reward function to shape action selection does not provide enough feedback for learning.
+
 
 \begin{figure}[tb!]
   \centering
@@ -1709,15 +1742,6 @@ The poor results of this method shows that using only the reward function to sha
   \label{fig:ff_sizes_rand_False_check_train_False_check_eval_False}
 \end{figure}
 
-An illustration of the learned behaviour is visible when considering the trained model of the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
-When evaluating the ground state (\cref{fig:binarygroundstate}), we clearly see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
-Unoccupied positions should not be selected for removal, while occupied positions should not be selected for particle placement.
-We see this occurring in the form of bands of high and low Q-factors.
-The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval and deposit it somewhere outside.
-In contrast the vertical blue band corresponds to forbidden actions that would take a particle from an unoccupied position and place it on an already occupied site.
-These actions with two forbidden sub-actions are more strongly disfavored than the actions represented by the corner quadrants, which represent taking a particle from an unoccupied position and placing it at another unoccupied site.
-The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) Q-factors.
-
 \begin{figure}[tb!]
   \centering
   \includegraphics{state.pdf}
@@ -1730,22 +1754,6 @@ The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmat
   \caption{Q-matrix for the Lieb-Liniger model ground state with \(N=11\) and \(I_{\max}=20\) (top). In the lower left image, the 100 lowest Q-factors are highlighted, while the 100 best are shown in the lower right image.}
   \label{fig:qmatrix}
 \end{figure}
-
-
-Finally, we compare with ABACUS.
-When we use the same settings as above (\(L=N=5, I_{\max}=12\)), we find that only 137 states are necessary for 99.5\% sum rule saturation, with a form factor size proxy of 0.08 (\cref{fig:abacusformfactors_12_5}).
-It should be note that ABACUS because ABACUS can scan within momentum slices, uniformly high saturations can be achieved \(\cref{fig:abacus_saturations_12_5}\).
-
-If we consider a larger system the power ABACUS becomes even more apparent.
-We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\).
-This yields a state space of at least size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
-The desired sum rule saturation of 99.9\% (\cref{fig:abacus_saturations}) is achieved with 9376 states, summed over approximately 7 seconds.
-This is at most a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
-The form factor size proxy has a value of \num{8.01e-05} (\cref{fig:abacusformfactors})
-This shows that ABACUS is highly efficient in summing matrix elements.
-
-In conclusion we can say that learning does occur when using Q-learning to sum matrix elements, but that this method is far outclassed by the current implementation of ABACUS.
-Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training for smaller systems.
 
 
 \begin{figure}[tb!]
@@ -1951,8 +1959,9 @@ Reinforcement learning may also be used in this.
 Given a set of Bethe numbers, the rapidities can be predicted, after which convergence to machine precision is achieved through Newton iterations.
 The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions.
 
-One of the limitations of the current approach of the system is that it requires a UV cutoff of the Bethe numbers in order to be able to represent possible moves in Hilbert space.
-Since the size of the action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\) this means that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
+One of the limitations of the current approach to Q-learning is that the representation used requires a UV cutoff of the Bethe numbers in order to be able to represent possible moves in Hilbert space.
+Furthermore, the size of action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\), meaning that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
+This problem may be solved by using an alternative representation of actions in terms of continuous changes.
 A possible solution is the extension of the value function to a continuous domain.
 This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
 
@@ -1990,7 +1999,7 @@ To my theatre friends I would like to say: thanks for being non-physicists and f
 
 Finally I would like to thank my parents, Erik and Mickey.
 Without their emotional support over the past year this thesis would never have been finished.
-Erik, maybe I should have followed you advice: ``leer een echt vak''~\cite{erik}.
+Erik, maybe I should have followed you advice: ``\textit{leer een echt vak}''~\cite{erik}.
 
 \appendix
 
