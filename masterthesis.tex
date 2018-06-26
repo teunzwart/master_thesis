@@ -101,7 +101,7 @@
 		\begin{minipage}[t]{0.4\textwidth}
 			\begin{flushright}
 				\large\emph{Supervisor}\\{prof. dr. Jean-Sébastien Caux}\\~\\
-				\large\emph{Second Assessor}\\{dr. Jasper van Wezel}\\~\\~\\
+				\large\emph{Second assessor}\\{dr. Jasper van Wezel}\\~\\~\\
 			\end{flushright}
 		\end{minipage}
 		\includegraphics[width=0.5\textwidth]{machine_learning_2x.png}
@@ -1234,10 +1234,26 @@ In the rest of this chapter we will review some aspects of machine learning usef
 
 
 \section{Machine learning: the basics}
-In many cases we would like to find patterns in data.
-The 
+Today's world is awash in data.
+With the increase in computational power that has swept the world we are now being flooded by it.
+Making sense of this flood is becoming increasingly important and requires us to find patterns in the chaos.
+For numbers this is relatively easy: if we have an input set \(1,2,3\) and output set \(1,4,9\), some basic mathematics shows that the inputs and outputs are linked by the function \(f(x)=x^2\).
+But what about more complex data?
+A picture of a cat (\cref{fig:cat}) may be instantly recognized by a human, but translating this recognition to a computer is non-trivial.
+Which pixels encode the ``catness'' of a picture as oppossed to its ``dogness''?
+Manually writing such a function proves to be difficult, with the resulting function performing poorly, but there is a way of this in the form of neural networks. 
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[draft,width=0.7\textwidth]{cat.jpg}
+  \caption{A cat. While this image is instantly recognizable to a human, translating such recognition to a computer proves non-trivial.}
+  \label{fig:cat}
+\end{figure}
 
 \subsection{Neural networks}
+Neural network allow for the efficient approximation of functions which map inputs to outputs.
+Given an input \(x\) and an output \(t\) (for target), a neural net acts as a function which approximately maps the input to the output: \(f(x)\approx t\).
+
 Stochastic gradient descent
 training, validation, testing
 Feedforward
@@ -1717,16 +1733,34 @@ The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmat
 
 
 Finally, we compare with ABACUS.
+When we use the same settings as above (\(L=N=5, I_{\max}=12\)), we find that only 137 states are necessary for 99.5\% sum rule saturation, with a form factor size proxy of 0.08 (\cref{fig:abacusformfactors_12_5}).
+It should be note that ABACUS because ABACUS can scan within momentum slices, uniformly high saturations can be achieved \(\cref{fig:abacus_saturations_12_5}\).
+
+If we consider a larger system the power ABACUS becomes even more apparent.
 We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\).
-This yields a state space of size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
+This yields a state space of at least size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
 The desired sum rule saturation of 99.9\% (\cref{fig:abacus_saturations}) is achieved with 9376 states, summed over approximately 7 seconds.
 This is at most a fraction \(7.7\times 10^{-10}\) of the Hilbert space under consideration.
 The form factor size proxy has a value of \num{8.01e-05} (\cref{fig:abacusformfactors})
 This shows that ABACUS is highly efficient in summing matrix elements.
 
 In conclusion we can say that learning does occur when using Q-learning to sum matrix elements, but that this method is far outclassed by the current implementation of ABACUS.
-Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training.
+Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training for smaller systems.
 
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{abacus_ff_sq_12_5.pdf}
+  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}
+  \label{fig:abacusformfactors_12_5}
+\end{figure}
+
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{abacus_saturations_12_5.pdf}
+  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}
+  \label{fig:abacus_saturations_12_5}
+\end{figure}
 
 \begin{figure}[tb!]
   \centering
@@ -1874,10 +1908,40 @@ Hierarchical structures also pose a problem, leading to difficulties when dealin
 \section{Conclusion}
 
 In this thesis we considered ways in which to numerically calculate the Fourier transform of correlation functions, known as dynamical structure functions or DSFs.
-In the Lehmann series representation DSFs are a sum over matrix elements
+In the Lehmann series representation DSFs are a sum over matrix elements.
+In Bethe ansatz integrable models these DSFs could be calculated with the ABACUS algorithm.
+The summation over these matrix elements is not fully optimal, meaning that matrix elements are not summed in strictly decreasing order.
+This results in inefficiency when considering finite compute times, since states with large contributions may be missed,
 
-Based on measurements the prediction of rapidities does not improve the calculation.
+We looked at the Bethe ansatz solvable Lieb-Liniger model.
+This model was chosen because the parameters which define the wave function, known as rapidities, are real.
+Additionally, given the quantum numbers of a state only a single solution exists.
+We reviewed the Bethe ansatz, finding expression for physical properties of the Lieb-Liniger model.
 
+After this we reviewed the current operation of ABACUS.
+We examined how to numerically solve for the rapidities of the Lieb-Liniger model, and gave a high-level overview of the scanning of the Hilbert space as it is currently implemented.
+
+A review of some machine learning to be employed later was given.
+We then considered whether supervised learning could make the calculation of rapidities faster by providing better initial guesses based on Bethe quantum numbers.
+We found that for small systems the number of Newton-method iterations decreased with better guesses provided by a neural network, but that this improvement decreased for increasing system size.
+Additionally the computation time added by the evaluations of the neural network made the machine learning approach slower than using a naive initial guess.
+
+We then developed a method to optimize summation of matrix elements using Q-learning.
+For this we developed a binary-encoded representation of Lieb-Liniger states, as well as a way to encode state transitions in a neural network.
+We considered some of the limitations of this representation, notably its bias towards low-momentum states.
+Furthermore we considered the relationship between the number of particle-hole pairs and the size of form factors.
+
+We proceeded to deploy Q-learning to find optimal summation strategies.
+We found that random state selection led to poor performance, as expected.
+Activating particle-hole pair minimization increased performance, leading to better results, with larger form factors being found.
+Results from Q-learning show that particle-hole minimization is essential for learning to select high value states.
+If minimization is enabled during training and evaluation, the best results are obtained in terms of number of states required to reach saturation.
+Learning can be seen to occur when we consider minimization during training but not during evaluation.
+While saturation takes longer than in other cases, it does occur and hints at a strategy being developed during training.
+Disabling minimization during training gave poor results when also disabling during evaluation, with no convergence occuring.
+If enabled during evaluation results were better.
+
+Finally we considered shortcomings of Q-learning as applied to DSF summation and reinforcement learning generally.
 
 
 \subsection{Outlook}
@@ -1891,6 +1955,7 @@ One of the limitations of the current approach of the system is that it requires
 Since the size of the action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\) this means that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
 A possible solution is the extension of the value function to a continuous domain.
 This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
+
 Another improvement may come from using experience replay~\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
 This allows for a way to deal with high correlation between consecutive states, by saving a tuple consisting of the current state, the action taken, the observed reward and the new state.
 Training is then performed on mini-batches of this set of transitions.
@@ -1908,22 +1973,23 @@ Does this generalize to other models? It should, as long as you are able to find
 This may also generalize to models beyond the Lieb-Liniger model.
 Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
 
+Increases in compute power could also drive the development of exact diagonalization algorithms.
+
 We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible~\cite{wietek18_sublat_codin_algor_distr_memor}.
 
 Finally, the fields of machine learning and artificial intelligence in general are currently experiencing large changes and advances.
-New methods and techniques are constantly developed and may also be applicable to the problem of DSF calculation.\footnote{They may also lead to paperclip maximizers, uncooperative spaceship computers and Arnold Schwarzenegger being sent back in time.}
+New methods and techniques are constantly developed and may also be applicable to the problem of DSF calculation.\footnote{They may also lead to paperclip maximizers~\cite{tegmark}, uncooperative spaceship computers and Arnold Schwarzenegger being sent back in time.}
 
 \section{Acknowledgements}
 I would like to thank Jean-Sébastien Caux for his supervision and valuable suggestions.
 Sam Kuypers is thanked for help in understanding some derivations.
 I would also like to thank Sam, along with the rest of the J-S master gang (Jorran de Wit and Rebekka Koch), for always being there to have lunch with and their willingness to hear me grumble about my project.
-Once a Bethe bitch, always a Bethe bitch.
-On the same note I would like to thank all the other people in the master room, in particular Miró van der Worp, who was always organizing lectures and talks to distract us from our thesis.
+On the same note I would like to thank all the other people in the master room, in particular Miró van der Worp, who was always organizing lectures and talks to help distract everyone from their thesis.
 
-To my theatre friends, I would like to say: thanks for being non-physicists and for all the parties.
+To my theatre friends I would like to say: thanks for being non-physicists and for all the parties.
 
-Finally I would like to thank my parents.
-Without their emotional support this past year this thesis would never have been finished.
+Finally I would like to thank my parents, Erik and Mickey.
+Without their emotional support over the past year this thesis would never have been finished.
 Erik, maybe I should have followed you advice: ``leer een echt vak''~\cite{erik}.
 
 \appendix
