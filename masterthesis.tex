@@ -1957,12 +1957,11 @@ Finally we considered shortcomings of Q-learning as applied to DSF summation and
 In this thesis we used supervised learning to offer an initial guess for the numerical evaluation of rapidities.
 Reinforcement learning may also be used in this.
 Given a set of Bethe numbers, the rapidities can be predicted, after which convergence to machine precision is achieved through Newton iterations.
-The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions.
+The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions by minimizing Newton iterations.
 
 One of the limitations of the current approach to Q-learning is that the representation used requires a UV cutoff of the Bethe numbers in order to be able to represent possible moves in Hilbert space.
 Furthermore, the size of action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\), meaning that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
 This problem may be solved by using an alternative representation of actions in terms of continuous changes.
-A possible solution is the extension of the value function to a continuous domain.
 This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
 
 Another improvement may come from using experience replay~\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
@@ -1972,19 +1971,17 @@ This has the advantage that data is used multiple times during training, improvi
 Furthermore the correlations between consecutive states are broken, reducing the variance of updates.
 We did not use it here because in DSF calculation states may only be seen once to prevent double counting, thus making individual states not independent of the states that came before.
 
-A weakness in the current implementation is that only ``connected states'' can be reached from any given state.
+A further weakness in the current implementation is that only ``connected states'' can be reached from any given state.
 With this we mean states that differ only by a single particle move from the current state under consideration.
 This differs from ABACUS, in which a tree of states is descended and at any point any previously reached state may be used as the base for a new expansion into Hilbert space.
 The tree-like approach may be considered for further research.
 
-Does this generalize to other models? It should, as long as you are able to find the DSFs you are interested in since you need them for the sum rule.
+It should be noted that the approach explored in this thesis is in principle usable in any model, not only Bethe ansatz integrable systems.
+This is the case as long as eigenstates and matrix elements are known, a suitable expression for the f-sum rule, and a representation of states and moves can be found.
+Therefore further research is warranted in this area, since not all models may have a system such as ABACUS in place to calculate DSFs.
 
-This may also generalize to models beyond the Lieb-Liniger model.
-Since the scanning is model independent (only taking in the Bethe numbers of the model), as long as the f-sum rule for the desired DSF is known, we can optimize the state scanning.
-
-Increases in compute power could also drive the development of exact diagonalization algorithms.
-
-We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible~\cite{wietek18_sublat_codin_algor_distr_memor}.
+On another front progress in computing DSFs may be made by Moore's law and the passage of time (as well as the development of new algorithms).
+We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible exactly~\cite{wietek18_sublat_codin_algor_distr_memor}.
 
 Finally, the fields of machine learning and artificial intelligence in general are currently experiencing large changes and advances.
 New methods and techniques are constantly developed and may also be applicable to the problem of DSF calculation.\footnote{They may also lead to paperclip maximizers~\cite{tegmark}, uncooperative spaceship computers and Arnold Schwarzenegger being sent back in time.}
