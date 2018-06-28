@@ -1279,7 +1279,6 @@ Evaluation of \cref{eq:60} is known as forward propagation and the network is a 
 
 The bias parameters can be absorbed in the weight parameters by defining an additional input variable \(x_0=1\), resulting in 
 \begin{align}
-  \label{eq:60}
   y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=0}^Mw_{kj}^{(2)}h\left(\sum_{i=0}^Dw_{ji}^{(1)}\right)\right).
 \end{align}
 
@@ -1373,11 +1372,13 @@ With these equations neural networks can be trained~\cite{Bishop2006}.
 
 \section{Reinforcement learning}
 
-The machine learning techniques we have described until now all rely on large data sets to function, being supervised algorithms.
+
+The machine learning techniques we have seen until now all rely on large data sets to function.
 They use expert data to train and this (hopefully) allows for generalization to new data.
 In many cases however the acquisition of expert data is difficult or impossible.
 In these cases reinforcement learning comes into play.
-Here, there is no a priori knowledge of the targets, only a reward function that, given a state and an action returns a reward.
+In reinforcement leaning a model interacts with the environment and receives rewards, changing over time to maximize the reward received.
+
 
 - credit assignment problem
 
@@ -2411,8 +2412,389 @@ Here we present the raw values for the number of states necessary to reach 83\% 
 \end{table}
 
 
-\bibliographystyle{SciPost_bibstyle}
-\bibliography{master_thesis_references}
+\begin{thebibliography}{99}
+
+
+\bibitem{Korepin1993} 
+V. E. Korepin, N. M. Bogoliubov and A. G. Izergin, \textit{Quantum Inverse Scattering Method and Correlation Functions}, Cambridge University Press, Cambridge, ISBN 9780511628832 (1993), \doi{10.1017/CBO9780511628832}.
+
+
+
+
+\bibitem{Caux2009} 
+J.-S. Caux, \textit{Correlation functions of integrable models: A description of the ABACUS algorithm}, J. Math. Phys. \textbf{50}, 095214 (2009), \doi{10.1063/1.3216474}.
+
+
+
+
+\bibitem{mnih13_playin_atari_with_deep_reinf_learn} 
+V. Mnih, K. Kavukcuoglu, D. Silver, A. Graves, I. Antonoglou, D. Wierstra and M. Riedmiller, \textit{Playing Atari with Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1312.5602v1}{1312.5602v1}. 
+
+
+
+
+\bibitem{mnih15_human_level_contr_throug_deep_reinf_learn}
+V. Mnih et al., \textit{Human-level control through deep reinforcement learning}, Nature \textbf{518}, 529 (2015), \doi{10.1038/nature14236}.
+
+
+
+
+\bibitem{silver16_master_game_go_with_deep}
+D. Silver et al., \textit{Mastering the game of Go with deep neural networks and tree search}, Nature \textbf{529}, 484 (2016), \doi{10.1038/nature16961}.
+
+
+
+
+\bibitem{Silver2017a}
+D. Silver et al., \textit{Mastering the game of Go without human knowledge}, Nature \textbf{550}, 354 (2017), \doi{10.1038/nature24270}.
+
+
+
+
+\bibitem{Silver2017} 
+D. Silver et al., \textit{Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm}, arXiv:\href{https://arxiv.org/abs/1712.01815v1}{1712.01815v1}. 
+
+
+
+
+\bibitem{Bethe1931}
+H. Bethe, \textit{Zur Theorie der Metalle I. Eigenwerte und Eigenfunktionen der linearen Atomkette}, Z. Physik \textbf{71}, 205 (1931), \doi{10.1007/BF01341708}.
+
+
+
+
+\bibitem{Lieb1963}
+E. H. Lieb and W. Liniger, \textit{Exact Analysis of an Interacting Bose Gas. I. The General Solution and the Ground State}, Phys. Rev. \textbf{130}, 1605 (1963), \doi{10.1103/PhysRev.130.1605}.
+
+
+
+
+\bibitem{Lieb1963a}
+E. H. Lieb, \textit{Exact Analysis of an Interacting Bose Gas. II. The Excitation Spectrum}, Phys. Rev. \textbf{130}, 1616 (1963), \doi{10.1103/PhysRev.130.1616}.
+
+
+
+
+\bibitem{Franchini2017} 
+F. Franchini, \textit{An Introduction to Integrable Techniques for One-Dimensional Quantum Systems}, Springer International Publishing, Cham, ISBN 9783319484860 (2017), \doi{10.1007/978-3-319-48487-7}.
+
+
+
+
+\bibitem{Panfil2014} 
+M. Panfil and J.-S. Caux, \textit{Finite-temperature correlations in the Lieb-Liniger one-dimensional Bose gas}, Phys. Rev. A \textbf{89}, 033605 (2014), \doi{10.1103/PhysRevA.89.033605}.
+
+
+
+
+\bibitem{Caux2015} 
+J.-S. Caux, \emph{Integrability in atomic and condensed matter physics in and out of equilibrium}, Lectures for S{\'e}minaire d'excellence en physique, Paris, June 2015, unpublished (2015).
+
+
+
+\bibitem{Gaudin2009} 
+M. Gaudin and J.-S. Caux, \textit{The Bethe Wavefunction}, Cambridge University Press, Cambridge, ISBN 9781107053885 (2009), \doi{10.1017/cbo9781107053885}.
+
+
+
+
+\bibitem{Yang1969}
+C. N. Yang and C. P. Yang, \textit{Thermodynamics of a One‐Dimensional System of Bosons with Repulsive Delta‐Function Interaction}, J. Math. Phys. \textbf{10}, 1115 (1969), \doi{10.1063/1.1664947}.
+
+
+
+
+\bibitem{Caux2007}
+J.-S. Caux, P. Calabrese and N. A. Slavnov, \textit{One-particle dynamical correlations in the one-dimensional Bose gas}, J. Stat. Mech. P01008 (2007), \doi{10.1088/1742-5468/2007/01/P01008}.
+
+
+
+
+\bibitem{Zemyan2012} 
+S. M. Zemyan, \textit{The Classical Theory of Integral Equations}, Birkhäuser Boston, Boston, ISBN 9780817683481 (2012), \doi{10.1007/978-0-8176-8349-8}.
+
+
+
+
+\bibitem{feynman} 
+R.~P. Feynman, \emph{Statistical Mechanics: A Set of Lectures}, Westview Press, ISBN 9780201360769 (1998).
+
+
+
+
+
+\bibitem{Piroli2015} 
+L. Piroli and P. Calabrese, \textit{Exact formulas for the form factors of local operators in the Lieb-Liniger model}, J. Phys. A: Math. Theor. \textbf{48}, 454002 (2015), \doi{10.1088/1751-8113/48/45/454002}.
+
+
+
+
+\bibitem{slavnov18_algeb_bethe_ansat} 
+N. A. Slavnov, \textit{Algebraic Bethe ansatz}, arXiv:\href{https://arxiv.org/abs/1804.07350}{1804.07350}.
+
+
+
+
+\bibitem{slavnov90_noneq_time_curren_correl_funct}
+N. A. Slavnov, \textit{Nonequal-time current correlation function in a one-dimensional Bose gas}, Theor. Math. Phys. \textbf{82}, 273 (1990), \doi{10.1007/bf01029221}.
+
+
+
+
+\bibitem{Nardis2015}
+J. De Nardis and M. Panfil, \textit{Density form factors of the 1D Bose gas for finite entropy states}, J. Stat. Mech. P02019 (2015), \doi{10.1088/1742-5468/2015/02/P02019}.
+
+
+
+
+\bibitem{Caux2005}
+J.-S. Caux, R. Hagemans and J. Michel Maillet, \textit{Computation of dynamical correlation functions of Heisenberg chains: the gapless anisotropic regime}, J. Stat. Mech. P09003 (2005), \doi{10.1088/1742-5468/2005/09/P09003}.
+
+
+
+
+\bibitem{Caux2007a}
+J.-S. Caux and P. Calabrese, \textit{Dynamical density-density correlations in the one-dimensional Bose gas}, Phys. Rev. A \textbf{74}, 031605 (2006), \doi{10.1103/PhysRevA.74.031605}.
+
+
+
+\bibitem{Caux2005a}
+J.-S. Caux and J. Michel Maillet, \textit{Computation of Dynamical Correlation Functions of Heisenberg Chains in a Magnetic Field}, Phys. Rev. Lett. \textbf{95}, 077201 (2005), \doi{10.1103/PhysRevLett.95.077201}.
+
+
+
+
+\bibitem{Nardis2016} 
+J. De Nardis and M. Panfil, \textit{Exact correlations in the Lieb-Liniger model and detailed balance  out-of-equilibrium}, SciPost Phys. \textbf{1}, 015 (2016), \doi{10.21468/SciPostPhys.1.2.015}.
+
+
+
+
+\bibitem{Sueli2003} 
+E. S{\"u}li and D. Mayers, \textit{An introduction to numerical analysis}, Cambridge University Press, Cambridge, ISBN 9780521007948 (2003).
+
+
+
+
+
+\bibitem{Press2007}
+W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery, \textit{Numerical Recipes: The Art of Scientific Computing}, Cambridge University Press, Cambridge, ISBN 9780521880688 (2007).
+
+
+
+
+
+\bibitem{cppstandard2016} 
+\textit{Standard for Programming Language C++}, International Organization for Standardization, INCITS/ISO/IEC 14882:2014 (2016).
+
+
+
+
+
+
+\bibitem{ieeefp2008}
+\emph{754-2008 - {IEEE} standard for floating-point arithmetic}, IEEE (2008), \doi{10.1109/ieeestd.2008.4610935}.
+
+
+
+
+\bibitem{levinson11_towar}
+J. Levinson et al., \textit{Towards fully autonomous driving: Systems and algorithms}, 2011 IEEE Intelligent Vehicles Symposium (IV) (2011), \doi{10.1109/ivs.2011.5940562}.
+
+
+
+
+\bibitem{poplin17_predic_cardiov_risk_factor_from} 
+R. Poplin, A. V. Varadarajan, K. Blumer, Y. Liu, M. V. McConnell, G. S. Corrado, L. Peng and D. R. Webster, \textit{Prediction of cardiovascular risk factors from retinal fundus photographs via deep learning}, Nat. Biomed. Eng. \textbf{2}, 158 (2018), \doi{10.1038/s41551-018-0195-0}.
+
+
+
+
+\bibitem{Poplin2016} 
+R. Poplin et al., \textit{Creating a universal SNP and small indel variant caller with deep neural networks}, bioRxiv 092890 (2016), \doi{10.1101/092890}.
+
+
+
+
+\bibitem{Liu2017}
+Z. Liu, S. P. Rodrigues and W. Cai, \textit{Simulating the Ising Model with a Deep Convolutional Generative Adversarial Network}, arXiv:\href{https://arxiv.org/abs/1710.04987}{1710.04987}.
+
+
+
+\bibitem{paganini17_machin_learn_algor_jet_taggin} \
+M. Paganini, \textit{Machine Learning Algorithms for $b$-Jet Tagging at the ATLAS Experiment}, arXiv:\href{https://arxiv.org/abs/1711.08811}{1711.08811}. 
+
+
+
+\bibitem{ball10_data_minin_and_machin_learn_in_astron}
+N. M. Ball and R. J. Brunner, \textit{Data mining and machine learning in astronomy}, Int. J. Mod. Phys. D \textbf{19}, 1049 (2010), \doi{10.1142/s0218271810017160}.
+
+
+
+
+\bibitem{Carleo2017}
+G. Carleo and M. Troyer, \textit{Solving the quantum many-body problem with artificial neural networks}, Science \textbf{355}, 602 (2017), \doi{10.1126/science.aag2302}.
+
+
+
+
+\bibitem{Saito2017} 
+H. Saito, \textit{Solving the Bose–Hubbard Model with Machine Learning}, J. Phys. Soc. Jpn. \textbf{86}, 093001 (2017), \doi{10.7566/jpsj.86.093001}.
+
+
+
+
+\bibitem{Nieuwenburg2017}
+E. van Nieuwenburg, E. Bairey and G. Refael, \textit{Learning phase transitions from dynamics}, arXiv:\href{https://arxiv.org/abs/1712.00450v1}{1712.00450v1}.
+
+
+
+
+\bibitem{Dunjko2017}
+V. Dunjko and H. J. Briegel, \textit{Machine learning \& artificial intelligence in the quantum domain: a review of recent progress}, Rep. Prog. Phys. \textbf{81}, 074001 (2018), \doi{10.1088/1361-6633/aab406}.
+
+
+
+\bibitem{Mehta2014} 
+P. Mehta and D. J. Schwab, \textit{An exact mapping between the Variational Renormalization Group and Deep Learning}, arXiv:\href{https://arxiv.org/abs/1410.3831v1}{1410.3831v1}. 
+
+
+
+
+\bibitem{Bishop2006}
+C. Bishop, \emph{Pattern Recognition and Machine Learning}, Springer-Verlag, New York, ISBN 9780387310732 (2006).
+
+
+
+
+
+\bibitem{Sutton} 
+R. S. Sutton and A. G. Barto, \emph{Reinforcement Learning: An Introduction}, MIT Press, Cambridge, ISBN 9780262193986 (2018).
+
+
+
+
+
+\bibitem{chollet2015keras} 
+F. Chollet etal., \emph{Keras}, \href{https://keras.io}{https://keras.io} (2015).
+
+
+
+
+
+\bibitem{tensorflow2015-whitepaper} 
+M. Abadi et al., \emph{{TensorFlow}: Large-scale machine learning on heterogeneous systems}, \href{https://www.tensorflow.org/}{https://www.tensorflow.org/} (2015).
+
+
+
+
+
+\bibitem{whitehead95_reinf_learn_non_markov_decis_proces}
+S. D. Whitehead and L.-J. Lin, \textit{Reinforcement learning of non-Markov decision processes}, Artif. Intell. \textbf{73}, 271 (1995), \doi{10.1016/0004-3702(94)00012-p}.
+
+
+
+
+\bibitem{watkins92_q_learn}
+C. J. C. H. Watkins and P. Dayan, \textit{Q-learning}, Mach. Learn. \textbf{8}, 279 (1992), \doi{10.1007/bf00992698}.
+
+
+
+
+\bibitem{1710.02298} 
+M. Hessel et al., \textit{Rainbow: Combining Improvements in Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1710.02298}{1710.02298}.
+
+
+
+\bibitem{heess17_emerg_locom_behav_rich_envir}
+N. Heess et al., \textit{Emergence of Locomotion Behaviours in Rich Environments}, arXiv:\href{https://arxiv.org/abs/1707.02286}{1707.02286}.
+
+
+
+\bibitem{marcus18_deep_learn}
+G. Marcus, \textit{Deep Learning: A Critical Appraisal}, arXiv:\href{https://arxiv.org/abs/1801.00631}{1801.00631}. 
+
+
+
+
+\bibitem{amodei2018}
+D. Amodei and D.Hernandez, \textit{AI and Compute}, \href{https://blog.openai.com/ai-and-compute/}{https://blog.openai.com/ai-and-compute/} (2018).
+
+
+\bibitem{1803.03453}
+J. Lehman et al., \textit{The Surprising Creativity of Digital Evolution: A Collection of Anecdotes from the Evolutionary Computation and Artificial Life Research Communities}, arXiv:\href{https://arxiv.org/abs/1803.03453}{1803.03453}. 
+
+
+
+
+\bibitem{amodei16_concr_probl_ai_safet}
+D. Amodei, C. Olah, J. Steinhardt, P. Christiano, J. Schulman and D. Mané, \textit{Concrete Problems in AI Safety}, arXiv:\href{https://arxiv.org/abs/1606.06565}{1606.06565}. 
+
+
+
+
+\bibitem{brundage18_malic_use_artif_intel}
+M. Brundage et al., \textit{The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation}, arXiv:\href{https://arxiv.org/abs/1802.07228}{1802.07228}. 
+
+
+
+
+\bibitem{1709.06560}
+P. Henderson, R. Islam, P. Bachman, J. Pineau, D. Precup and D. Meger, \textit{Deep Reinforcement Learning that Matters}, arXiv:\href{https://arxiv.org/abs/1709.06560}{1709.06560}. 
+
+
+
+\bibitem{houthooft16_vime}
+R. Houthooft, X. Chen, Y. Duan, J. Schulman, F. De Turck and P. Abbeel, \emph{Vime: Variational information maximizing exploration}, Advances in Neural Information Processing Systems 29, p. 1109-1117 (2016).
+
+
+
+
+
+\bibitem{lillicrap15_contin_contr_with_deep_reinf_learn}
+T. P. Lillicrap, J. J. Hunt, A. Pritzel, N. Heess, T. Erez, Y. Tassa, D. Silver and D. Wierstra, \textit{Continuous control with deep reinforcement learning}, arXiv:\href{https://arxiv.org/abs/1509.02971}{1509.02971}.
+
+
+
+
+\bibitem{gu16_contin_deep_q_learn_with}
+S. Gu, T. Lillicrap, I. Sutskever and S. Levine, \textit{Continuous Deep Q-Learning with Model-based Acceleration}, Proceedings of the 33rd International Conference on Machine Learning, p. 2829-2838 (2016). 
+
+
+
+\bibitem{wietek18_sublat_codin_algor_distr_memor}
+A. Wietek and A. M. Läuchli, \textit{Sublattice Coding Algorithm and Distributed Memory Parallelization for Large-Scale Exact Diagonalizations of Quantum Many-Body Systems}, arXiv:\href{https://arxiv.org/abs/1804.05028}{1804.05028}.
+
+
+
+
+\bibitem{tegmark}
+M. Tegmark, \emph{Life 3.0: Being Human in the Age of Artificial Intelligence}, Random House, ISBN 9781101946596 (2017).
+
+
+
+\bibitem{erik} 
+E. W. Zwart, \emph{Fluid inclusions in carbonate rocks and calcite cements}, Ph.D. thesis, Vrije Universiteit Amsterdam, ISBN 9090085955 (1995).
+
+
+
+
+
+
+\bibitem{pitaevskii} 
+L. Pitaevskii and S. Stringari, \textit{Bose-Einstein Condensation and Superfluidity}, Oxford University Press, Oxford, ISBN 9780198758884 (2016), \doi{10.1093/acprof:oso/9780198758884.001.0001}.
+
+
+
+
+\bibitem{Cauxfsum} 
+J.-S. Caux, \emph{The f-sum rule}, unpublished (2011).
+
+
+
+
+
+\end{thebibliography}
 
 
 
