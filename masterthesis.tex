@@ -1717,8 +1717,8 @@ We set the hyperparameters \(\alpha=0.01\) and \(\gamma = 0.975\).
 If convergence has not been reached after 3000 states, the scanning is terminated.
 Encountered states are stored for later analysis as well as to prevent double counting.
 
-As an approximate measure of the average size of matrix elements, we consider a linear trend line trough the data.
-The value of the base offset acts as a proxy for the average size, allowing for a comparison between different methods.
+As an approximate measure of the average size of matrix elements, we consider a linear trend line trough the logarithm of the  data.
+The value of the midpoint of the data acts as a proxy for the average size, allowing for a comparison between different methods.
 
 For the reward function we do not use the obvious choice of form factors or sum rule saturation, since these measures span many decades.
 Instead we use
@@ -1786,23 +1786,23 @@ This probably happens because most of the large form factors have already been s
 
 
 Now we come to the results of using Q-learning.
-If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an average number of states to convergence of 630 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
-The average form factor also has the largest value at order $10^{-5}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
+If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an average number of states to convergence of 545 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
+The average form factor also has the largest value at order $10^{-7}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
 
 
 
 The most interesting result is seen when we do enable \(N_{\mathrm{ph}}\)-minimization during training but not during evaluation.
-In this case the number of states required to reach saturation is 2081, although a large error of 483 states is present and one of the runs did not saturate after 3000 states (\cref{fig:saturation_histories_rand_False_check_train_True_check_eval_False}).
+In this case the number of states required to reach saturation is 1475, although a large error of 909 states is present and one of the runs did not saturate after 3000 states (\cref{fig:saturation_histories_rand_False_check_train_True_check_eval_False}).
 Average form factors are of order \(10^{-8}\) and visually comparing the results of this run (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_False}) with those of the random evaluation without \(N_{\mathrm{ph}}\)-minimization (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}) confirms this.
 The performance of this method confirms that learning is occurring since there is no \(N_{\mathrm{ph}}\)-minimization occurring during evaluation, meaning that all decisions are based on the information present during training.
 
 
 That these results come from learning is further confirmed when considering the evaluation with particle-hole minimization disabled in training and enabled in evaluation.
-The average number of states required is 752 (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_True}), with matrix elements of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_True}).
+The average number of states required is 795 (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_True}), with matrix elements of order \(10^{-8}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_True}).
 This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, pointing to a possibility that the minimization leads the model to learn about states with large contributions and consequently high rewards.
 
 Finally we come to an evaluation with \(N_{\mathrm{ph}}\)-minimization disabled in both training and evaluation.
-Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) and the average form factor is of order \(10^{-15}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}).
+Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) but the average form factor is of order \(10^{-12}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}), meaning learning still occurring.
 The poor results of this method shows that using only the reward function to shape action selection does not provide enough feedback for learning.
 
 
@@ -1817,7 +1817,7 @@ The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmat
 
 \begin{sloppypar}
 Finally, we compare with ABACUS.
-When we use the same settings as above~(\(L=N=5, I_{\max}=12\)), we find that only 158 states are necessary for 99.5\% sum rule saturation, with a form factor size proxy of 0.08 (\cref{fig:abacusformfactors_12_5}).
+When we use the same settings as above~(\(L=N=5, I_{\max}=12\)), we find that only 158 states are necessary for 99.5\% sum rule saturation, with a form factor size proxy of 0.0009 (\cref{fig:abacusformfactors_12_5}).
 It should be noted that, because ABACUS can scan within momentum slices, uniformly high saturations can be achieved (\cref{fig:abacus_saturations_12_5}).
 \end{sloppypar}
 
@@ -1876,7 +1876,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False}
-  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for 5 runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.5\%$ saturation after 3000 states.}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for 5 runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.4\%$ saturation after 3000 states.}
   \label{fig:saturation_histories_rand_False_check_train_True_check_eval_False}
 \end{figure}
 
@@ -2465,16 +2465,17 @@ Here we present the raw values for the number of states necessary to reach 83\% 
   \begin{tabular}{l|cc|rl}
     & \multicolumn{2}{c|}{Particle-hole minimization} & \\\hline
     Method & training & DSF calculation & Number of states & Form factor size proxy \\\hline
-    Random & - & Yes & \num{696 \pm 127} & \num{5.28(256)e-06} \\
-    & - & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{5.52(442)e-16} \\\hline
-    Q-learning & Yes & Yes & \num{630 \pm 111} & \num{2.09(212)e-05}\\
-    & & No & \num{2081 \pm 483}\footnote{One out of five runs did not converge, reaching $\sim79.5\%$ saturation after 3000 steps.} & \num{1.48(80)e-08}\\
-    & No & Yes & \num{752 \pm 136} & \num{5.26(347)e-06}\\
-    & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.33(351)e-15}\\
+    Random & - & Yes & \num{728 \pm 131} & \num{1.31(60)e-07} \\
+    & - & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.79(143)e-16} \\\hline
+    Q-learning & Yes & Yes & \num{545 \pm 151} & \num{6.53(634)e-07}\\
+    & & No & \num{1475 \pm 909}\footnote{One out of five runs did not converge, reaching $\sim79.4\%$ saturation after 3000 steps.} & \num{1.73(294)e-08}\\
+    & No & Yes & \num{795 \pm 212} & \num{2.28(334)e-07}\\
+    & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{1.56(310)e-12}\\
   \end{tabular}
   \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration. The reported errors are standard errors.}
   \label{tab:noofstates}
 \end{table}
+
 
 
 \begin{thebibliography}{99}
