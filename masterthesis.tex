@@ -1386,10 +1386,13 @@ The algorithm we will consider here is Q-learning.
 
 \subsection{Q-learning}
 
-Q-learning as a method dates back to 1989~\cite{Watkins1989}.
 In Q-learning we learn an action-value function Q, which tells us what action is the most valuable to take from any given state.
-An advantage of Q-learning is that it is off-policy, meaning that the optimal action-value function \(q_*\) is approximated independent of the followed policy during training.
+An advantage of Q-learning is that it is off-policy, meaning that the optimal action-value function \(q_*\) is approximated independently of the followed policy during training.
 As long as states are visited and the Q-function is updated, \(q_*\) is approximated.
+
+Q-learning is a form of temporal-difference learning, looking at the reward of the next step to make an estimate of the optimal policy.
+It has the advantage that it has to look forward only a single time step to update its estimate of the optimal policy to follow.
+This is a form of bootstrapping: at every step the guess for the best action to take is based on a guess for what the best action in the next state is.
 
 Q-learning is also model-free, meaning that it does not know how the environment it is working in changes based on its actions.
 All interaction with the environment is solely through rewards.
@@ -1400,12 +1403,12 @@ In Q-learning, at any given step we update the following equation:
   Q(s_t,a_t) \leftarrow (1-\alpha) Q(s_t, a_t) + \alpha \left[r_{t+1}+\gamma \max_aQ(s_{t+1},a)\right]
 \end{align}
 This means that at every time step we update the value of \(Q\) by some amount (modulated by the step size \(\alpha\)).
-We select an action \(A\) to take, observe the new state \(s_{t+1}\) and the reward \(r_{t+1}\) received.
+We select an action \(a_t\) to take, observe the new state \(s_{t+1}\) and the reward \(r_{t+1}\) received.
 Then we determine the highest \(Q\)-value for the new state \(s_{t+1}\), and use these values to update our original estimate of \(Q(s_t,a_t)\).
 The parameter \(\gamma\) acts as a discount on future rewards~\cite{Sutton}.
 
 A problem unique to reinforcement learning is the trade-off between exploration and exploitation.
-An agent has to exploit the high-reward action it has discovered over time, but also has to explore the action space to find high-reward actions.
+An agent has to exploit the high-reward actions it has discovered over time, but also has to explore the action space to find high-reward actions.
 This is an unsolved problem.
 We will use an $\epsilon$-greedy selection algorithm to ensure exploration, taking a random action a fraction $\epsilon$ of the time and following the agents guess for the best action during the remaining \(1-\epsilon\) fraction~\cite{Sutton}.
 
@@ -1415,45 +1418,56 @@ The problem with the tabular method is that exhaustively tabulating every possib
 The state space may be factorially large, meaning that almost every state will never before have been encountered.
 This means that we have to generalize to new states from previous experience.
 Here we can turn to function approximators like neural networks (\cref{sec:neural-networks}).
-Note that there is no proof of convergence to an optimal solution for this method as there was for the tabular method~\cite{Sutton}.
-
-
-We require neural networks which can deal with incremental data (such as stochastic gradient descent)
-online: learning occurs during every step, not at the end of an episode
-
+Note that there is no proof of convergence to an optimal solution for this method as there is for the tabular method~\cite{watkins92_q_learn,Sutton}.
+We require neural networks which can deal with incremental data (such as stochastic gradient descent), since we update at each step.
 
 \begin{algorithm}[H]
   \caption{Q-learning}
-  Initialize $Q(s)$ with random weights
+  Initialize $Q(s,\mathbf{w})$ with random weights
    \begin{algorithmic}[1]
      \For{epoch=1,M}
      \For{t=1,T}
      \State Select random action $a_t$ with probability $\epsilon$
      \State otherwise select $a_t = \max_a Q^*(s_t;\theta)$
      \State Execute action $a_t$ and observe reward and state $s_t$
+     \State Make a copy \(y\) of \(Q\)
      \If{$s_t$ terminal state}
-     \State $y_j = (1-\alpha) Q(s_t) + \alpha r_j$
+     \State $y_j = (1-\alpha) Q(s_t;\mathbf{w}) + \alpha r_j$
      \Else{}
-     \State $y_j =  (1-\alpha) Q(s_t) + \alpha \left( r_j + \gamma \max_{a'}Q(s_{t+1};\theta)\right)$
+     \State $y_j =  (1-\alpha) Q(s_t) + \alpha \left( r_j + \gamma \max_{a'}Q(s_{t+1};\mathbf{w})\right)$
      \EndIf{}
-     \State Perform gradient descent on \((y_j- Q(s_t))^2\)
+     \State Perform gradient descent on \(\qty(y_j- Q(s_t))^2\)
      \EndFor
      \EndFor
   \end{algorithmic}
+  \label{alg:qlearning}
 \end{algorithm}
 
-
-
-
-
-
+The algorithm we use is a combination of what is presented in \cite{Sutton} (the step parameter \(\alpha\)) and deep Q-learning from \cite{mnih13_playin_atari_with_deep_reinf_learn}.
+Note that we will not use the experience replay used in \cite{mnih13_playin_atari_with_deep_reinf_learn}, which is a queue of previous (state, action, reward, new state) tuples from which random selections are used for training.
+The algorithm is shown in \cref{alg:qlearning}.
+During each time step we choose a move according to an \(\epsilon\)-greedy policy.
+Then the chosen action is taken, the new state reached and the reward observed.
+In a copy of \(Q\) which we denote \(y\), we update the entry corresponding to the taken action, and then update the neural network to better match the state we want to reach.
+This gives the algorithm its off-policy nature.
+Note that the error is effectively a minimization of the rescaled change to the \(Q\)-value:
+\begin{align}
+  \label{eq:73}
+  y_j - Q(s_t) = \alpha \qty(r_j + \gamma \max_a Q(s_{t+1}) - Q(s_t)).
+\end{align}
+The parameter \(\mathbf{w}\) denotes the weight of the neural network.
+We also use the trick employed by~\cite{mnih13_playin_atari_with_deep_reinf_learn} of using a network with an output over all actions, as opposed to requiring a network evaluation for every action, to improve efficiency.
 
 
 
 Finally, we should mention the credit assignment problem.
 When playing games such as chess or Go, where a reward is only given at the end of a match (win, loss, draw), assigning credit to a given move for enabling victory is difficult.
-A move that was crucial to winning may have been played early in the game.
+A move that was crucial to winning may have been played early in the game, and encoding this into the network is difficult~\cite{Sutton}.
 Due to the nature of the reward function we will use later, this problem is not so prevalent in the current work.
+
+
+
+
 
 
 \begin{savequote}[50mm]
@@ -2042,7 +2056,7 @@ Concurrently we are seeing a political debate develop related to the ways in whi
 Reward function with a simple scoring also have difficulties when confronted with problems where there is a clear temporal structure.
 An example of this can be found in the game Montezuma's revenge, in which a tomb is traversed in search of treasure.
 This game has a temporal structure in that certain doors within the game are locked until the player retrieves the appropriate key.
-A reward function based only on score performs poorly in this game~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, because it is not able to causally reason about the actions required to maximize score.
+A reward function based only on score performs poorly in this game~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, because it is not able to causally reason about the actions required to maximize score.\footnote{There is now also progress in this field. OpenAI is working on agents which can beat professional players in the game Dota 2. Dota 2 is a five-on-five strategy game in which the goal is to destroy the other teams base. Games can last upwards of 45 minutes, and require long-term strategies to win. The agent is now able to win against amateur and semi-professional players and will match against a professional team during the yearly Dota 2 tournament ``The International'' in August 2018. Note that this agent does suffer from some of the other problems discussed above, notably used resources (100000 CPUs) and data inefficiency (each training day is equivalent to 180 years of game time). It also does not learn to play directly from pixels, but uses a data interface to get the value for each of the 20000 relevant variables in the games~\cite{OpenAIDota}.}
 
 We also see this in the DSF scanning developed here.
 The obvious choice for the reward function is the absolute form factor squared for the operator under consideration.
@@ -2173,7 +2187,7 @@ On the same note I would like to thank all the other people in the master room, 
 
 To my theatre friends I would like to say: thanks for being non-physicists and for all the parties.
 
-Finally I would like to thank my parents, Erik and Mickey.
+Finally, I would like to thank my parents, Erik and Mickey.
 Without their emotional support over the past year this thesis would never have been finished.
 Erik, maybe I should have followed you advice: ``\textit{leer een echt vak}''~\cite{erik}.
 
@@ -2736,9 +2750,9 @@ R. S. Sutton and A. G. Barto, \emph{Reinforcement Learning: An Introduction}, MI
 
 
 
-\bibitem{Watkins1989}
-C. J. C. H. Watkins, \textit{Learning from delayed rewards}, Ph.D. thesis, University of Cambridge (1989).
 
+\bibitem{watkins92_q_learn}
+C. J. C. H. Watkins and P. Dayan, \textit{Q-learning}, Mach. Learn. \textbf{8}, 279 (1992), \doi{10.1007/bf00992698}.
 
 
 
@@ -2759,12 +2773,6 @@ M. Abadi et al., \emph{{TensorFlow}: Large-scale machine learning on heterogeneo
 
 \bibitem{whitehead95_reinf_learn_non_markov_decis_proces}
 S. D. Whitehead and L.-J. Lin, \textit{Reinforcement learning of non-Markov decision processes}, Artif. Intell. \textbf{73}, 271 (1995), \doi{10.1016/0004-3702(94)00012-p}.
-
-
-
-
-\bibitem{watkins92_q_learn}
-C. J. C. H. Watkins and P. Dayan, \textit{Q-learning}, Mach. Learn. \textbf{8}, 279 (1992), \doi{10.1007/bf00992698}.
 
 
 
@@ -2809,6 +2817,9 @@ M. Brundage et al., \textit{The Malicious Use of Artificial Intelligence: Foreca
 
 \bibitem{1709.06560}
 P. Henderson, R. Islam, P. Bachman, J. Pineau, D. Precup and D. Meger, \textit{Deep Reinforcement Learning that Matters}, arXiv:\href{https://arxiv.org/abs/1709.06560}{1709.06560}. 
+
+\bibitem{OpenAIDota}
+OpenAI, \textit{OpenAI Five}, \href{https://blog.openai.com/openai-five/}{https://blog.openai.com/openai-five/} (2018).
 
 
 
