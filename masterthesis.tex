@@ -91,7 +91,7 @@
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
 		\huge{\textbf{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}}
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
-		\large{Master's Thesis\\conducted between 04-09-2017 and 01-08-2018}\\[0.5cm]
+		\large{Master's Thesis Theoretical Physics\\conducted between 04-09-2017 and 01-08-2018}\\[0.5cm]
 		\begin{minipage}[t]{0.4\textwidth}
 			\begin{flushleft}
 				\large\emph{Author}\\{Teun Zwart (10499873)}
@@ -131,7 +131,7 @@
 
 
 \begin{savequote}[50mm]
-Science is just magic that works.
+Science is magic that works.
 \qauthor{Kurt Vonnegut, Cat's Cradle}
 All sufficiently advanced technology is indistinguishable from magic.
 \qauthor{Arthur C. Clark}
@@ -151,7 +151,7 @@ In the distance, the cat hears the sound of lobster minds singing in the void, a
 \section*{Abstract}
 
 Correlation functions play an important role in physics, but analytical results do not exist for many models.
-For Bethe ansatz solvable models the ABACUS algorithm can be used to numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
+For Bethe ansatz solvable models the ABACUS algorithm can numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
 This occurs through summing of matrix elements in the Lehmann series representation of the DSF.
 This summing is not optimal, in that it does not sum matrix elements in strictly  monotonically decreasing order.
 
@@ -176,7 +176,7 @@ These functions, generally of the form
   \expval{\mathcal{O}(x,t)\mathcal{O}(0,0)},
 \end{align}
 describe the correlations in time and space of microscopic variables.
-Much work has been put in finding correlation functions for various models, but for many there is as yet no closed-form solution or this solution may not even exist.
+Much work has gone into finding correlation functions for various models, but for many there is currently no closed-form solution or this solution may not even exist.
 
 In this thesis we consider the numerical evaluation of correlation functions for a class of models which are exactly solvable using the Bethe ansatz.
 Solutions of Bethe ansatz solvable models take the form of (superpositions of) plane waves, parameterized by numbers known as rapidities.
@@ -1238,7 +1238,7 @@ Manually writing such a function proves to be difficult, with the resulting func
   \label{fig:cat}
 \end{figure}
 
-\subsection{Neural networks}
+\subsection{Neural networks}\label{sec:neural-networks}
 Neural network allow for the efficient approximation of functions which map inputs to outputs.
 Given an input \(x\) and an output \(t\) (for target), a neural net acts as a function which approximately maps the input to the output: \(f(x)\approx t\).
 
@@ -1256,8 +1256,8 @@ with \(j=1,\ldots,M\) and superscript \((1)\) denoting it as the first layer.
 \(a_j\) is called the activation.
 We thus construct \(M\) linear combinations of the input.
 The parameters \(w_{ji}^{(1)}\) are called weights, with \(w_{j0}^{(1)}\) being called biases.
-These linear combinations are then transformed with a differentiable, nonlinear activation function \(h(a_j)\).
-The nonlinearity is key here, because it allows the system to act as a general function approximator.
+These linear combinations are then transformed with a differentiable, nonlinear activation function \(h(a_j)\)~\cite{Bishop2006}.
+The nonlinearity is key here, because it allows the system to act as a general function approximator~\cite{Sutton}.
 
 A second layer can be constructed in the same manner:
 \begin{align}
@@ -1369,7 +1369,7 @@ We get
 and through substitution we get
 \begin{align}
   \label{eq:72}
-  \delta_j = \pdv{h(a_j)}{a_j} \sum_k w_{kj} \delta_k.
+  \delta_j = \eval{\pdv{h(x)}{x}}_{x=a_j} \sum_k w_{kj} \delta_k.
 \end{align}
 With these equations neural networks can be trained~\cite{Bishop2006}.
 
@@ -1382,21 +1382,78 @@ They use expert data to train and this (hopefully) allows for generalization to 
 In many cases however the acquisition of expert data is difficult or impossible.
 In these cases reinforcement learning comes into play.
 In reinforcement leaning a model interacts with the environment and receives rewards, changing over time to maximize the reward received.
-
-
-- credit assignment problem
-
-- trade off between exploration and exploitation
+The algorithm we will consider here is Q-learning.
 
 \subsection{Q-learning}
 
-model free, off-policy
+Q-learning as a method dates back to 1989~\cite{Watkins1989}.
+In Q-learning we learn an action-value function Q, which tells us what action is the most valuable to take from any given state.
+An advantage of Q-learning is that it is off-policy, meaning that the optimal action-value function \(q_*\) is approximated independent of the followed policy during training.
+As long as states are visited and the Q-function is updated, \(q_*\) is approximated.
 
-sgd used~\cite{mnih13_playin_atari_with_deep_reinf_learn}
+Q-learning is also model-free, meaning that it does not know how the environment it is working in changes based on its actions.
+All interaction with the environment is solely through rewards.
+
+In Q-learning, at any given step we update the following equation:
+\begin{align}
+  \label{eq:71}
+  Q(s_t,a_t) \leftarrow (1-\alpha) Q(s_t, a_t) + \alpha \left[r_{t+1}+\gamma \max_aQ(s_{t+1},a)\right]
+\end{align}
+This means that at every time step we update the value of \(Q\) by some amount (modulated by the step size \(\alpha\)).
+We select an action \(A\) to take, observe the new state \(s_{t+1}\) and the reward \(r_{t+1}\) received.
+Then we determine the highest \(Q\)-value for the new state \(s_{t+1}\), and use these values to update our original estimate of \(Q(s_t,a_t)\).
+The parameter \(\gamma\) acts as a discount on future rewards~\cite{Sutton}.
+
+A problem unique to reinforcement learning is the trade-off between exploration and exploitation.
+An agent has to exploit the high-reward action it has discovered over time, but also has to explore the action space to find high-reward actions.
+This is an unsolved problem.
+We will use an $\epsilon$-greedy selection algorithm to ensure exploration, taking a random action a fraction $\epsilon$ of the time and following the agents guess for the best action during the remaining \(1-\epsilon\) fraction~\cite{Sutton}.
 
 
-\cite{Sutton}
+The simplest problems to which Q-learning applies are tabular, meaning that we can make a table of all states and actions, and enumerate the reward for every combination.
+The problem with the tabular method is that exhaustively tabulating every possible state and action is for many problems impossible.
+The state space may be factorially large, meaning that almost every state will never before have been encountered.
+This means that we have to generalize to new states from previous experience.
+Here we can turn to function approximators like neural networks (\cref{sec:neural-networks}).
+Note that there is no proof of convergence to an optimal solution for this method as there was for the tabular method~\cite{Sutton}.
 
+
+We require neural networks which can deal with incremental data (such as stochastic gradient descent)
+online: learning occurs during every step, not at the end of an episode
+
+
+\begin{algorithm}[H]
+  \caption{Q-learning}
+  Initialize $Q(s)$ with random weights
+   \begin{algorithmic}[1]
+     \For{epoch=1,M}
+     \For{t=1,T}
+     \State Select random action $a_t$ with probability $\epsilon$
+     \State otherwise select $a_t = \max_a Q^*(s_t;\theta)$
+     \State Execute action $a_t$ and observe reward and state $s_t$
+     \If{$s_t$ terminal state}
+     \State $y_j = (1-\alpha) Q(s_t) + \alpha r_j$
+     \Else{}
+     \State $y_j =  (1-\alpha) Q(s_t) + \alpha \left( r_j + \gamma \max_{a'}Q(s_{t+1};\theta)\right)$
+     \EndIf{}
+     \State Perform gradient descent on \((y_j- Q(s_t))^2\)
+     \EndFor
+     \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+
+
+
+
+Finally, we should mention the credit assignment problem.
+When playing games such as chess or Go, where a reward is only given at the end of a match (win, loss, draw), assigning credit to a given move for enabling victory is difficult.
+A move that was crucial to winning may have been played early in the game.
+Due to the nature of the reward function we will use later, this problem is not so prevalent in the current work.
 
 
 \begin{savequote}[50mm]
@@ -1646,7 +1703,7 @@ We consider a number of different possible ways of determining states:
 \item A neural network trained with and without checking the number of particle hole pairs for states;
 \item Random state selection. In this case we simply set \(\epsilon=1\) in the epsilon greedy algorithm and do not decrease it over the course of the run.
 \end{itemize}
-For both methods we calculate the DSFs both with and without minimizing \(N_{\mathrm{ph}}\).
+For both methods we calculate the DSFs both with and without minimizing \(N_{\mathrm{ph}}\).\footnote{Note that during training, even when particle-hole pair minimization is enabled, we do not use it during the forward pass of Q-learning. Doing so degrades performance.}
 The measure we use to compare methods is how many states are required to reach a given f-sum rule saturation.
 Due to the representation of the states and the cutoff used, direct comparison with ABACUS is difficult (\cref{sec:exact}), but we do give some results for a rough estimate of relative performance.
 
@@ -1656,7 +1713,7 @@ If training occurs we do so for 25 epochs of 500 states.
 We set \(\epsilon=0.1\) and do not change it during training.
 We do not start from full exploration (\(\epsilon=1\)) because many states will contribute very little to sum rule saturations, leading to poor results.
 In evaluation we also have \(\epsilon=0.1\).
-We set the hyperparameters \(\alpha=0.1\) and \(\gamma = 0.975\).
+We set the hyperparameters \(\alpha=0.01\) and \(\gamma = 0.975\).
 If convergence has not been reached after 3000 states, the scanning is terminated.
 Encountered states are stored for later analysis as well as to prevent double counting.
 
@@ -2101,6 +2158,10 @@ Therefore further research is warranted in this area, since not all models may h
 On another front progress in computing DSFs may be made by Moore's law and the passage of time (as well as the development of new algorithms).
 We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible exactly~\cite{wietek18_sublat_codin_algor_distr_memor}.
 
+Furthermore, the mapping between deep learning and the renormalization group~\cite{Mehta2014} should be further explored.
+This may provide additional insight into the working of neural networks.
+It may also provide clues to the optimum number of layers in a system for a given input set, the determination of which currently depends on experience (a ``gut'' feeling) and experimentation.
+
 Finally, the fields of machine learning and artificial intelligence in general are currently experiencing large changes and advances.
 New methods and techniques are constantly developed and may also be applicable to the problem of DSF calculation.\footnote{They may also lead to paperclip maximizers~\cite{tegmark}, uncooperative spaceship computers and Arnold Schwarzenegger being sent back in time.}
 
@@ -2265,7 +2326,7 @@ The first commutator in \cref{eq:hamiltoniancom} is
                                                                           &= L \delta_{k_1,k_2} \psi_{k_2}^{\dag}\psi_{k_1+k} - L \delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2} .
 \end{align}
 
-The second commutator \cref{eq:hamiltoniancom} is 
+The second commutator of \cref{eq:hamiltoniancom} is 
 \begin{align}
   \label{eq:8}
   [\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}, \psi_{k_1}^{\dag}\psi_{k_1+k}] &= 
@@ -2669,18 +2730,20 @@ P. Mehta and D. J. Schwab, \textit{An exact mapping between the Variational Reno
 C. Bishop, \emph{Pattern Recognition and Machine Learning}, Springer-Verlag, New York, ISBN 9780387310732 (2006).
 
 
-
-
-
 \bibitem{Sutton} 
 R. S. Sutton and A. G. Barto, \emph{Reinforcement Learning: An Introduction}, MIT Press, Cambridge, ISBN 9780262193986 (2018).
+
+
+
+\bibitem{Watkins1989}
+C. J. C. H. Watkins, \textit{Learning from delayed rewards}, Ph.D. thesis, University of Cambridge (1989).
 
 
 
 
 
 \bibitem{chollet2015keras} 
-F. Chollet etal., \emph{Keras}, \href{https://keras.io}{https://keras.io} (2015).
+F. Chollet et al., \emph{Keras}, \href{https://keras.io}{https://keras.io} (2015).
 
 
 
