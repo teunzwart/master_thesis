@@ -99,8 +99,8 @@
 		\end{minipage}
 		\begin{minipage}[t]{0.4\textwidth}
 			\begin{flushright}
-				\large\emph{Supervisor}\\{prof. dr. Jean-Sébastien Caux}\\~\\
-				\large\emph{Second assessor}\\{dr. Jasper van Wezel}\\~\\~\\
+				\large\emph{Supervisor}\\{Prof. Dr. Jean-Sébastien Caux}\\~\\
+				\large\emph{Second assessor}\\{Dr. Jasper van Wezel}\\~\\~\\
 			\end{flushright}
 		\end{minipage}
 		\includegraphics[width=0.5\textwidth]{machine_learning_2x.png}
@@ -152,12 +152,12 @@ In the distance, the cat hears the sound of lobster minds singing in the void, a
 
 Correlation functions play an important role in physics, but analytical results do not exist for many models.
 For Bethe ansatz solvable models the ABACUS algorithm can numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
-This occurs through summing of matrix elements in the Lehmann series representation of the DSF.
+This occurs through summing of matrix elements in the Lehmann series representation of the DSF.\@
 This summing is not optimal, in that it does not sum matrix elements in strictly  monotonically decreasing order.
 
-In this thesis we apply reinforcement learning to the summing of matrix elements, hoping to develop a strategy that leads to more optimal summation than done by ABACUS.
+In this thesis we apply reinforcement learning to the summing of matrix elements, hoping to develop a strategy that leads to more optimal summation than done by ABACUS.\@
 We develop a representation of the Lieb-Liniger model suitable for use in machine learning and use Q-learning to learn the summation strategy.
-We find that the algorithm is able to learn to sum in such a way that it gives preference to highly contributing states, but that performance is far inferior to that shown by ABACUS.
+We find that the algorithm is able to learn to sum in such a way that it gives preference to highly contributing states, but that performance is far inferior to that shown by ABACUS.\@
 As a corollary we also use supervised learning to try to optimize the numerical evaluation of Bethe ansatz parameters known as rapidities, but find that any advantage this method has declines considerably with system size.
 The evaluation time added by the neural network makes this method unfit for finding rapidities.
 
@@ -182,7 +182,7 @@ In this thesis we consider the numerical evaluation of correlation functions for
 Solutions of Bethe ansatz solvable models take the form of (superpositions of) plane waves, parameterized by numbers known as rapidities.
 If the system is quantized an equation known as the Bethe equation emerges, which allows for the calculation of these rapidities.
 Many of the physical properties of Bethe ansatz solvable models can be expressed in terms of rapidities~\cite{Korepin1993}.
-For this class of models the ABACUS algorithm~\cite{Caux2009} allows for the numerical evaluation of the Fourier transform of the correlation function, known as a dynamical structure function or DSF.
+For this class of models the ABACUS algorithm~\cite{Caux2009} allows for the numerical evaluation of the Fourier transform of the correlation function, known as a dynamical structure function or DSF.\@
 
 The DSF can be evaluated by considering its Lehmann series representation:
 \begin{equation}\label{eq:lehmanintro}
@@ -303,7 +303,7 @@ We can now write the two-particle wave function by setting \(A_{21}=1\) (and ign
 Generalization to the whole domain (not just where \(x_1 < x_2\)) can be achieved by requiring the wave function to be fully symmetric under coordinate exchange,
 yielding
 \begin{equation}
-  \psi(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} (-1)^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
+  \psi(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} {(-1)}^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
 \end{equation}
 The sum runs over the permutations of the set \((1,2)\)~\cite{Caux2015}.
 This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
@@ -332,7 +332,7 @@ It require that the wave functions obeys~\cite{Franchini2017}
 If we impose this condition on the wave function, the boundary term the quasimomenta have to obey the relation~\cite{Korepin1993}
 \begin{equation}
   \label{eq:expbethe}
-  e^{i\lambda_jL} = \prod_{l\neq j} \frac{\lambda_j-\lambda_l + ic}{\lambda_j - \lambda_l - ic}
+  e^{i\lambda_j L} = \prod_{l\neq j} \frac{\lambda_j-\lambda_l + ic}{\lambda_j - \lambda_l - ic}
 \end{equation}
 These are the Bethe equations.
 If we take the logarithm of \cref{eq:expbethe} we get
@@ -368,7 +368,7 @@ The Bethe equations and Bethe numbers have a number of different properties:
 \begin{theorem}\label{th:convexity}
 \begin{sloppypar}
 \noindent
-The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and exist, given a \mbox{(half-)integer} set of quantum numbers \(\{I\}\) \textup{\cite{Yang1969}}.
+The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and exist, given a \mbox{(half-) integer} set of quantum numbers \(\{I\}\) \textup{\cite{Yang1969}}.
 \end{sloppypar}
 \end{theorem}
 \begin{proof}
@@ -385,12 +385,12 @@ To show this is indeed a minimum, we need to have a positive definite matrix of 
 \end{align}
 where we have the kernel
 \begin{align}
-	\mathcal{C}(\lambda - \mu) = \left.\frac{\dd \phi(x)}{\dd x} \right|_{x=\lambda-\mu} = \frac{2c}{c^2 + (\lambda - \mu)^2}.
+	\mathcal{C}(\lambda - \mu) = \left.\frac{\dd \phi(x)}{\dd x} \right|_{x=\lambda-\mu} = \frac{2c}{c^2 + {(\lambda - \mu)}^2}.
 \end{align}
 
 By introducing a vector \(v_j\) with real components, we get~\cite{Korepin1993}
 \begin{align}
-  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} v_jv_l = \sum_{j=1}^NL v_{j}^2 + \sum_{j>l=1}^{N} \mathcal{C}(\lambda_j-\lambda_m) (v_j - v_l)^2 \geq L \sum_{j=1}^Nv_j^{2} > 0,
+  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j \partial\lambda_l} v_j v_l = \sum_{j=1}^N L v_{j}^2 + \sum_{j>l=1}^{N} \mathcal{C}(\lambda_j-\lambda_m) {(v_j - v_l)}^2 \geq L \sum_{j=1}^N v_j^{2} > 0,
 \end{align}
 meaning that the action is convex, and the minimum defining the Bethe equations is unique.
 \end{proof}
@@ -439,7 +439,7 @@ This result was first conjectured by Gaudin and for the Lieb-Liniger model takes
 \end{align}
 where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with elements
 \begin{align}\label{eq:gaudin}
-  \mathcal{G}(\{\lambda\})_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}\mathcal{C}(\lambda_j-\lambda_m)\right) - \mathcal{C}(\lambda_j, \lambda_k),
+  \mathcal{G}{(\{\lambda\})}_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}\mathcal{C}(\lambda_j-\lambda_m)\right) - \mathcal{C}(\lambda_j, \lambda_k),
 \end{align}
 and \(\lambda_{jk} = \lambda_j-\lambda_k\).
 
@@ -513,12 +513,12 @@ Expanding the term in brackets gives\footnote{The expansions goes as follows:
   \begin{align*}
     \phi(\lambda_j-\lambda_l) - \phi(\lambda_j^0 - \lambda_l^0) &= \phi(\lambda_j^0 - \lambda_l^0 + \Delta\lambda) - \phi(\lambda_j^0 - \lambda_l^0) \quad \mathrm{where}\quad \Delta \lambda = \frac{1}{L}(d_j - d_l)\\
     &\approx\Delta \lambda \left.\frac{\partial\phi(x)}{\partial x} \right|_{x = \lambda_j^0-\lambda_l^0}
-    = \frac{1}{L}(d_j-d_l) \frac{2c}{c^2 + (\lambda_j^0-\lambda_l^0)^2}.
+    = \frac{1}{L}(d_j-d_l) \frac{2c}{c^2 + {\qty(\lambda_j^0-\lambda_l^0)}^2}.
   \end{align*}
 }
 \begin{align}
   \label{eq:27}
-  d_j = -\pi - \phi(\lambda_j-q) - \frac{1}{L} \sum_{l=1}^N \frac{2c}{c^2 + (\lambda_j^0-\lambda_l^0)^2} (d_j-d_l) + \mathcal{O}\left(\frac{N}{L^2}\right),
+  d_j = -\pi - \phi(\lambda_j-q) - \frac{1}{L} \sum_{l=1}^N \frac{2c}{c^2 + {(\lambda_j^0-\lambda_l^0)}^2} (d_j-d_l) + \mathcal{O}\left(\frac{N}{L^2}\right),
 \end{align}
 or, by rearranging and turning the sums into integrals, extending \(d_j\to d(\lambda,q)\) to the continuum
 \begin{multline}
@@ -573,7 +573,7 @@ With this we can rewrite the differential equations for the displacement functio
 Using \cref{eq:inversetruncated} we can write the particle displacement integral equation as 
 \begin{align}
   \label{eq:33}
-  (1 - \mathcal{C}^{(F)}) * D_p(\lambda, \lambda_p) = -\frac{\theta(\lambda_F-\abs{\lambda})}{2\pi} (\pi\textrm{sgn}(\lambda_p)) + \phi(\lambda-\lambda_p))
+  (1 - \mathcal{C}^{(F)}) * D_p(\lambda, \lambda_p) = -\frac{\theta(\lambda_F-\abs{\lambda})}{2\pi} \qty(\pi\textrm{sgn}(\lambda_p)) + \phi(\lambda-\lambda_p)
 \end{align}
 for which the solution is 
 \begin{align}
@@ -676,11 +676,10 @@ An example is plotted in \cref{fig:dpplot}.
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{dpplot.pdf}
-  \caption{$D_p(\lambda,\lambda_p)$ plotted for \(c=1\), \(\lambda_F=1\), \(\lambda_p=1.5\).}
-  \label{fig:dpplot}
+  \caption{$D_p(\lambda,\lambda_p)$ plotted for \(c=1\), \(\lambda_F=1\), \(\lambda_p=1.5\).}\label{fig:dpplot}
 \end{figure}
 
-For type II excitations the idea is much the same as type I. Recalling \cref{eq:40}, the displacement is
+For type II excitations the idea is much the same as type I.\@ Recalling \cref{eq:40}, the displacement is
 \begin{equation}
 	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda'),
 \end{equation}
@@ -721,8 +720,7 @@ with an example plotted in \cref{fig:dhplot}.
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{dhplot.pdf}
-  \caption{$D_h(\lambda,\lambda_h)$ plotted for \(c=1\), \(\lambda_F=1\), \(\lambda_h=0.5\).}
-  \label{fig:dhplot}
+  \caption{$D_h(\lambda,\lambda_h)$ plotted for \(c=1\), \(\lambda_F=1\), \(\lambda_h=0.5\).}\label{fig:dhplot}
 \end{figure}
 
 \subsection{Calculating \(\mathcal{L}^{(F)}\)}
@@ -763,7 +761,7 @@ In general the $n+1$-th approximation is defined in terms of the $n$-th approxim
 \end{equation}
 This converges as long as $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \rVert_2$ the $L_2$-norm:
 \begin{equation}
-  \lVert K \rVert_2 = \left( \int_{a}^b \int_a^b \abs{K(x,t)}^2 \dd x \dd t\right)^{1/2}.
+  \lVert K \rVert_2 = {\qty( \int_{a}^b \int_a^b \abs{K(x,t)}^2 \dd x \dd t)}^{1/2}.
 \end{equation}
 
 For the case we are interested in we have 
@@ -772,7 +770,7 @@ For the case we are interested in we have
 \end{equation}
 which converges as long as 
 \begin{equation}
-\left(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c})\right)^{1/2} < 1.
+\qty{(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c}))}^{1/2} < 1.
 \end{equation}
 If we only wish to know the value of $\mathcal{L}^{(F)}$ at a single point we can
 use that at each iteration step $\mathcal{L}^{(F)}$ is simply a number, allowing us to take it out of the integral.
@@ -785,8 +783,7 @@ where \(\mathcal{L}^{(F)}_0(\lambda, \lambda')\) is 0. An example of a numerical
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{lfplot.pdf}
-  \caption{\(\mathcal{L}^{(F)}(\lambda,\lambda')\) plotted for \(c=1\), \(\lambda_F = 1\), \(\lambda'=0\).}
-  \label{fig:lfplot}
+  \caption{\(\mathcal{L}^{(F)}(\lambda,\lambda')\) plotted for \(c=1\), \(\lambda_F = 1\), \(\lambda'=0\).}\label{fig:lfplot}
 \end{figure}
 
 \subsection{Excited states}
@@ -905,7 +902,7 @@ with~\cite{Piroli2015}
 \end{align}
 
 With these tools, form factors of operators may be calculated.
-We have only skimmed the surface of the ABA.
+We have only skimmed the surface of the ABA.\@
 A (much) more thorough introduction may be found in~\cite{Korepin1993} and~\cite{slavnov18_algeb_bethe_ansat}.
 
 
@@ -918,7 +915,7 @@ The density operator is~\cite{Nardis2015}
 \begin{align}
   \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
 \end{align}
-with \(\{x_j\}_{j=1}^N\) the positions of the particles in the gas, or in terms of fields~\cite{slavnov90_noneq_time_curren_correl_funct}
+with \({\{x_j\}}_{j=1}^N\) the positions of the particles in the gas, or in terms of fields~\cite{slavnov90_noneq_time_curren_correl_funct}
 \begin{align}
   \label{eq:44}
   \hat{\rho}(x) = \Psi^{\dag}(x)\Psi(x).
@@ -936,11 +933,11 @@ with element of the matrix \(U\) given by
 and 
 \begin{align}
   \label{eq:56}
-  V(\lambda_j)^{\pm} = \prod_{k=1}^N \frac{\mu_k-\lambda_j\pm ic}{\lambda_k-\lambda_j\pm ic}.
+  V{(\lambda_j)}^{\pm} = \prod_{k=1}^N \frac{\mu_k-\lambda_j\pm ic}{\lambda_k-\lambda_j\pm ic}.
 \end{align}
 The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
 We will generally set it to zero, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
-Note that for the Lieb-Liniger model \(V(\lambda_j)^{-} = (V(\lambda_j)^{+})^{*}\), since all rapidities are real in this case.
+Note that for the Lieb-Liniger model \(V{(\lambda_j)}^{-} = {(V{(\lambda_j)}^{+})}^{*}\), since all rapidities are real in this case.
 
 Including normalization we have for the form factors \(\mathcal{F}\)~\cite{Nardis2015}
 \begin{align}
@@ -972,7 +969,7 @@ The equivalent Fourier transformed quantity is the dynamical structure factor (D
 \end{equation}
 We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because it is the quantity directly accessible in experiments~\cite{Caux2009,Caux2007a}.
 
-Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:
+Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:\@
 \begin{equation}
   \label{eq:lehman}
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
@@ -988,7 +985,7 @@ In order to calculate DSFs we require
 \end{itemize}
 The first and second item are provided by the Bethe ansatz.
 The summation proves to be more difficult, but for this we can use ABACUS (Algebraic Bethe Ansatz-based Computation of Universal Structure factors) to perform it numerically.
-As long as a system is Bethe ansatz integrable and finite in size ABACUS can in principle compute its DSF.
+As long as a system is Bethe ansatz integrable and finite in size ABACUS can in principle compute its DSF.\@
 Even for large systems the results are highly accurate, with this accuracy being mostly energy and momentum independent~\cite{Caux2009}.
 In fact, the accuracy can be measured using sum rules, and saturation in excess of 99\% is possible for systems with hundreds of particles.
 
@@ -1024,7 +1021,7 @@ where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x}^k)\) and \( \mathbf{f
 This linear system can be solved using LU decomposition~\cite{Press2007}.\footnote{In an LU decomposition we rewrite the set of linear equations:
   \begin{align}
     \label{eq:54}
-    \mathbf{A}\cdot\mathbf{x} = (\mathbf{L}\cdot\mathbf{U}) \cdot \mathbf{x} =\mathbf{L}\cdot(\mathbf{U}) \cdot \mathbf{x}) = \mathbf{b},
+    \mathbf{A}\cdot\mathbf{x} = (\mathbf{L}\cdot\mathbf{U}) \cdot \mathbf{x} =\mathbf{L}\cdot(\mathbf{U}) \cdot \mathbf{x} = \mathbf{b},
   \end{align}
 decomposing \(\mathbf{L}\cdot\mathbf{U} = \mathbf{A}\) in a lower and an upper triangular matrix.
 The advantage of this is that we can now solve this system in two parts, first solving \(\mathbf{L}\cdot\mathbf{y} = \mathbf{b}\), and then solving \(\mathbf{U}\cdot\mathbf{x} = \mathbf{y}\), which is easier to do with a triangular matrix~\cite{Press2007}.
@@ -1059,7 +1056,7 @@ Additionally, damping may be employed while solving the system, with the updatin
 Defining the difference squared as
 \begin{align}
   \label{eq:51}
-  \Delta^2 = \frac{1}{N}\sum_{i=1}^{N} \left(\frac{\Delta \lambda_i}{\lambda_i}\right)^2,
+  \Delta^2 = \frac{1}{N}\sum_{i=1}^{N} {\qty(\frac{\Delta \lambda_i}{\lambda_i})}^2,
 \end{align}
 the update algorithm for \(\gamma\) at each iteration is
 \begin{algorithm}
@@ -1079,7 +1076,7 @@ The Bethe equations for real rapidities are considered solved when~\cite{Caux200
 	\Delta^2 < 10^4 \times \epsilon^2,
 \end{equation}
 where \(\epsilon\) is machine precision for the datatype double, which is ``the difference between 1 and the least value greater than 1 that is representable''~\cite{cppstandard2016}.
-On machines implementing IEEE 754-2008 (the standard for floating-point arithmetic)~\cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
+On machines implementing IEEE 754--2008 (the standard for floating-point arithmetic)~\cite{ieeefp2008} this is equal to \({2^{-52} \approx 2.22 \times 10^{-16}}\).
 
 
 \section{Scanning over the Hilbert space}
@@ -1116,8 +1113,7 @@ We see both that some highly contributing form factors are missed early on, appe
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
-  \caption{Size of matrix element magnitudes encountered while summing intermediate states of the XXZ model. The yellow line denotes strictly decreasing magnitude. Note that while in general the size of the form factors decreases, not all large form factors are immediately found. Figure taken from~\cite{Caux2009}.}
-\label{fig:orderedmagnitudes}
+  \caption{Size of matrix element magnitudes encountered while summing intermediate states of the XXZ model. The yellow line denotes strictly decreasing magnitude. Note that while in general the size of the form factors decreases, not all large form factors are immediately found. Figure taken from~\cite{Caux2009}.}\label{fig:orderedmagnitudes}
 \end{figure}
 
 After an ABACUS run, the available data consists of a set of energy-momentum-form factor triplets.
@@ -1136,7 +1132,7 @@ In \cref{table:saturation} the efficiency of ABACUS is showcased.
 It presents the number of states necessary to reach a given saturation in the XXZ model\footnote{The XXZ model is another Bethe ansatz integrable model consisting of spins with Hamiltonian~\cite{Franchini2017}
     \begin{align}
       \label{eq:53}
-      H = - J \sum_{n=1}^N\left[S_{n}^xS_{n+1}^x+S_n^yS_{n+1}^y + \Delta S_n^zS_{n+1}^z\right].
+      H = - J \sum_{n=1}^N\left[S_{n}^x S_{n+1}^x+S_n^y S_{n+1}^y + \Delta S_n^z S_{n+1}^z\right].
     \end{align}
 } and the fraction of the Hilbert space necessary to reach this saturation.
 Although the algorithm is not perfect, only very small fractions are necessary.
@@ -1156,17 +1152,16 @@ Although the algorithm is not perfect, only very small fractions are necessary.
   \end{tabular}
   \caption{Plots of the dynamical structure factor of the Lieb-Liniger model for different values of the interactions parameter \(\gamma\).
     In this case we have $L = 100$ and $N = 100$.
-    Figure taken from~\cite{Caux2007a}}
-\label{fig:lieb_density_dsf}
+    Figure taken from~\cite{Caux2007a}}\label{fig:lieb_density_dsf}
 \end{figure}
 
 
 \begin{table}[tb!]
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{c|c|c|c|c}
+\begin{tabular}{ccccc}
   & N = 50 & N = 100 & N = 200 & N = 400 \\
-\hline
+\midrule
 90\% & 235 (\num{4.9e-12}) & 944 (\num{6.8e-26}) & 8772 (\num{5.3e-54}) & 117373 (\num{3.5e-111})\\
 95\% & 385 (\num{8.2e-12}) & 2492 (\num{1.8e-25}) & 27096 (\num{1.6e-53}) & 573466 (\num{1.7e-110}) \\
 99\% & 1515 (\num{3.2e-11}) & 18490 (\num{1.3e-24}) & 469120 (\num{2.8e-52}) & \\
@@ -1183,8 +1178,7 @@ Although the algorithm is not perfect, only very small fractions are necessary.
 In parentheses are the fraction Hilbert space fraction this represents.
 % with the second number in parentheses the number of contributions needed if the algorithm was perfectly able to only sum monotonically decreasing form factors.
 Table reproduced from~\cite{Caux2009}.
-}
-\label{table:saturation}
+}\label{table:saturation}
 \end{table}
 
 \begin{savequote}[50mm]
@@ -1228,14 +1222,13 @@ Making sense of this flood is becoming increasingly important and requires us to
 For numbers this is relatively easy: if we have an input set \(1,2,3\) and output set \(1,4,9\), some basic mathematics shows that the inputs and outputs are linked by the function \(f(x)=x^2\).
 But what about more complex data?
 A picture of a cat (\cref{fig:cat}) may be instantly recognized by a human, but translating this recognition to a computer is non-trivial.
-Which pixels encode the ``catness'' of a picture as oppossed to its ``dogness''?
+Which pixels encode the ``catness'' of a picture as opposed to its ``dogness''?
 Manually writing such a function proves to be difficult, with the resulting function performing poorly, but there is a way of doing this in the form of neural networks. 
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{cat.jpg}
-  \caption{A cat. While this image is instantly recognizable to a human, translating such recognition to a computer proves non-trivial. Image courtesy of E. W. Zwart.}
-  \label{fig:cat}
+  \caption{A cat. While this image is instantly recognizable to a human, translating such recognition to a computer proves non-trivial. Image courtesy of E. W. Zwart.}\label{fig:cat}
 \end{figure}
 
 \subsection{Neural networks}\label{sec:neural-networks}
@@ -1276,14 +1269,14 @@ For regression (finding continuous variables) the output would be linear (\(y_k=
 Taking it all together we get a network that looks like (using a sigmoid as the last activation)
 \begin{align}
   \label{eq:60}
-  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=1}^Mw_{kj}^{(2)}h\left(\sum_{i=1}^Dw_{ji}^{(1)}+w_{j0}^{(1)}\right)+w_{k0}^{(2)}\right),
+  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=1}^M w_{kj}^{(2)}h\left(\sum_{i=1}^D w_{ji}^{(1)}+w_{j0}^{(1)}\right)+w_{k0}^{(2)}\right),
 \end{align}
 with \(\mathbf{w}\) the set of all weight and bias parameters.
 Evaluation of \cref{eq:60} is known as forward propagation and the network is a feedforward network: there are no layers which feed back information to previous layers.
 
 The bias parameters can be absorbed in the weight parameters by defining an additional input variable \(x_0=1\), resulting in 
 \begin{align}
-  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=0}^Mw_{kj}^{(2)}h\left(\sum_{i=0}^Dw_{ji}^{(1)}\right)\right).
+  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=0}^M w_{kj}^{(2)}h\left(\sum_{i=0}^D w_{ji}^{(1)}\right)\right).
 \end{align}
 
 Now we get to training the model, or, in other words, tuning the network weights in such a way that the network can link inputs to outputs.
@@ -1292,7 +1285,7 @@ The ultimate goal here is to get the network to generalize, providing useful pre
 If we have a training set \(\{\mathbf{x}_n\}\) and target set \(\{\mathbf{t}_n\}\), with \(n=1,\ldots,N\), during training we will minimize the error function\footnote{This is only one possible choice for the error function. For regression other choices include the mean square error and the absolute error.}
 \begin{align}
   \label{eq:61}
-  E(\mathbf{w}) = \frac{1}{2} \sum _{n=1}^N\left(\mathbf{y}(\mathbf{x_n}, \mathbf{w})-\mathbf{t}_n\right)^2.
+  E(\mathbf{w}) = \frac{1}{2} \sum _{n=1}^N{\qty(\mathbf{y}(\mathbf{x_n}, \mathbf{w})-\mathbf{t}_n)}^2.
 \end{align}
 Note that a problem that could occur during training is overfitting to the training set, meaning the error is small but the network does not perform well when given new samples.
 To detect this and be able to mitigate it we can use a validation set separate from the training set on which we determine the error~\cite{Bishop2006}.
@@ -1337,7 +1330,7 @@ The answer to updating parameters comes in the form of error backpropagation.
 In each layer we compute the activation
 \begin{align}
   \label{eq:67}
-  a_j= \sum_iw_{ji}z_i,
+  a_j= \sum_i w_{ji}z_i,
 \end{align}
 with \(z_i\) the output of the previous layer.
 After we forwardly propagate the input data to generate an output, we can use gradient descent.
@@ -1356,7 +1349,7 @@ This means that to evaluate derivatives throughout the network only the values f
 If the output layer has linear activation functions (\(y_k = \sum_i w_{ki}x_i\)), and the error is given by
 \begin{align}
   \label{eq:69}
-  E_n = \frac{1}{2} \sum_k \left(y_{nk}-t_{nk}\right)^2,
+  E_n = \frac{1}{2} \sum_k {\qty(y_{nk}-t_{nk})}^2,
 \end{align}
 we have \(\delta_j=y_{nj}-t_{nj}\).
 
@@ -1400,7 +1393,7 @@ All interaction with the environment is solely through rewards.
 In Q-learning, at any given step we update the following equation:
 \begin{align}
   \label{eq:71}
-  Q(s_t,a_t) \leftarrow (1-\alpha) Q(s_t, a_t) + \alpha \left[r_{t+1}+\gamma \max_aQ(s_{t+1},a)\right]
+  Q(s_t,a_t) \leftarrow (1-\alpha) Q(s_t, a_t) + \alpha \left[r_{t+1}+\gamma \max_a Q(s_{t+1},a)\right]
 \end{align}
 This means that at every time step we update the value of \(Q\) by some amount (modulated by the step size \(\alpha\)).
 We select an action \(a_t\) to take, observe the new state \(s_{t+1}\) and the reward \(r_{t+1}\) received.
@@ -1427,24 +1420,23 @@ We require neural networks which can deal with incremental data (such as stochas
    \begin{algorithmic}[1]
      \For{epoch=1,M}
      \For{t=1,T}
-     \State Select random action $a_t$ with probability $\epsilon$
-     \State otherwise select $a_t = \max_a Q^*(s_t;\theta)$
-     \State Execute action $a_t$ and observe reward and state $s_t$
-     \State Make a copy \(y\) of \(Q\)
+     \State{Select random action $a_t$ with probability $\epsilon$}
+     \State{otherwise select $a_t = \max_a Q^*(s_t;\theta)$}
+     \State{Execute action $a_t$ and observe reward and state $s_t$}
+     \State{Make a copy \(y\) of \(Q\)}
      \If{$s_t$ terminal state}
-     \State $y_j = (1-\alpha) Q(s_t;\mathbf{w}) + \alpha r_j$
+     \State{$y_j = (1-\alpha) Q(s_t;\mathbf{w}) + \alpha r_j$}
      \Else{}
-     \State $y_j =  (1-\alpha) Q(s_t) + \alpha \left( r_j + \gamma \max_{a'}Q(s_{t+1};\mathbf{w})\right)$
+     \State{$y_j =  (1-\alpha) Q(s_t) + \alpha \left( r_j + \gamma \max_{a'}Q(s_{t+1};\mathbf{w})\right)$}
      \EndIf{}
-     \State Perform gradient descent on \(\qty(y_j- Q(s_t))^2\)
-     \EndFor
-     \EndFor
-  \end{algorithmic}
-  \label{alg:qlearning}
+     \State{Perform gradient descent on \({\qty(y_j- Q(s_t))}^2\)}
+     \EndFor{}
+     \EndFor{}
+  \end{algorithmic}\label{alg:qlearning}
 \end{algorithm}
 
-The algorithm we use is a combination of what is presented in \cite{Sutton} (the step parameter \(\alpha\)) and deep Q-learning from \cite{mnih13_playin_atari_with_deep_reinf_learn}.
-Note that we will not use the experience replay used in \cite{mnih13_playin_atari_with_deep_reinf_learn}, which is a queue of previous (state, action, reward, new state) tuples from which random selections are used for training.
+The algorithm we use is a combination of what is presented in~\cite{Sutton} (the step parameter \(\alpha\)) and deep Q-learning from~\cite{mnih13_playin_atari_with_deep_reinf_learn}.
+Note that we will not use the experience replay used in~\cite{mnih13_playin_atari_with_deep_reinf_learn}, which is a queue of previous (state, action, reward, new state) tuples from which random selections are used for training.
 The algorithm is shown in \cref{alg:qlearning}.
 During each time step we choose a move according to an \(\epsilon\)-greedy policy.
 Then the chosen action is taken, the new state reached and the reward observed.
@@ -1521,8 +1513,7 @@ Notably it learned part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lamb
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.70\textwidth]{rapidities_20.pdf}
-  \caption{Predicted and exact rapidities for the Lieb-Liniger model with \(c=1\), \(L=N=20\).}
-  \label{fig:rapidities}
+  \caption{Predicted and exact rapidities for the Lieb-Liniger model with \(c=1\), \(L=N=20\).}\label{fig:rapidities}
 \end{figure}
 
 The real question however is whether the initial guesses of the neural network are better than those of the Naive Bethe approach.
@@ -1551,8 +1542,7 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_10.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_20.pdf}}
-  \caption{Number of Newton iterations until convergence is reached for \(N=5,10,20\), averaged over 1000 sets of Bethe numbers. The black bars denote standard errors.}
-  \label{fig:iterations}
+  \caption{Number of Newton iterations until convergence is reached for \(N=5,10,20\), averaged over 1000 sets of Bethe numbers. The black bars denote standard errors.}\label{fig:iterations}
 \end{figure}
 
 \begin{figure}[ph]
@@ -1560,8 +1550,7 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be
   \subfloat{\includegraphics[width=0.70\textwidth]{time_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_10.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_20.pdf}}
-  \caption{Time in seconds until convergence is reached for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. The black bars denote standard errors.}
-  \label{fig:convtimes}
+  \caption{Time in seconds until convergence is reached for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. The black bars denote standard errors.}\label{fig:convtimes}
 \end{figure}
 
 \section{Walking through state space}
@@ -1573,7 +1562,7 @@ Recalling the Lehman representation of the dynamic structure function (DSF, \cre
 \begin{equation}
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
 \end{equation}
-we note that if we want to evaluate the above expression, we in principle have to sum over the entire Hilbert space of the model in question (potentially a space of  infinite size) to capture all behaviour of the DSF.
+we note that if we want to evaluate the above expression, we in principle have to sum over the entire Hilbert space of the model in question (potentially a space of  infinite size) to capture all behaviour of the DSF.\@
 Due to the impracticality of this we instead consider states that contribute a lot to the above sum.
 In general these are states with a large matrix element.
 More precisely they are states with large contributions to the f-sum rule (see \cref{eq:fsumrule}):
@@ -1585,7 +1574,7 @@ This allows us to determine which fraction of states have been summed in a given
 
 At present the scanning of the Hilbert space is implemented in ABACUS in the form of a large function of approximately 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
 Looking at \cref{fig:orderedmagnitudes}, we see that the summation is not yet optimal: some important states are not captured early in the summation.
-This results in lower than possible saturation of the f-sum rule for a given running time of ABACUS.
+This results in lower than possible saturation of the f-sum rule for a given running time of ABACUS.\@
 
 Thus, we turn to machine learning to scan through the Hilbert space in a hopefully more efficient way.
 This also moves complexity from the handcrafted function into a neural network.
@@ -1632,10 +1621,10 @@ We also consider what happens when the number of particle-hole pairs is minimize
 To that end, we define the number of particle-hole pairs \(N_{\mathrm{ph}}\) as
 \begin{align}
   \label{eq:52}
-  N_{\mathrm{ph}}(s, r) = N - \mathrm{len}(J(s)_{s_i=1}\cap J(r)_{r_i=1}), 
+  N_{\mathrm{ph}}(s, r) = N - \mathrm{len}(J{(s)}_{s_i=1}\cap J{(r)}_{r_i=1}), 
 \end{align}
 where \(s\) is the state for which the number of particle-hole pairs is determined and \(r\) is the reference state, in this case the ground state.
-\(J(s)_{s_i=1}\) denotes the set of indices for which \(s_i = 1\) (likewise for \(r\)).
+\(J{(s)}_{s_i=1}\) denotes the set of indices for which \(s_i = 1\) (likewise for \(r\)).
 Both the state and the reference state are in the representation of \cref{eq:representation}.
 In other words, it is the number of particles that have left the Fermi interval
 It has the desired properties of being 0 when \(r=s\) and \(N_{\mathrm{ph}} = N\) when no two particles are in the same place for \(s\) and \(r\).
@@ -1652,8 +1641,7 @@ Doing so for all possible permutations with individual particle momentum in the 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.7\textwidth]{no_of_states}
-  \caption{The number of states in each momentum slice for the Lieb-Liniger model for \(N=5\) and \(I_{\max}=12\). Note that we dropped the prefactor \(\frac{2\pi}{L}\) for each entry.}
-  \label{fig:no_of_states}
+  \caption{The number of states in each momentum slice for the Lieb-Liniger model for \(N=5\) and \(I_{\max}=12\). Note that we dropped the prefactor \(\frac{2\pi}{L}\) for each entry.}\label{fig:no_of_states}
 \end{figure}
 The maximum possible state momentum is given by
 \begin{align}
@@ -1667,8 +1655,7 @@ The higher momentum slices will suppress the total possible attainable sum rule.
 \begin{figure}[tb!]
   \centering
    \subfloat{\includegraphics[width=.7\textwidth]{saturations_over_momenta.pdf}}
-   \caption{Maximum possible sum rule saturation per momentum slice in the Hilbert space with \(I_{\max}=12\). Note how the saturations fall off sharply at around \(I_{\max}\). This is a result of the lack of states with the corresponding momentum. Not pictured are the saturations outside of the interval (-12,12), which decay exponentially.}
-   \label{fig:saturationsperslice}
+   \caption{Maximum possible sum rule saturation per momentum slice in the Hilbert space with \(I_{\max}=12\). Note how the saturations fall off sharply at around \(I_{\max}\). This is a result of the lack of states with the corresponding momentum. Not pictured are the saturations outside of the interval (-12,12), which decay exponentially.}\label{fig:saturationsperslice}
 \end{figure}
 
 
@@ -1685,16 +1672,14 @@ Looking at \cref{fig:meanffphpairs}, where we plot the mean form factor sizes fo
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=.7\textwidth]{ave_form_factor_ph_pairs.pdf}
-  \caption{Mean form factor per number of particle-hole pairs.}
-  \label{fig:meanffphpairs}
+  \caption{Mean form factor per number of particle-hole pairs.}\label{fig:meanffphpairs}
 \end{figure}
 
 We see the same pattern of exponential decay when plotting the mean sum rule saturation per \(N_{\mathrm{ph}}\) (\cref{fig:meansumrulesaturation}). 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=.7\textwidth]{ave_sum_rule_saturation_ph_pairs.pdf}
-  \caption{Mean sum rule saturation per given number of particle-hole pairs.}
-  \label{fig:meansumrulesaturation}
+  \caption{Mean sum rule saturation per given number of particle-hole pairs.}\label{fig:meansumrulesaturation}
 \end{figure}
 
 Even though the number of states with a given \(N_{\mathrm{ph}}\) increases for increasing \(N_{\mathrm{ph}}\), this only happens approximately linearly (\cref{fig:numberofstatesph}), meaning that only the states with \(N_{\mathrm{ph}}=1,2\) have a large contribution.
@@ -1702,8 +1687,7 @@ This validates the use of \cref{eq:52} while training to select for states with 
 \begin{figure}[tb!]
   \centering
   \subfloat{\includegraphics[width=.7\textwidth]{no_states_ph_pairs.pdf}}
-  \caption{Number of states with a given number of particle-hole pairs.}
-  \label{fig:numberofstatesph}
+  \caption{Number of states with a given number of particle-hole pairs.}\label{fig:numberofstatesph}
 \end{figure}
 
 
@@ -1740,11 +1724,11 @@ Instead we use
    \hspace*{\algorithmicindent} \textbf{Input} $\mathcal{F}, \mu, \lambda, N_{\mathrm{world}}$ 
    \begin{algorithmic}[1]
      \If{$\abs{\mathcal{F}}>10^{-5}$} 
-     \State \Return $\abs{\mathcal{F}}^{1/10}$
+     \State{\Return{$\abs{\mathcal{F}}^{1/10}$}}
      \ElsIf{$d(\mu, \lambda)<\sqrt{N_{\mathrm{world}}}$} 
-     \State \Return $\frac{1}{d(\mu, \lambda)^{1/10}}$
+     \State{\Return{$\frac{1}{d{(\mu, \lambda)}^{1/10}}$}}
      \Else{}
-     \State \Return -1
+     \State{\Return{-1}}
      \EndIf{}
   \end{algorithmic}
 \end{algorithm}
@@ -1753,12 +1737,12 @@ where \(\mathcal{F}\) is the form factor of the current state \(\mu\), \(\lambda
 \begin{algorithm}[H]
    \hspace*{\algorithmicindent} \textbf{Input} $\mu, \lambda$ 
    \begin{algorithmic}[1]
-     \State $d = 0$
+     \State{$d = 0$}
      \For{$i=1$ to $N$}
      \vspace{3mm}
-     \State $d = d + \abs{I_{\mu}^i-I_{\lambda}^i}$
+     \State{$d = d + \abs{I_{\mu}^i-I_{\lambda}^i}$}
      \EndFor{}
-     \State \Return $d$
+     \State{\Return{$d$}}
   \end{algorithmic}
 \end{algorithm}
 \noindent
@@ -1769,15 +1753,13 @@ In other words, it is sum of the distance each particle has traveled in Bethe nu
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{statestoconv.pdf}
-  \caption{Number of states needed to reach 83\% sum rule saturation averaged over five runs. The error bars denote standard errors.}
-  \label{fig:statestoconv}
+  \caption{Number of states needed to reach 83\% sum rule saturation averaged over five runs. The error bars denote standard errors.}\label{fig:statestoconv}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ffsizesproxy.pdf}
-  \caption{Mean square form factor size proxy average over five runs. The error bars denote standard errors.}
-  \label{fig:ffsizeproxy}
+  \caption{Mean square form factor size proxy average over five runs. The error bars denote standard errors.}\label{fig:ffsizeproxy}
 \end{figure}
 
 
@@ -1830,7 +1812,7 @@ These actions with two forbidden sub-actions are more strongly disfavored than t
 The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) Q-factors.
 
 \begin{sloppypar}
-Finally, we compare with ABACUS.
+Finally, we compare with ABACUS.\@
 When we use the same settings as above~(\(L=N=5, I_{\max}=12\)), we find that only 158 states are necessary for 99.5\% sum rule saturation, with a form factor size proxy of 0.0009 (\cref{fig:abacusformfactors_12_5}).
 It should be noted that, because ABACUS can scan within momentum slices, uniformly high saturations can be achieved (\cref{fig:abacus_saturations_12_5}).
 \end{sloppypar}
@@ -1843,22 +1825,20 @@ This is at most a fraction \(7.7\times 10^{-10}\) of the Hilbert space under con
 The form factor size proxy has a value of \num{8.01e-05} (\cref{fig:abacusformfactors})
 This shows that ABACUS is highly efficient in summing matrix elements.
 
-In conclusion we can say that learning does occur when using Q-learning to sum matrix elements, but that this method is far outclassed by the current implementation of ABACUS.
+In conclusion we can say that learning does occur when using Q-learning to sum matrix elements, but that this method is far outclassed by the current implementation of ABACUS.\@
 Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training for smaller systems.
 
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_False.pdf}
-  \caption{Square form factors as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}
-  \label{fig:ff_sizes_rand_True_check_train_False_check_eval_False}
+  \caption{Square form factors as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}\label{fig:ff_sizes_rand_True_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_False.pdf}
-  \caption{Saturation as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for 5 runs of DSF calculation.}
-  \label{fig:saturation_rand_True_check_train_False_check_eval_False}
+  \caption{Saturation as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for 5 runs of DSF calculation.}\label{fig:saturation_rand_True_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1876,43 +1856,37 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_True.pdf}
-  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for 5 runs of DSF calculation.}
-  \label{fig:saturation_histories_rand_False_check_train_True_check_eval_True}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for 5 runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_True.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for a selected DSF calculation.}
-  \label{fig:ff_sizes_rand_False_check_train_True_check_eval_True}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False}
-  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for 5 runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.4\%$ saturation after 3000 states.}
-  \label{fig:saturation_histories_rand_False_check_train_True_check_eval_False}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for 5 runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.4\%$ saturation after 3000 states.}\label{fig:saturation_histories_rand_False_check_train_True_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_False.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for a selected DSF calculation.}
-  \label{fig:ff_sizes_rand_False_check_train_True_check_eval_False}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_True_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_True.pdf}
-  \caption{Saturation as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for 5 runs of DSF calculation.}
-  \label{fig:saturation_histories_rand_False_check_train_False_check_eval_True}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for 5 runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_False_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_True.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for a selected DSF calculation.}
-  \label{fig:ff_sizes_rand_False_check_train_False_check_eval_True}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_False_check_eval_True}
 \end{figure}
 
 
@@ -1920,57 +1894,49 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_False.pdf}
-  \caption{Saturation as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for 5 runs of DSF calculation.}
-  \label{fig:saturation_histories_rand_False_check_train_False_check_eval_False}
+  \caption{Saturation as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for 5 runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_False.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for a selected DSF calculation.}
-  \label{fig:ff_sizes_rand_False_check_train_False_check_eval_False}
+  \caption{Square form factors as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics{state.pdf}
-  \caption{Ground state of the Lieb-Liniger model in binary representation with \(N=11\) and \(I_{\max}=20\). The yellow dots represent particles.}
-  \label{fig:binarygroundstate}
+  \caption{Ground state of the Lieb-Liniger model in binary representation with \(N=11\) and \(I_{\max}=20\). The yellow dots represent particles.}\label{fig:binarygroundstate}
   \vspace*{\floatsep}
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_no_highlight.pdf}}\\
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_worst_highlighted.pdf}}
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_best_highlighted.pdf}}
-  \caption{Q-matrix for the Lieb-Liniger model ground state with \(N=11\) and \(I_{\max}=20\) (top). In the lower left image, the 100 lowest Q-factors are highlighted, while the 100 best are shown in the lower right image.}
-  \label{fig:qmatrix}
+  \caption{Q-matrix for the Lieb-Liniger model ground state with \(N=11\) and \(I_{\max}=20\) (top). In the lower left image, the 100 lowest Q-factors are highlighted, while the 100 best are shown in the lower right image.}\label{fig:qmatrix}
 \end{figure}
 
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{abacus_ff_sq_12_5.pdf}
-  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}
-  \label{fig:abacusformfactors_12_5}
+  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}\label{fig:abacusformfactors_12_5}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{abacus_saturations_12_5.pdf}
-  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}
-  \label{fig:abacus_saturations_12_5}
+  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}\label{fig:abacus_saturations_12_5}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{abacus_saturations.pdf}
-  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}
-  \label{fig:abacus_saturations}
+  \caption{Saturation per momentum slice for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}\label{fig:abacus_saturations}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{abacus_ff_sq.pdf}
-  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}
-  \label{fig:abacusformfactors}
+  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}\label{fig:abacusformfactors}
 \end{figure}
 
 
@@ -2010,7 +1976,7 @@ Note though that convergence happens only in the \(t\to\infty\) limit, and there
 
 There are also a number of issues with reinforcement learning more generally.
 On of those is that reinforcement learning is data inefficient, sometimes extremely so.
-In~\cite{1710.02298} a study was made of performance in the Atari learning environment by combining different techniques beyond those used in \cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
+In~\cite{1710.02298} a study was made of performance in the Atari learning environment by combining different techniques beyond those used in~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
 Even in the best case approximately 15 million frames (at 60 Hertz) were required to reach human-level performance, corresponding to 3 days of gametime.
 This was however already an improvement on the original work done in~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, where only 1 in 4 frames where used to improve computational efficiency and which required 38 days of gametime to train on 50 million sample frames.
 A similar data inefficiency is seen in~\cite{heess17_emerg_locom_behav_rich_envir}.
@@ -2029,8 +1995,7 @@ This is far in excess of the doubling time of 18 to 24 months predicted by Moore
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{increaseaiflops.png}
-  \caption{Log plot of petaflop/s-day used in training AI over time. Doubling time is 3.5 months. Figure taken from~\cite{amodei2018}}.
-  \label{fig:increasedaiflops}
+  \caption{Log plot of petaflop/s-day used in training AI over time. Doubling time is 3.5 months. Figure taken from~\cite{amodei2018}.}\label{fig:increasedaiflops}
 \end{figure}
 
 Another difficulty more specific to reinforcement learning and evolutionary computing is the design of reward functions.
@@ -2077,8 +2042,7 @@ This may lead to inaccuracy when reporting on the performance of algorithms, bec
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{HalfCheetah-v1__TRPO,_Different_Random_Seeds_.pdf}
-  \caption{Performance of a reinforcement alogrithm in the HalfCheetah environment, averaged over two different sets of five random seeds each. Note the large difference in performance, even though only the seeds differ between runs. Figure taken from~\cite{1709.06560}.}
-  \label{fig:halfcheetahdifferentresults}
+  \caption{Performance of a reinforcement algorithm in the HalfCheetah environment, averaged over two different sets of five random seeds each. Note the large difference in performance, even though only the seeds differ between runs. Figure taken from~\cite{1709.06560}.}\label{fig:halfcheetahdifferentresults}
 \end{figure}
 
 
@@ -2091,8 +2055,7 @@ This means that in almost a quarter of cases, performance of the trained model i
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{rllearningtrouble.png}
-  \caption{Reward in the HalfCheetah environment over time. The solid line is the median of ten random seeds, with shaded area denoting quartiles. The lowest quartile (the white area below the light orange shaded area) shows that little learning takes place for those seeds. Figure taken from~\cite{houthooft16_vime}.}
-  \label{fig:halfcheetah}
+  \caption{Reward in the HalfCheetah environment over time. The solid line is the median of ten random seeds, with shaded area denoting quartiles. The lowest quartile (the white area below the light orange shaded area) shows that little learning takes place for those seeds. Figure taken from~\cite{houthooft16_vime}.}\label{fig:halfcheetah}
 \end{figure}
 
 
@@ -2115,7 +2078,7 @@ This model was chosen because the parameters which define the wave function, kno
 Additionally, given the quantum numbers of a state only a single solution exists.
 We reviewed the Bethe ansatz, finding expression for physical properties of the Lieb-Liniger model.
 
-After this we reviewed the current operation of ABACUS.
+After this we reviewed the current operation of ABACUS.\@
 We examined how to numerically solve for the rapidities of the Lieb-Liniger model, and gave a high-level overview of the scanning of the Hilbert space as it is currently implemented.
 
 A review of some machine learning to be employed later was given.
@@ -2135,7 +2098,7 @@ Results from Q-learning show that particle-hole minimization is essential for le
 If minimization is enabled during training and evaluation, the best results are obtained in terms of number of states required to reach saturation.
 Learning can be seen to occur when we consider minimization during training but not during evaluation.
 While saturation takes longer than in other cases, it does occur and hints at a strategy being developed during training.
-Disabling minimization during training gave poor results when also disabling during evaluation, with no convergence occuring.
+Disabling minimization during training gave poor results when also disabling during evaluation, with no convergence occurring.
 If enabled during evaluation results were better.
 
 Finally we considered shortcomings of Q-learning as applied to DSF summation and reinforcement learning generally.
@@ -2149,7 +2112,7 @@ Given a set of Bethe numbers, the rapidities can be predicted, after which conve
 The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions by minimizing Newton iterations.
 
 One of the limitations of the current approach to Q-learning is that the representation used requires a UV cutoff of the Bethe numbers in order to be able to represent possible moves in Hilbert space.
-Furthermore, the size of action space scales as \((I_{\infty+} + I_{\infty-} + 1)^2\), meaning that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
+Furthermore, the size of action space scales as \({(I_{\infty+} + I_{\infty-} + 1)}^2\), meaning that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
 This problem may be solved by using an alternative representation of actions in terms of continuous changes.
 This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
 
@@ -2262,8 +2225,8 @@ Now we look at the first frequency moment:
 &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \left(\matrixel{\gamma}{\mathcal{O}_k(t)\mathcal{O}_{k}^{\dagger}(0)}{\gamma} - \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)\mathcal{O}_k(t)}{\gamma}\right) \\
 &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{\mathcal{O}_k(t)}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}(0)}{\gamma} \right.\nonumber\\
 &\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)}{\alpha}\matrixel{\alpha}{\mathcal{O}_k(t)}{\gamma}\right)\\
-&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\mathcal{O}_ke^{-iHt}}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\
-&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{e^{iHt}\mathcal{O}_ke^{-iHt}}{\gamma}\right)\\
+&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\mathcal{O}_k e^{-iHt}}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{e^{iHt}\mathcal{O}_k e^{-iHt}}{\gamma}\right)\\
 &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
 &\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- e^{i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right), \label{eq:fourierfreqmoment}
 \end{align}
@@ -2388,7 +2351,7 @@ Thus we have
   \label{eq:13}
   [H, \rho_k] &= \frac{1}{L^2} \sum_{k_1,k_2} k_2^2  \left( \delta_{k_1,k_2} \psi_{k_2}^{\dag}\psi_{k_1+k} -  \delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2} \right) \\
               &= \frac{1}{L} \sum_{k_1} k_1^2  \left(\psi_{k_1}^{\dag}\psi_{k_1+k} -  \psi_{k_1-k}^{\dag}\psi_{k_1} \right) \\
-              &= \frac{1}{L} \sum_{k_1} (k_1^2 -(k_1+k))^2 \psi_{k_1}^{\dag}\psi_{k_1+k}\\
+              &= \frac{1}{L} \sum_{k_1} {(k_1^2 -(k_1+k))}^2 \psi_{k_1}^{\dag}\psi_{k_1+k}\\
               &= \frac{1}{L} \sum_{k_1} (-2kk_1+k^2) \psi_{k_1}^{\dag}\psi_{k_1+k}.
 \end{align}
 
@@ -2439,13 +2402,13 @@ Here we present the raw values for the number of iterations of the Newton method
 \begin{table}[h]
   \centering
   \begin{tabular}{llrrr}
-    Methods & Damped & \(N=5\) & \(N=10\) & \(N=20\) \\\hline 
+    Methods & Damped & \(N=5\) & \(N=10\) & \(N=20\) \\\midrule 
     Naive Bethe & Yes & 5.09(30) & 5.03(17) & 5.03(17) \\ 
-           & No & 5.09(30) & 5.01(11) & 5.00(5) \\\hline
+           & No & 5.09(30) & 5.01(11) & 5.00(5) \\\midrule
     ML & Yes & 4.14(35) & 4.58(57) & 4.94(27) \\
-           & No & 4.14(35) & 4.58(70) & 4.93(25) \\\hline
+           & No & 4.14(35) & 4.58(70) & 4.93(25) \\\midrule
     Random & Yes & 6.80(71) & 7.07(58) & 7.14(58) \\
-           & No & 6.64(57) & 6.83(37) & 6.87(34) \\\hline
+           & No & 6.64(57) & 6.83(37) & 6.87(34) \\\midrule
     Random sorted  & Yes & 5.92(49) & 5.92(49) & 6.03(42)  \\
            & No & 5.74(50) & 5.83(59) & 5.92(28)
   \end{tabular}
@@ -2456,7 +2419,7 @@ Here we present the raw values for the number of iterations of the Newton method
 \begin{table}[h]
   \centering
   \begin{tabular}{lrrr}
-    Method & \(N=5\) & \(N=10\) & \(N=20\) \\\hline
+    Method & \(N=5\) & \(N=10\) & \(N=20\) \\\midrule
     Naive Bethe & 1.39(15) & 4.01(8) & 14.20(30)\\
     ML & 1.64(1) & 4.26(3) & 14.69(20)\\
     Random & 1.60(1) & 5.42(2) & 19.15(36) \\
@@ -2467,7 +2430,7 @@ Here we present the raw values for the number of iterations of the Newton method
 
 \begin{savequote}[50mm]
 Sometimes the questions are complicated and the answers are simple.
-\qauthor{Dr. Seuss}
+\qauthor{Dr.\ Seuss}
 \end{savequote}
 
 \chapter{Q-learning results}\label{chap:qlearningresults}
@@ -2476,18 +2439,17 @@ Here we present the raw values for the number of states necessary to reach 83\% 
 
 \begin{table}[h]
   \centering
-  \begin{tabular}{l|cc|rl}
-    & \multicolumn{2}{c|}{Particle-hole minimization} & \\\hline
-    Method & training & DSF calculation & Number of states & Form factor size proxy \\\hline
-    Random & - & Yes & \num{728 \pm 131} & \num{1.31(60)e-07} \\
-    & - & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.79(143)e-16} \\\hline
-    Q-learning & Yes & Yes & \num{545 \pm 151} & \num{6.53(634)e-07}\\
-    & & No & \num{1475 \pm 909}\footnote{One out of five runs did not converge, reaching $\sim79.4\%$ saturation after 3000 steps.} & \num{1.73(294)e-08}\\
-    & No & Yes & \num{795 \pm 212} & \num{2.28(334)e-07}\\
+  \begin{tabular}{lccrl}
+    & \multicolumn{2}{c}{Particle-hole minimization} & \\\midrule
+    Method & training & DSF calculation & Number of states & Form factor size proxy \\\midrule
+    Random & --- & Yes & \num{728(131)} & \num{1.31(60)e-07} \\
+    & --- & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.79(143)e-16} \\\midrule
+    Q-learning & Yes & Yes & \num{545(151)} & \num{6.53(634)e-07}\\
+    & & No & \num{1475(909)}\footnote{One out of five runs did not converge, reaching $\sim79.4\%$ saturation after 3000 steps.} & \num{1.73(294)e-08}\\
+    & No & Yes & \num{795(212)} & \num{2.28(334)e-07}\\
     & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{1.56(310)e-12}\\
   \end{tabular}
-  \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration. The reported errors are standard errors.}
-  \label{tab:noofstates}
+  \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration. The reported errors are standard errors.}\label{tab:noofstates}
 \end{table}
 
 
@@ -2550,7 +2512,7 @@ E. H. Lieb and W. Liniger, \textit{Exact Analysis of an Interacting Bose Gas. I.
 
 
 \bibitem{Lieb1963a}
-E. H. Lieb, \textit{Exact Analysis of an Interacting Bose Gas. II. The Excitation Spectrum}, Phys. Rev. \textbf{130}, 1616 (1963), \doi{10.1103/PhysRev.130.1616}.
+E. H. Lieb, \textit{Exact Analysis of an Interacting Bose Gas. II.\ The Excitation Spectrum}, Phys. Rev. \textbf{130}, 1616 (1963), \doi{10.1103/PhysRev.130.1616}.
 
 
 
@@ -2604,7 +2566,7 @@ R.~P. Feynman, \emph{Statistical Mechanics: A Set of Lectures}, Westview Press, 
 
 
 \bibitem{Piroli2015} 
-L. Piroli and P. Calabrese, \textit{Exact formulas for the form factors of local operators in the Lieb-Liniger model}, J. Phys. A: Math. Theor. \textbf{48}, 454002 (2015), \doi{10.1088/1751-8113/48/45/454002}.
+L. Piroli and P. Calabrese, \textit{Exact formulas for the form factors of local operators in the Lieb-Liniger model}, J. Phys. A:\ Math. Theor. \textbf{48}, 454002 (2015), \doi{10.1088/1751-8113/48/45/454002}.
 
 
 
@@ -2824,7 +2786,7 @@ OpenAI, \textit{OpenAI Five}, \href{https://blog.openai.com/openai-five/}{https:
 
 
 \bibitem{houthooft16_vime}
-R. Houthooft, X. Chen, Y. Duan, J. Schulman, F. De Turck and P. Abbeel, \emph{Vime: Variational information maximizing exploration}, Advances in Neural Information Processing Systems 29, p. 1109-1117 (2016).
+R. Houthooft, X. Chen, Y. Duan, J. Schulman, F. De Turck and P. Abbeel, \emph{Vime: Variational Information Maximizing Exploration}, Advances in Neural Information Processing Systems 29, p. 1109--1117 (2016).
 
 
 
@@ -2837,7 +2799,7 @@ T. P. Lillicrap, J. J. Hunt, A. Pritzel, N. Heess, T. Erez, Y. Tassa, D. Silver 
 
 
 \bibitem{gu16_contin_deep_q_learn_with}
-S. Gu, T. Lillicrap, I. Sutskever and S. Levine, \textit{Continuous Deep Q-Learning with Model-based Acceleration}, Proceedings of the 33rd International Conference on Machine Learning, p. 2829-2838 (2016). 
+S. Gu, T. Lillicrap, I. Sutskever and S. Levine, \textit{Continuous Deep Q-Learning with Model-based Acceleration}, Proceedings of the 33rd International Conference on Machine Learning, p. 2829--2838 (2016). 
 
 
 
