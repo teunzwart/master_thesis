@@ -150,7 +150,7 @@ In the distance, the cat hears the sound of lobster minds singing in the void, a
 
 \section*{Abstract}
 
-Correlation functions play an important role in physics, but analytical results do not exist for many models.
+Correlation functions play an important role in physics, but analytical results do not always exist.
 For Bethe ansatz solvable models the ABACUS algorithm can numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
 This occurs through summing of matrix elements in the Lehmann series representation of the DSF.\@
 This summing is not optimal, in that it does not sum matrix elements in strictly  monotonically decreasing order.
@@ -176,12 +176,12 @@ These functions, generally of the form
   \expval{\mathcal{O}(x,t)\mathcal{O}(0,0)},
 \end{align}
 describe the correlations in time and space of microscopic variables.
-Much work has gone into finding correlation functions for various models, but for many there is currently no closed-form solution or this solution may not even exist.
+Much work has gone into finding correlation functions, but for it is not clear that for a given model closed form solutions exist.
 
 In this thesis we consider the numerical evaluation of correlation functions for a class of models which are exactly solvable using the Bethe ansatz.
 Solutions of Bethe ansatz solvable models take the form of (superpositions of) plane waves, parameterized by numbers known as rapidities.
-If the system is quantized an equation known as the Bethe equation emerges, which allows for the calculation of these rapidities.
-Many of the physical properties of Bethe ansatz solvable models can be expressed in terms of rapidities~\cite{Korepin1993}.
+If we quantize the system an equation known as the Bethe equation emerges, which allows for the calculation of these rapidities.
+Physical properties of Bethe ansatz solvable models have expressions in terms of rapidities~\cite{Korepin1993}.
 For this class of models the ABACUS algorithm~\cite{Caux2009} allows for the numerical evaluation of the Fourier transform of the correlation function, known as a dynamical structure function or DSF.\@
 
 The DSF can be evaluated by considering its Lehmann series representation:
@@ -189,38 +189,38 @@ The DSF can be evaluated by considering its Lehmann series representation:
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
 \end{equation}
 where the sum runs over the eigenstates of the model under consideration.
-It is this summation on which we focus here.
+We focus on this summation here.
 The summing of the matrix elements in \cref{eq:lehmanintro} is difficult because the possible values of these matrix elements span many orders of magnitude.
 To maximize efficiency in the calculation of DSFs it is thus desirable to start summing the largest matrix elements first and continue with progressively smaller values.
 This ensures that the largest possible contributions to the DSFs are taken into account when a calculation reaches the maximum allowed computation time.
-Ensuring this ordering of matrix elements is however a non-trivial task and ABACUS does not currently sum matrix elements in strictly monotonically decreasing order.
-It is here that we may hope to see an improvement.
+Ensuring this ordering of matrix elements is a non-trivial task and ABACUS does not sum matrix elements in strictly monotonically decreasing order.
+Here that we may hope to see an improvement.
 
 To that end we turn to reinforcement learning.
-Reinforcement learning is a machine learning technique in which a computer learns a strategy for solving a problem by repeatedly trying different actions, observing the rewards these actions bring, and then altering it decision making process to optimize for higher rewards.
-In the past five years reinforcement learning has seen a number of impressive results.
+Reinforcement learning is a machine learning technique in which a computer learns a strategy for solving a problem by trying different actions, observing the rewards these actions bring, and then altering it decision making process to optimize for higher rewards.
+In the past five years reinforcement learning has seen impressive results.
 It has allowed superhuman performance on 1980s video games, purely by observing the pixels on screen~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
-Much publicised was AlphaGo~\cite{silver16_master_game_go_with_deep}, a program capable of defeating the best human player in the board game Go, a feat that was thought to be at least a decade away.
+Much publicised was AlphaGo~\cite{silver16_master_game_go_with_deep}, a program capable of defeating the best human player in the board game Go, a feat thought to be at least a decade away.
 
 While the initial version of AlphaGo first trained on human expert games and then went on to hone its abilities by playing itself, later versions started with only the rules of the game and learned purely by self-play~\cite{Silver2017a}.
 This resulted in play that was stronger than when initially trained on human games, with the same result seen in chess and shogi (Chinese chess)~\cite{Silver2017}.
 The Google Deepmind team behind these breakthroughs noted that~\cite{Silver2017a}, \textit{``Our results comprehensively demonstrate that a pure reinforcement learning approach is fully feasible, even in the most challenging of domains: it is possible to train to superhuman level, without human examples or guidance, given no knowledge of the domain beyond basic rules. Furthermore, a pure reinforcement learning approach requires just a few more hours to train, and achieves much better asymptotic performance, compared to training on human expert data.''}
 
-It is this final quote which inspired the use of reinforcement learning in the domain of DSF calculation.
-Our hope is that, given sufficient training, a reinforcement learning algorithm may beat the handcrafted heuristics used in ABACUS in efficiently summing matrix elements.
+This final quote inspired the use of reinforcement learning in the domain of DSF calculation.
+Our hope is that a reinforcement learning algorithm may beat the handcrafted heuristics used in ABACUS in efficiently summing matrix elements.
 The main question we seek to answer in this thesis is whether we can train a reinforcement learning algorithm to do so.
 To that end we must also determine which reinforcement learning algorithm is best suited for exploring the Hilbert space and how different states should be represented for use in a reinforcement learning environment.
 As an addendum we will also consider whether the numerical calculation of rapidities benefits from using machine learning techniques.
 
-This thesis is laid out as follows:
-in \cref{chap:bethe_ansatz} we review some of the basics of the Bethe ansatz and its application in the Lieb-Liniger model, which we will use throughout this thesis because it has a number of properties that make it more simple to work with.
+We structure this thesis as follows:
+in \cref{chap:bethe_ansatz} we review some of the basics of the Bethe ansatz and its application in the Lieb-Liniger model, which we will use throughout this thesis because it has properties that make it simpler to work with.
 \Cref{chap:abacus} describes the ABACUS algorithm, its use, and the state scanning algorithm.
-In \cref{chap:machine_learning} an introduction to machine learning and specifically reinforcement learning is given.
+In \cref{chap:machine_learning} we give an introduction to machine learning and specifically reinforcement learning.
 We describe our approach and results in \cref{chap:results}.
-Finally \cref{chap:conclusion} discusses some of the difficulties inherent in reinforcement learning, summarizes our results and makes recommendations for future research directions.
+Finally, \cref{chap:conclusion} discusses some of the difficulties inherent in reinforcement learning, summarizes our results and makes recommendations for future research directions.
 
 \begin{sloppypar}
-The code used to produce the results in this thesis may be found at \href{https://github.com/teunzwart/deepscanning}{https://github.com/teunzwart/deepscanning}.
+The code used to produce the results in this thesis is to be found at \href{https://github.com/teunzwart/deepscanning}{https://github.com/teunzwart/deepscanning}.
 \end{sloppypar}
 
 \begin{savequote}[50mm]
@@ -233,13 +233,13 @@ You haff to vork fery feery haaard.
 
 \noindent
 The Bethe ansatz allows for a way to solve certain one-dimensional systems exactly.
-It was put forth by Bethe in 1931 to solve the Heisenberg model, refining and correcting the earlier work of Bloch~\cite{Bethe1931}.
+Proposed by Bethe in 1931 to solve the Heisenberg model, it refined and corrected the earlier work of Bloch~\cite{Bethe1931}.
 
 \section{The Lieb-Liniger model}
 
 Here, to introduce and understand the Bethe ansatz, we focus on the Lieb-Liniger model, finding its eigenfunctions and excitation spectrum.
 The Lieb-Liniger model, first introduced by Lieb and Liniger in 1963~\cite{Lieb1963, Lieb1963a}, consists of bosons interacting through a delta-function potential.
-This model is described by the Hamiltonian
+The Hamiltonian is
 \begin{equation}
 	H = - \sum_{j=1}^{N} \frac{\partial^2}{\partial x_j^2} + 2c \sum_{j<l} \delta(x_j - x_l).
 \end{equation}
@@ -272,17 +272,17 @@ Effectively we have rewritten the Schrödinger equation such that we only consid
 The boundary condition then reintroduces the interaction terms.
 
 We can now conjecture a solution for the Lieb-Liniger model based on \cref{eq:lieblinigersimple}.
-This equation can be solved in terms of a superposition of plane waves:
+The Bethe ansatz solves the Schrödinger equation with a superposition of plane waves:
 \begin{equation}
 	\psi(x_1,x_2) = A_{12} e^{i(\lambda_1x_1 + \lambda_2 x_2)} + A_{21} e^{i(\lambda_2 x_1 + \lambda_1 x_2)},
 \end{equation}
 where the \(\lambda\)'s are pseudo-momenta, so-called because they are unobservable~\cite{Franchini2017}.
 The \(A\)'s are the amplitudes of the plane waves making up the wave function.
-Since \cref{eq:lieblinigerboundary} has to be fulfilled we require the amplitudes be related to each other by
+Since we must fulfill \cref{eq:lieblinigerboundary} the amplitudes must obey the equation
 \begin{align}
 	\frac{A_{12}}{A_{21}} = -\frac{c-i(\lambda_1 - \lambda_2) }{c+i(\lambda_1 - \lambda_2)}.
 \end{align}
-The right-hand side of this equation has modulus 1, meaning it can be written as a phase:
+The right-hand side of this equation has modulus 1, meaning we can write it as a phase:
 \begin{align}
 	\frac{A_{12}}{A_{21}} = -e^{i\phi(\lambda_1-\lambda_2)},
 \end{align}
@@ -300,8 +300,7 @@ We can now write the two-particle wave function by setting \(A_{21}=1\) (and ign
 \begin{equation}
 	\psi(x_1,x_2) = - e^{-\frac{i}{2}\phi(\lambda_1-\lambda_2)+i(\lambda_1x_1 + \lambda_2 x_2)} + e^{\frac{i}{2}\phi(\lambda_1-\lambda_2)+i(\lambda_2 x_1 + \lambda_1 x_2)}.
 \end{equation}
-Generalization to the whole domain (not just where \(x_1 < x_2\)) can be achieved by requiring the wave function to be fully symmetric under coordinate exchange,
-yielding
+Generalization to the whole domain (not just where \(x_1 < x_2\)) follows from requiring the wave function to be fully symmetric under coordinate exchange, yielding
 \begin{equation}
   \psi(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} {(-1)}^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
 \end{equation}
@@ -309,7 +308,7 @@ The sum runs over the permutations of the set \((1,2)\)~\cite{Caux2015}.
 This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
 
 
-Going to the many-particle state is now a fairly straightforward generalization of the two-particle case.
+Going to the many-particle state is now a straightforward generalization of the two-particle case.
 The wave function in this case becomes~\cite{Gaudin2009}
 \begin{equation}
 	\psi(x_1,\ldots,x_N) = \sum_{P\in\pi_N} A(P) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}
@@ -323,8 +322,8 @@ where we sum over permutations of the set \((1,\ldots,N)\), and we have a condit
 
 \subsection{Quantization}
 
-Since we would like to study the properties of the system for finite densities, it is convenient to confine the system to a finite length \(L\).
-This translates into a periodicity requirement for the wave function.
+Since we would like to study the properties of the system for finite densities, we confine the system to a finite length \(L\).
+This translates into a periodicity requirement on the wave function.
 It require that the wave functions obeys~\cite{Franchini2017}
 \begin{align}
 	\psi(x_1,\ldots,x_j+L,\ldots,x_N) = \psi(x_1,\ldots,x_j,\ldots,x_N) \qquad \forall j\in 1,\ldots,N.
@@ -353,17 +352,17 @@ They act as the quantum numbers of the theory.
 These Bethe numbers may not coincide with each other, since this would also imply equal rapidities (\cref{th:equalisequal}).
 Because the wave function is then equal to 0 such coincidences are not allowed, which is reminiscent of the Pauli principle~\cite{Caux2009,Franchini2017}.
 
-We can get the momentum and energy of the Lieb-Liniger model from the rapidities. The momentum is given by summing over \cref{eq:bethe_equations}:
+We can get the momentum and energy of the Lieb-Liniger model from the rapidities. By summing over \cref{eq:bethe_equations} the momentum is :
 \begin{align}
   P = \sum_{j=1}^N \lambda_j = \frac{2\pi}{L}\sum_{j=1}^N I_j,
 \end{align}
-where the last step can be made because we sum the odd part of the Bethe equations over an even interval.
+where the second step is valid because we sum the odd part of the Bethe equations over an even interval.
 The energy meanwhile is~\cite{Korepin1993}
 \begin{align}
   E = \sum_{j=1}^{N}\lambda_j^2.
 \end{align}
 
-The Bethe equations and Bethe numbers have a number of different properties:
+We now prove three properties of the Bethe equations and Bethe numbers:
 
 \begin{theorem}\label{th:convexity}
 \begin{sloppypar}
@@ -372,7 +371,7 @@ The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and ex
 \end{sloppypar}
 \end{theorem}
 \begin{proof}
-This can be proven with a variational argument, where the Bethe equations are the extremum of an action.
+This follows from a variational argument, where the Bethe equations are the extremum of an action.
 The Yang-Yang action for the Lieb-Liniger model is
 \begin{align}
 	S= \frac{L}{2} \sum_{j=1}^{N} \lambda_j^2 - 2\pi\sum_{j=1}^{N} n_j \lambda_j + \frac{1}{2} \sum_{j=1}^N \sum_{k=1}^{N} \theta_1(\lambda_j - \lambda_k),
@@ -412,7 +411,7 @@ since
 \begin{align}
 \left|\frac{\lambda+ic}{\lambda-ic} \right| \geq 1 \qquad \textrm{if Im}\, \lambda \geq 0.
 \end{align}
-This however means that \(\textrm{Im}\, \lambda_{\max} \leq 0\) since only then \(e^{i\lambda_{\max}L} \geq 1\).
+This means that \(\textrm{Im}\, \lambda_{\max} \leq 0\) since only then \(e^{i\lambda_{\max}L} \geq 1\).
 Defining \(\textrm{Im}\,\lambda_{\min}\leq \lambda_j\) as the smallest imaginary part of a rapidity we can in the same way prove that \(\textrm{Im}\,\lambda_{\min} \geq 0\).
 Taking these statements together we see that \(\textrm{Im}\, \lambda_{j}=0\textrm{\,}\forall\textrm{\,} j\), and hence all  \(\lambda\)'s are real~\cite{Korepin1993}.
 \end{proof}
@@ -432,7 +431,7 @@ Because \(\abs{\atan(x)-\atan(y)}\leq\abs{x-y}\), the left side has the same sig
 
 
 \subsection{Gaudin norm}
-The norm of a Bethe eigenstate is given in terms of a determinant.
+The norm of a Bethe eigenstate has an expression proportional to a determinant.
 This result was first conjectured by Gaudin and for the Lieb-Liniger model takes the form~\cite{Caux2007}
 \begin{align}
   \braket{\{\lambda\}}{\{\lambda\}} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det(\mathcal{G}(\{\lambda\})),
@@ -481,10 +480,10 @@ this allows for the calculation of \(\rho(\lambda)\) for a given value of \(D\).
 \subsection{Excitations}
 
 Given the ground state we can build different excited states.
-There are two types of excitations: particle-like (type I) excitations in which a new particle outside the Fermi interval is added with momentum \(k > \left|\lambda_F\right|\) and hole-like (type II) excitations, where a particle is removed from the Fermi interval with momentum \(k < \left|\lambda_F\right|\).
-Additionally a particle may be excited out of the Fermi interval, but this is a combination of the other two excitations~\cite{Franchini2017}.
+Two types of excitations exist: particle-like (type I) excitations in which a new particle outside the Fermi interval is added with momentum \(k > \left|\lambda_F\right|\) and hole-like (type II) excitations, where a particle is removed from the Fermi interval with momentum \(k < \left|\lambda_F\right|\).
+A particle may also be excited out of the Fermi interval, but this is a combination of the other two excitations~\cite{Franchini2017}.
 
-The \(N\)-particle ground state in terms of Bethe numbers is given by
+The \(N\)-particle ground state in terms of Bethe numbers is
 \begin{align}
   \label{eq:22}
   \{I\} = \left\{-\frac{N-1}{2},-\frac{N-3}{2}, \ldots, \frac{N-3}{2},\frac{N-1}{2}\right\}.
@@ -531,7 +530,7 @@ If we use the Lieb equation and introduce \(D_p(\lambda,q)=d(\lambda,q)\rho(\lam
   D_p(\lambda,q) - \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}(\lambda'-\lambda) D_p(\lambda', q) = \frac{-1}{2\pi} (\pi+\phi(\lambda-q)).
 \end{align}
 
-In dealing with holes we employ much the same ideas.
+When dealing with holes we use the same idea.
 Starting from the \(N\)-particle ground state we can create a hole-like excitation by removing a particle in the Fermi interval to create an \(N-1\)-particle state with quantum numbers
 \begin{align}
   \label{eq:26}
@@ -638,7 +637,7 @@ Assuming \(\lambda\) to be finite, the upper bound of the integral reduces to \(
 \end{sloppypar}
 
 \Cref{eq:integratedkerneldeltapart} is 0 if \(\abs{\lambda} > \lambda_F\), so the only \(\lambda\)'s we have to consider in the integral are \(\abs{\lambda}< \lambda_F\), but from the definition of the displacement we know \(\abs{\lambda_p}  >\lambda_F\), meaning \(\abs{\lambda_p} > \abs{\lambda}\) for all \(\lambda\) in the integral.
-Therefore \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
+Then \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
 Thus we can rewrite \cref{eq:integratedkerneldeltapart} as
 \begin{align}
 	\theta(\lambda_F - \abs{\lambda}) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) &=
@@ -653,10 +652,10 @@ This only adds a sign-function in front of the integral:
 	&= - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right),
 \end{align}
 where the last equality is valid because the argument of the arctangent is strictly positive.
-It is important to remark that the above expression would not be valid without the Heaviside function, since the integral may only be solved in the manner above when \(\abs{\lambda}< \lambda_F\).
+The above expression would not be valid without the Heaviside function, since the integral can only be solved in the manner above when \(\abs{\lambda}< \lambda_F\).
 
 The second part of \cref{eq:particledisplacement}, which involves \(\mathcal{L}^{(F)}(\lambda,\lambda')\), can't be rewritten in closed form, since there is no closed form solution for \(\mathcal{L}^{(F)}(\lambda,\lambda')\).
-We can however rewrite this term to get rid of the improper integral, which will help in numerical evaluation of the expression.
+But we can rewrite this term to get rid of the improper integral, which will help in numerical evaluation of the expression.
 We have
 \begin{align}
 	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda')\\
@@ -672,7 +671,7 @@ Taking these results together, the displacement function for type I excitations 
 \begin{multline}
 	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right) \\-\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\abs{\lambda''-\lambda_p}}).
 \end{multline}
-An example is plotted in \cref{fig:dpplot}.
+\Cref{fig:dpplot} shows an example.
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{dpplot.pdf}
@@ -742,15 +741,14 @@ If we perform the integration, cancel common terms and rearrange, we get the int
 	&= \theta(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda') + \mathcal{C}^{(F)}(\lambda,\lambda')
 \end{align}
 
-So far we have been exact.
-Now we can make use of the method of successive approximation~\cite{Zemyan2012} to solve this equation (a Fredholm integral equation of the second kind).
+Now we can make use of the method of successive approximation~\cite{Zemyan2012} to numerically solve this equation (a Fredholm integral equation of the second kind).
 
 If we have an integral equation of the form
 \begin{equation}
   \phi(x) = f(x) + \omega \int_{a}^b K(x,t)\phi(t) \dd t,
 \end{equation}
-where $K(x,t)$ is a continuous integration kernel on the interval $[a,b]$, then it seems reasonable to assume that to lowest order the solution of the integral equation is $f(x)$, provided that $\omega$ is small.
-This gives a lowest order approximation $\phi_0(x) = f(x)$, subsequent substitution yielding 
+where $K(x,t)$ is a continuous integration kernel on the interval $[a,b]$, then it seems reasonable to assume that to lowest order the solution of the integral equation is $f(x)$, under the condition that $\omega$ is small.
+This gives a lowest order approximation $\phi_0(x) = f(x)$, with further substitution yielding 
 \begin{equation}
   \phi(x) = f(x) + \omega \int_{a}^b K(x,t)\phi_0(t) \dd t,
 \end{equation}
@@ -764,7 +762,7 @@ This converges as long as $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \
   \lVert K \rVert_2 = {\qty( \int_{a}^b \int_a^b \abs{K(x,t)}^2 \dd x \dd t)}^{1/2}.
 \end{equation}
 
-For the case we are interested in we have 
+Here we have 
 \begin{equation}
   \mathcal{L}^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \mathcal{L}^{(F)}_n(\lambda, \lambda'') \mathcal{C} (\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}(\lambda, \lambda'),
 \end{equation}
@@ -772,14 +770,14 @@ which converges as long as
 \begin{equation}
 \qty{(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c}))}^{1/2} < 1.
 \end{equation}
-If we only wish to know the value of $\mathcal{L}^{(F)}$ at a single point we can
-use that at each iteration step $\mathcal{L}^{(F)}$ is simply a number, allowing us to take it out of the integral.
+If we only want to know the value of $\mathcal{L}^{(F)}$ at a single point we can use that at each iteration step $\mathcal{L}^{(F)}$ is a number, allowing us to take it out of the integral.
 We get
 \begin{gather}
   \mathcal{L}^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} (\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}(\lambda, \lambda')\\
 = - \frac{1}{\pi} \theta(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}(\lambda,\lambda'),
 \end{gather}
-where \(\mathcal{L}^{(F)}_0(\lambda, \lambda')\) is 0. An example of a numerical evaluation of \(\mathcal{L}^{(F)}\) is seen in \cref{fig:lfplot}.
+where \(\mathcal{L}^{(F)}_0(\lambda, \lambda')\) is 0. 
+\Cref{fig:lfplot} shows a numerical evaluation of \(\mathcal{L}^{(F)}\).
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{lfplot.pdf}
@@ -797,7 +795,7 @@ and
 \begin{align}
 	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta(\lambda-\lambda'') + \mathcal{L}(\lambda - \lambda'') \right]\mathcal{C}(\lambda''-\lambda'),
 \end{align}
-where \(\mathcal{L}\) is the inverse of of the kernel \(\mathcal{C}\), defined by~\cite{Yang1969}
+where \(\mathcal{L}\) is the inverse of the kernel \(\mathcal{C}\), defined by~\cite{Yang1969}
 \begin{align}
 	(1+\mathcal{L})*(1-\mathcal{C})(\lambda) = \delta(\lambda),
 \end{align}
@@ -819,7 +817,7 @@ With this in hand, we have for particles:
 	&=  \int_{\lambda-\lambda_p}^{-\textrm{sgn}(\lambda_p)\infty} \dd a \, \mathcal{L}(a),
 \end{align}
 where we used \cref{eq:kernelinversion} in going from the second to the third line, and made the substitution \(a = \lambda-\lambda'\) in the last line.
-A very similar derivation for type II excitations leads to
+A similar derivation for type II excitations leads to
 \begin{align}
 	D_h(\lambda,\lambda_h) = \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a\, \mathcal{L}(a).
 \end{align}
@@ -827,13 +825,13 @@ A very similar derivation for type II excitations leads to
 
 \section{Form factors}
 As a final part of this chapter, we look at form factors for the Lieb-Liniger model, which we will require for calculation of dynamical structure functions (see \cref{chap:abacus}).
-Form factors or matrix elements may be obtained by using the algebraic Bethe ansatz (until now we used a coordinate representation of the wave function known as the coordinate Bethe ansatz).
+Form factors or matrix elements can be obtained by using the algebraic Bethe ansatz (until now we used a coordinate representation of the wave function known as the coordinate Bethe ansatz).
 We will briefly introduce the algebraic Bethe ansatz. 
 
 \subsection{The algebraic Bethe ansatz}
 
 In the algebraic Bethe ansatz (ABA) we define our operators in terms of fields.
-The quantized Hamiltonian of the Lieb-Liniger model is\footnote{The derivation of this is found in~\cite{feynman}.}
+The quantized Hamiltonian of the Lieb-Liniger model is\footnote{See~\cite{feynman} for a derivation.}
 \begin{align}
   \label{eq:30}
   H = \int_0^L \dd x \left(\partial_x \Psi^{\dag}(x) \partial_x \Psi(x) + c \Psi^{\dag}(x)\Psi^{\dag}(x)\Psi(x)\Psi(x)\right),
@@ -866,8 +864,9 @@ In the Lieb-Liniger model~\cite{Piroli2015}
   a(\lambda) = e^{-i\frac{L}{2}\lambda}, \qquad d(\lambda) = e^{i\frac{L}{2}\lambda}.
 \end{align}
 
-The commutation relations between the operators are encoded in the Yang-Baxter equation~\cite{Korepin1993}, which depend on an object known as the \(R\)-matrix.
-In the case of the Lieb-Liniger model, the \(R\)-matrix is
+The Yang-Baxter equation~\cite{Korepin1993} encodes the commutation relations between the operators.
+This equation depends on an object known as the \(R\)-matrix.
+For the Lieb-Liniger model, the \(R\)-matrix is
 \begin{align}
   \label{eq:45}
   R(\lambda,\mu) = 
@@ -884,7 +883,8 @@ with
   f(\lambda,\mu) = \frac{\lambda-\mu+ic}{\lambda-\mu}, \qquad g(\lambda,\mu) = \frac{ic}{\lambda-\mu}.
 \end{align}
 
-To explicitly determine the action on states of the field operator, in terms of which physical operators are defined, we use the commutation relations
+Physical operators are defined in terms the field operator.
+To explicitly determine the action of the operators on states we use the commutation relations
 \begin{align}
   \label{eq:47}
   [\Psi(0),B(\lambda)] = -i \sqrt{c} A(\lambda), \qquad [C(\lambda), \Psi^{\dag}(0)] = i \sqrt{c} D(\lambda).
@@ -901,9 +901,9 @@ with~\cite{Piroli2015}
   \Lambda_k = \prod_{\substack{m=1\\m\neq k}}^N f(\lambda_k,\lambda_m), \qquad \widetilde{\Lambda}_k = \prod_{\substack{m=1\\m\neq k}}^N f(\lambda_m,\lambda_k).
 \end{align}
 
-With these tools, form factors of operators may be calculated.
+With these tools, we can calculate form factors of operators.
 We have only skimmed the surface of the ABA.\@
-A (much) more thorough introduction may be found in~\cite{Korepin1993} and~\cite{slavnov18_algeb_bethe_ansat}.
+References~\cite{Korepin1993} and~\cite{slavnov18_algeb_bethe_ansat} contain a (much) more thorough introduction.
 
 
 \subsection{Form factor for \(\rho\) operator}
@@ -967,7 +967,7 @@ The equivalent Fourier transformed quantity is the dynamical structure factor (D
 \begin{equation}\label{eq:DSF}
 	\mathcal{S}(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\mathcal{O}_j(t)\mathcal{O}_{j'}^{\dagger}(0)}.
 \end{equation}
-We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because it is the quantity directly accessible in experiments~\cite{Caux2009,Caux2007a}.
+We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because this quantity is directly accessible in experiments~\cite{Caux2009,Caux2007a}.
 
 Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:\@
 \begin{equation}
@@ -975,25 +975,25 @@ Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fou
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
 \end{equation}
 where we sum over intermediate eigenstates of the Hamiltonian under consideration, with $E_0$ the energy of the ground state $\ket{\lambda^0}$.
-The matrix elements $\mel{\lambda}{\mathcal{O}}{\mu}$ are known as form factors.
+We call the matrix elements $\mel{\lambda}{\mathcal{O}}{\mu}$ form factors.
 
-In order to calculate DSFs we require
+To calculate DSFs we require
 \begin{itemize}
   \item an orthonormal eigenstate basis
   \item form factors for the operator $\mathcal{O}_k$ we are interested in
   \item a way to do the summation over the intermediate states
 \end{itemize}
-The first and second item are provided by the Bethe ansatz.
+The Bethe ansatz provides the first and second item.
 The summation proves to be more difficult, but for this we can use ABACUS (Algebraic Bethe Ansatz-based Computation of Universal Structure factors) to perform it numerically.
 As long as a system is Bethe ansatz integrable and finite in size ABACUS can in principle compute its DSF.\@
 Even for large systems the results are highly accurate, with this accuracy being mostly energy and momentum independent~\cite{Caux2009}.
-In fact, the accuracy can be measured using sum rules, and saturation in excess of 99\% is possible for systems with hundreds of particles.
+In fact, the accuracy can be measured using sum rules, and saturations above 99\% are possible for systems with hundreds of particles.
 
 
 \section{Numerically solving the Bethe equations}\label{sec:numer-solv-bethe}
 
 In general the computation of rapidities of Bethe integrable systems is a complex affair, with complex rapidities making the computation difficult.
-For the Lieb-Liniger model however there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}), meaning there is a unique solution for a given set of quantum numbers.
+For the Lieb-Liniger model there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}), meaning there is a unique solution for a given set of quantum numbers.
 
 In this case we can use the matrix Newton method to calculate rapidities.
 To introduce this method we first look at the one-dimensional case.
@@ -1011,13 +1011,13 @@ In this case we can find the solution \(x\) by iteratively applying the formula
   \mathbf{x}^{k+1} = \mathbf{x}^k - {[J(\mathbf{x}^k)]}^{-1}\mathbf{f}(\mathbf{x}^k), \qquad k=0,1,2\ldots,
 \end{equation}
 where \(J\) is the Jacobian matrix of \(\mathbf{f}\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
-Just as in the single variable case this converges quadratically.
+As in the single variable case this converges quadratically.
 
-To prevent the calculation of the inverse of the Jacobian, in practice Newton's method is used in the form
+To prevent the calculation of the inverse of the Jacobian, in practice Newton's method takes the form
 \begin{equation}\label{eq:practicalnewton}
   J(\mathbf{x}^k)[\mathbf{x}^{k+1} - \mathbf{x}^k] = - \mathbf{f}(\mathbf{x}^k),
 \end{equation}
-where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x}^k)\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to obtain \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to obtain \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
+where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x}^k)\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to get \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to get \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
 This linear system can be solved using LU decomposition~\cite{Press2007}.\footnote{In an LU decomposition we rewrite the set of linear equations:
   \begin{align}
     \label{eq:54}
@@ -1084,14 +1084,14 @@ On machines implementing IEEE 754--2008 (the standard for floating-point arithme
 With the rapidities in hand (and the form factors and Gaudin norm readily computed therefrom, see~\cref{chap:bethe_ansatz}), we are now faced with the summation over states.
 At face value we may now hit a wall, since we are tasked with exploring a factorially large space and find eigenstates with monotonically decreasing absolute numerical form factor values.
 The dimensionality of the state space is equal to the number of allowed choices of quantum numbers because a Pauli-like principle is at work.
-For the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator), given $M$ particles and a UV cutoff for the upper bound, $I_{\infty+}$, and lower bound of the quantum number $I_{\infty-}$, the number of states is~\cite{Caux2009}\footnote{This is the number of states if particle Bethe numbers can not exceed the UV-cutoffs. In the current implementation of ABACUS scanning within a single momentum slice is possible, which may include states in which individual particles exceed \(I_{\max}\), but which sum to lie within the allowed interval. Therefore this number may now be seen as a lower limit on the size of the Hilbert space under consideration.}
+For the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator), given $M$ particles and a UV cutoff for the upper bound, $I_{\infty+}$, and lower bound of the quantum number $I_{\infty-}$, the number of states is~\cite{Caux2009}\footnote{This is the number of states if particle Bethe numbers can not exceed the UV-cutoffs. In the current implementation of ABACUS scanning within a single momentum slice is possible, which may include states in which individual particles exceed \(I_{\max}\), but which sum to lie within the allowed interval. Therefore this number can now be seen as a lower limit on the size of the Hilbert space under consideration.}
 \begin{equation}
   \binom{I_{\infty+} + I_{\infty-} + 1}{M} = \frac{(I_{\infty+} + I_{\infty-} + 1)!}{M!(I_{\infty+} + I_{\infty-} + 1 - M)!}.
 \end{equation}
 Luckily, there are some principles that allow for the definition of an efficient algorithm for scanning the Hilbert space.
 
 Firstly, form factors for large enough systems are approximately continuous, meaning the changing of a single quantum number does not change the form factor a lot.
-Therefore, given an eigenstate with a large form factor and thus a large contribution to the DSF, we can scan states close to this given state to find other large contributions.
+Thus, given an eigenstate with a large form factor and thus a large contribution to the DSF, we can scan states close to this given state to find other large contributions.
 
 Secondly, form factors between the ground state and excited states generally decrease when more particle-hole excitations are created in the area in pseudo-momentum space clamped by the Fermi level.
 
@@ -1102,22 +1102,22 @@ Starting from the lowest-energy state we generate states with low-lying particle
 If the contributions from these states to the chosen sum rule are large enough, further scanning of this state commences, with increasing complexity of the state in the form of more particle-hole pairs.
 
 In the context above, large enough means that the form factor associated with the state is above the so-called \textit{running threshold}, with initial value such that the number of intermediate states is of order \(N^2\).
-The form factors are kept, and the threshold is lowered after a scan. 
+We save the form factors, and the threshold is lowered after a scan. 
 A new scan is initiated of those sectors in the Hilbert space for which the average form factor is above the current running threshold.
-ABACUS thus keeps track of the already scanned states in the Hilbert space to gather knowledge on where to scan next as well as to avoid doubly counting states~\cite{Caux2009}.
+ABACUS thus keeps track of the already scanned states in the Hilbert space to gather knowledge on where to scan next and to avoid doubly counting states~\cite{Caux2009}.
 
 In practice we are therefore descending a ``mountain'' of form factors as slowly as possible, always trying to move in the direction of smallest change.
 This proves especially difficult since the form factors are not monotonically decreasing while moving around in the Hilbert space.
-ABACUS can not fully compensate for this non-monotonicity, as is seen in \cref{fig:orderedmagnitudes}, where the absolute magnitude of form factors is plotted as a function of their order in the computation.
-We see both that some highly contributing form factors are missed early on, appearing as spikes in the distribution later, and we see small form factors spuriously being considered early, resulting in wasted computations.
+ABACUS can not fully compensate for this non-monotonicity, as seen in \cref{fig:orderedmagnitudes}, where we show the absolute magnitude of form factors as a function of their order in the computation.
+We see both that some highly contributing form factors are missed early on, appearing as spikes in the distribution later, and we see small form factors spuriously summed early, resulting in wasted computations.
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=\textwidth]{FFsq_vs_order_D0p6N50M20_small}
-  \caption{Size of matrix element magnitudes encountered while summing intermediate states of the XXZ model. The yellow line denotes strictly decreasing magnitude. Note that while in general the size of the form factors decreases, not all large form factors are immediately found. Figure taken from~\cite{Caux2009}.}\label{fig:orderedmagnitudes}
+  \caption{Size of matrix element magnitudes encountered while summing intermediate states of the XXZ model. The yellow line denotes strictly decreasing magnitude. Note that while in general the size of the form factors decreases, not all large form factors are found early on. Figure taken from~\cite{Caux2009}.}\label{fig:orderedmagnitudes}
 \end{figure}
 
 After an ABACUS run, the available data consists of a set of energy-momentum-form factor triplets.
-The quality of this data, in terms of how well it captures important contributions from the Hilbert space, can be determined with sum rules.
+The quality of this data, meaning how well it captures important contributions from the Hilbert space, can be determined with sum rules.
 A suitable candidate of these is the f-sum rule~\cite{Caux2007a}, which relates the first energy moment over the DSF to a function of \(k\).
 With this sum rule the intensity in individual momentum slices can be explicitly determined.
 For the density-density correlation function of the Lieb-Liniger model this becomes
@@ -1125,17 +1125,17 @@ For the density-density correlation function of the Lieb-Liniger model this beco
   \label{eq:fsumrule}
   \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega \mathcal{S}(k, \omega) = \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2.
 \end{align}
-A full derivation of the generic formula, as well as the specific case above may be found in~\cref{cha:f-sum-rule}. 
+\Cref{cha:f-sum-rule} contains a full derivation of the generic formula, as well as the specific case above.
 
 \Cref{fig:lieb_density_dsf} shows the DSF in energy-momentum space for the density-density correlator of the Lieb-Liniger model obtained from ABACUS runs.
-In \cref{table:saturation} the efficiency of ABACUS is showcased.
+In \cref{table:saturation} we see the efficiency of ABACUS.
 It presents the number of states necessary to reach a given saturation in the XXZ model\footnote{The XXZ model is another Bethe ansatz integrable model consisting of spins with Hamiltonian~\cite{Franchini2017}
     \begin{align}
       \label{eq:53}
       H = - J \sum_{n=1}^N\left[S_{n}^x S_{n+1}^x+S_n^y S_{n+1}^y + \Delta S_n^z S_{n+1}^z\right].
     \end{align}
 } and the fraction of the Hilbert space necessary to reach this saturation.
-Although the algorithm is not perfect, only very small fractions are necessary.
+Although the algorithm is not perfect, only small fractions are necessary.
 
 \begin{figure}[tb!]
   \centering
@@ -1176,7 +1176,6 @@ Although the algorithm is not perfect, only very small fractions are necessary.
 }
 \caption{Number of states required for a given sum rule saturation in the XXZ model with \(\Delta=0.6\) and \(S_{\mathrm{tot}}^z=0.1\).
 In parentheses are the fraction Hilbert space fraction this represents.
-% with the second number in parentheses the number of contributions needed if the algorithm was perfectly able to only sum monotonically decreasing form factors.
 Table reproduced from~\cite{Caux2009}.
 }\label{table:saturation}
 \end{table}
@@ -1193,23 +1192,23 @@ Real stupidity beats artificial intelligence every time.
 
 In the past decade machine learning has emerged as an important tool in many areas.
 The increase in computing power for both CPUs and GPUs (useful for parallel linear algebra often used in machine learning) has led to a boom in research on both the commercial and academic side.
-Some of the more high profile examples of this are self-driving cars (being developed by many technology and car companies)~\cite{levinson11_towar} and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017,silver16_master_game_go_with_deep}.
+Some of the more high profile examples of this are self-driving cars (in development by many technology and car companies)~\cite{levinson11_towar} and the development of AlphaGo, which beat the world champion in the Japanese board game of Go by learning from both human professional games and playing against itself~\cite{Silver2017a,Silver2017,silver16_master_game_go_with_deep}.
 In the life sciences machine learning uses include detecting risk factors for cardiovascular diseases from pictures of the retina~\cite{poplin17_predic_cardiov_risk_factor_from} and recognizing genome variants in sequencing (with better performance than handcrafted sequencers)~\cite{Poplin2016}.
 Image manipulation is also benefitting from machine learning, with the ability to change the weather in pictures or transfer the species of animal in one picture to that in another~\cite{Liu2017}.\footnote{The implications of this brave new world in which no picture is to be trusted are part of a discussion that is only just beginning.}
 
 In physics applications have also been found in a variety of fields.
 CERN is exploring ways of tagging particles in LHC collisions using deep learning~\cite{paganini17_machin_learn_algor_jet_taggin}.
-In astronomy machine learning is used to classify objects in images and determine redshifts, which have to be automated due to the often large data sets resulting from even a single night of observations~\cite{ball10_data_minin_and_machin_learn_in_astron}.
+Astronomy uses machine learning to classify objects in images and determine redshifts, which have to be automated due to the often large data sets resulting from even a single night of observations~\cite{ball10_data_minin_and_machin_learn_in_astron}.
 
 Condensed matter physics is now also benefitting from this field.
-Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wave function of various spin systems by approximately encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy while avoiding the exponential number of parameters encountered when representing the Hilbert space.
+Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wave function of spin systems by approximately encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy while avoiding the exponential number of parameters encountered when representing the Hilbert space.
 This technique has been extended to different systems such as the Hubbard model~\cite{Saito2017}.
-Phase transitions and order parameters have also been successfully extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins~\cite{Nieuwenburg2017}.
+Phase transitions and order parameters have also been extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins~\cite{Nieuwenburg2017}.
 
-Reinforcement learning has been used to design setups for optical experiments in which complex entangled states are needed.
-Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if an `interesting' state is created~\cite{Dunjko2017}.
+Reinforcement learning has been used to design setups for optical experiments which need complex entangled states.
+Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if it creates an `interesting' state~\cite{Dunjko2017}.
 
-There are also interesting links between deep learning and physics on a more fundamental level.
+Interesting links also exist between deep learning and physics on a more fundamental level.
 For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similar way to the renormalization group~\cite{Mehta2014}. 
 
 In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see~\cite{Dunjko2017}).}
@@ -1219,7 +1218,7 @@ In the rest of this chapter we will review some aspects of machine learning usef
 Today's world is awash in data.
 With the increase in computational power that has swept the world we are now being flooded by it.
 Making sense of this flood is becoming increasingly important and requires us to find patterns in the chaos.
-For numbers this is relatively easy: if we have an input set \(1,2,3\) and output set \(1,4,9\), some basic mathematics shows that the inputs and outputs are linked by the function \(f(x)=x^2\).
+For numbers this is relatively easy: if we have an input set \(1,2,3\) and output set \(1,4,9\), some basic mathematics shows that the function \(f(x)=x^2\) links the inputs and outputs.
 But what about more complex data?
 A picture of a cat (\cref{fig:cat}) may be instantly recognized by a human, but translating this recognition to a computer is non-trivial.
 Which pixels encode the ``catness'' of a picture as opposed to its ``dogness''?
@@ -1235,7 +1234,7 @@ Manually writing such a function proves to be difficult, with the resulting func
 Neural network allow for the efficient approximation of functions which map inputs to outputs.
 Given an input \(x\) and an output \(t\) (for target), a neural net acts as a function which approximately maps the input to the output: \(f(x)\approx t\).
 
-A neural net consists of a number of layers, with each layer composed of nodes.
+A neural net consists of layers, with each layer composed of nodes.
 Connections exists between these layers.
 The layers between the input and the output layer are called hidden.
 We can now construct a simple neural network with a single hidden layer.
@@ -1246,20 +1245,20 @@ If we have an input \(x\) of size \(D\) to a network, the first layer looks like
   a_j = \sum_{i=1}^D w_{ji}^{(1)}x_i + w_{j0}^{(1)},
 \end{align}
 with \(j=1,\ldots,M\) and superscript \((1)\) denoting it as the first layer.
-\(a_j\) is called the activation.
-We thus construct \(M\) linear combinations of the input.
+We call \(a_j\) the activation.
+\Cref{eq:57} constructs \(M\) linear combinations of the input.
 The parameters \(w_{ji}^{(1)}\) are called weights, with \(w_{j0}^{(1)}\) being called biases.
 These linear combinations are then transformed with a differentiable, nonlinear activation function \(h(a_j)\)~\cite{Bishop2006}.
 The nonlinearity is key here, because it allows the system to act as a general function approximator~\cite{Sutton}.
 
-A second layer can be constructed in the same manner:
+We can construct a second layer in the same manner:
 \begin{align}
   \label{eq:58}
   a_k = \sum_{j=1}^M w_{kj}^{(2)}(h(a_j)) + w_{k0}^{(2)},
 \end{align}
 with \(k=1,\ldots,K\) and \(K\) the total number of outputs.
 Then an appropriate activation function is applied to the \(a_k\)'s to generate the network outputs \(y_k\).
-The appropriateness of output activation functions is determined by the problem we are trying to solve.
+The problem we are trying to solve determines the appropriate output activation functions.
 For regression (finding continuous variables) the output would be linear (\(y_k=a_k\)), while for classification we can use a logistic sigmoid function \(y_k=\sigma(a_k)\), with
 \begin{align}
   \label{eq:59}
@@ -1295,7 +1294,7 @@ If we make a small step in weight vector space, \(\mathbf{w}+\delta\mathbf{w}\),
 The error function is a smooth continuous function, so its minimum will occur when \(\nabla E(\mathbf{w})=0\).
 Locating such a minimum is non-trivial due to the non-linear nature of the error function.
 Points with \(\nabla E(\mathbf{w})=0\) are often local minima, and in a two layer network with \(M\) hidden units such as described above any point in weight space is part of a set of \(M!2^M\) equivalent points.
-It is therefore infeasible to find an exact solution for the minimum, prompting instead the use of iterative approaches of the form
+Finding an exact solution for the minimum is thus infeasible, prompting instead the use of iterative approaches of the form
 \begin{align}
   \label{eq:62}
 \mathbf{w}^{(\tau+1)}=\mathbf{w}^{(\tau)}+\Delta \mathbf{w}^{(\tau)},
@@ -1324,7 +1323,7 @@ Such stochastic gradient descent updates the weights for one data point at a tim
 An advantage of this method is that training is less susceptible to local minima, since a minimum of the entire data set is rarely the minimum of a single data point.
 
 As presented stochastic gradient descent only works for a single linear equation.
-We are however dealing with nonlinear networks of multiple layers.
+Here we are dealing with nonlinear networks of multiple layers.
 The answer to updating parameters comes in the form of error backpropagation.
 
 In each layer we compute the activation
@@ -1346,7 +1345,7 @@ Introducing \(\delta_j = \pdv{E_n}{a_j}\) and \(\pdv{a_j}{w_{ji}}=z_i\) (\cref{e
   \pdv{E_n}{w_{ji}} = \delta_j z_i.
 \end{align}
 This means that to evaluate derivatives throughout the network only the values for \(\delta_j\) in each layer are required.
-If the output layer has linear activation functions (\(y_k = \sum_i w_{ki}x_i\)), and the error is given by
+If the output layer has linear activation functions (\(y_k = \sum_i w_{ki}x_i\)), and the error is
 \begin{align}
   \label{eq:69}
   E_n = \frac{1}{2} \sum_k {\qty(y_{nk}-t_{nk})}^2,
@@ -1372,7 +1371,7 @@ With these equations neural networks can be trained~\cite{Bishop2006}.
 
 The machine learning techniques we have seen until now all rely on large data sets to function.
 They use expert data to train and this (hopefully) allows for generalization to new data.
-In many cases however the acquisition of expert data is difficult or impossible.
+Often the acquisition of expert data is difficult or impossible.
 In these cases reinforcement learning comes into play.
 In reinforcement leaning a model interacts with the environment and receives rewards, changing over time to maximize the reward received.
 The algorithm we will consider here is Q-learning.
@@ -1380,14 +1379,14 @@ The algorithm we will consider here is Q-learning.
 \subsection{Q-learning}
 
 In Q-learning we learn an action-value function Q, which tells us what action is the most valuable to take from any given state.
-An advantage of Q-learning is that it is off-policy, meaning that the optimal action-value function \(q_*\) is approximated independently of the followed policy during training.
+Q-learning has the advantage of being off-policy, meaning that the optimal action-value function \(q_*\) is approximated independently of the followed policy during training.
 As long as states are visited and the Q-function is updated, \(q_*\) is approximated.
 
 Q-learning is a form of temporal-difference learning, looking at the reward of the next step to make an estimate of the optimal policy.
 It has the advantage that it has to look forward only a single time step to update its estimate of the optimal policy to follow.
 This is a form of bootstrapping: at every step the guess for the best action to take is based on a guess for what the best action in the next state is.
 
-Q-learning is also model-free, meaning that it does not know how the environment it is working in changes based on its actions.
+Q-learning is also model-free, meaning that it does not know how the environment the model is interacting with changes based on its actions.
 All interaction with the environment is solely through rewards.
 
 In Q-learning, at any given step we update the following equation:
@@ -1407,7 +1406,7 @@ We will use an $\epsilon$-greedy selection algorithm to ensure exploration, taki
 
 
 The simplest problems to which Q-learning applies are tabular, meaning that we can make a table of all states and actions, and enumerate the reward for every combination.
-The problem with the tabular method is that exhaustively tabulating every possible state and action is for many problems impossible.
+The problem with the tabular method is that exhaustively tabulating every possible state and action is often impossible.
 The state space may be factorially large, meaning that almost every state will never before have been encountered.
 This means that we have to generalize to new states from previous experience.
 Here we can turn to function approximators like neural networks (\cref{sec:neural-networks}).
@@ -1437,7 +1436,7 @@ We require neural networks which can deal with incremental data (such as stochas
 
 The algorithm we use is a combination of what is presented in~\cite{Sutton} (the step parameter \(\alpha\)) and deep Q-learning from~\cite{mnih13_playin_atari_with_deep_reinf_learn}.
 Note that we will not use the experience replay used in~\cite{mnih13_playin_atari_with_deep_reinf_learn}, which is a queue of previous (state, action, reward, new state) tuples from which random selections are used for training.
-The algorithm is shown in \cref{alg:qlearning}.
+\Cref{alg:qlearning} shows the algorithm.
 During each time step we choose a move according to an \(\epsilon\)-greedy policy.
 Then the chosen action is taken, the new state reached and the reward observed.
 In a copy of \(Q\) which we denote \(y\), we update the entry corresponding to the taken action, and then update the neural network to better match the state we want to reach.
@@ -1480,24 +1479,24 @@ They form the basis for calculations of form factors and quantities such as the 
 
 We have also seen how rapidities may be found numerically in~\cref{sec:numer-solv-bethe}, using the (multidimensional) Newton method.
 This method converges quadratically, but requires an initial guess for the rapidities.
-It is here that we may find an improvement by way of machine learning.
+Here we may find an improvement by way of machine learning.
 
-In the naive case, where we simply start from scratch in calculating the rapidities, we base the initial values for the Newton method on a simplified first order version of the Bethe equations (\cref{eq:bethe_equations}):
+In the naive case we base the initial values for the Newton method on a simplified first order version of the Bethe equations (\cref{eq:bethe_equations}):
 \begin{align}
   \label{eq:12}
   \lambda_j = \frac{2\pi}{L} I_j.
 \end{align}
 
-We expect the number of iterations required for convergence of the Newton method to be reduced if the initial values are closer to their true values.
-Therefore, we use a neural network to act as a function approximator, feeding in an array of \(N\) Bethe numbers and outputting an array of \(N\) rapidities.
+We expect the number of iterations required for convergence of the Newton method to be reduced if the initial values are closer to their true 
+For this we use a neural network to act as a function approximator, feeding in an array of \(N\) Bethe numbers and outputting an array of \(N\) rapidities.
 
-The methodology is as follows: we generate a data set of 20000 sets of Bethe numbers and calculate their corresponding rapidities of length \(N\), for various values of \(N\).
+The methodology is as follows: we generate a data set of 20000 sets of Bethe numbers and calculate their corresponding rapidities of length \(N\), for different values of \(N\).
 The Bethe numbers are randomly drawn from a normal distribution centered on zero, with a variance of \(N\) (this corresponds to biasing the generated states to be close to the ground state).
-There is no additional UV cutoff employed.
+We do not use an additional UV cutoff.
 
 The generated data is used for training a neural network consisting of an input layer of size \(N\), two hidden layers of size \(N^2\) and an output layer of size \(N\).
 Apart from the output layer all layers use a hyperbolic tangent activation function.
-This architecture was arrived at through trial and error.
+This architecture was arrived at by experimenting.
 More complex networks showed did not show improvements on rapidity estimation and took longer to train and to evaluate.
 We minimize the mean square error.
 
@@ -1516,7 +1515,7 @@ Notably it learned part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lamb
   \caption{Predicted and exact rapidities for the Lieb-Liniger model with \(c=1\), \(L=N=20\).}\label{fig:rapidities}
 \end{figure}
 
-The real question however is whether the initial guesses of the neural network are better than those of the Naive Bethe approach.
+The real question is whether the initial guesses of the neural network are better than those of the Naive Bethe approach.
 Comparing different initial guess methods in \cref{fig:iterations}, we see this being the case.
 We compare the average number of iterations to convergence over 1000 sets of Bethe numbers for each method.
 The difference between Naive Bethe and ML is most pronounced for \(N=5\), being on average \(0.95\) iterations.
@@ -1529,20 +1528,20 @@ Damping does not appear to have a large impact on convergence, and we will from 
 When we compare the time until convergence, a different picture emerges.
 Looking at \cref{fig:convtimes} we see that the ML method is consistently slower than Naive Bethe, although the difference decreases as \(N\) increases.
 This is probably because during Newton iterations we use LU decompositions, which have an algorithmic complexity \(\mathcal{O}(N^3)\)~\cite{Press2007}.
-For large \(N\) this step outweighs the increased complexity introduced by the neural network compared to a naive guess, because the number of calculations necessary for evaluation in the neural network is determined by the number of parameters and is therefore of order \(\mathcal{O}(N^2)\).
+For large \(N\) this step outweighs the increased complexity introduced by the neural network compared to a naive guess, because the number of parameters determines the number of calculations necessary for evaluation in the neural network and is of order \(\mathcal{O}(N^2)\).
 This also explains why the random initializations are generally slower. 
 The increased number of iterations with their associated operations of \(\mathcal{O}(N^3)\) makes reaching convergence take longer.
 Note that the durations in \cref{fig:convtimes} for machine learning do not capture the time required for data set generation and training, making the actual times required to get predictions for the rapidities longer than those reported.
 Machine learning thus does not aid in determining rapidities more efficiently.
 
-The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be found in \cref{cha:rawvalues}.
+The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} are found in \cref{cha:rawvalues}.
 
 \begin{figure}[ph]
   \centering
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_10.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{iterations_20.pdf}}
-  \caption{Number of Newton iterations until convergence is reached for \(N=5,10,20\), averaged over 1000 sets of Bethe numbers. The black bars denote standard errors.}\label{fig:iterations}
+  \caption{Number of Newton iterations until convergence for \(N=5,10,20\), averaged over 1000 sets of Bethe numbers. The black bars denote standard errors.}\label{fig:iterations}
 \end{figure}
 
 \begin{figure}[ph]
@@ -1550,7 +1549,7 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} may be
   \subfloat{\includegraphics[width=0.70\textwidth]{time_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_10.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_20.pdf}}
-  \caption{Time in seconds until convergence is reached for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. The black bars denote standard errors.}\label{fig:convtimes}
+  \caption{Time in seconds until convergence for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. The black bars denote standard errors.}\label{fig:convtimes}
 \end{figure}
 
 \section{Walking through state space}
@@ -1570,28 +1569,28 @@ More precisely they are states with large contributions to the f-sum rule (see \
   \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2,
 \end{align}
 where we specified to the case of the density operator \(\rho = \Psi^{\dag}\Psi\) for the Lieb-Liniger model.
-This allows us to determine which fraction of states have been summed in a given slice of momentum \(k\).
+This allows us to determine which fraction of states has been summed in a given slice of momentum \(k\).
 
-At present the scanning of the Hilbert space is implemented in ABACUS in the form of a large function of approximately 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
+At present ABACUS implements the scanning of the Hilbert space in the form of a large function of approximately 600 lines, using heuristics and the method outlined in \cref{chap:abacus} to capture important states as much as possible.
 Looking at \cref{fig:orderedmagnitudes}, we see that the summation is not yet optimal: some important states are not captured early in the summation.
 This results in lower than possible saturation of the f-sum rule for a given running time of ABACUS.\@
 
 Thus, we turn to machine learning to scan through the Hilbert space in a hopefully more efficient way.
 This also moves complexity from the handcrafted function into a neural network.
-While the neural network in more opaque in how it arrives at solutions, it may nevertheless present a more systematic way of arriving at an algorithm.
+While the neural network in more opaque in how it arrives at solutions, it may still present a more systematic way of arriving at an algorithm.
 
 We use reinforcement learning as a way to iteratively come to an optimal state summation, inspired by the recent success of Google Deepmind in playing Go~\cite{silver16_master_game_go_with_deep,Silver2017a}, chess, and shogi~\cite{Silver2017}, and 1980s computer games~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
 These methods are especially notable because they do not require handcrafting the inputs to the neural networks, but learn higher level representations from scratch.
 Specifically, we will use Q-learning as in the last two references.
 We refer to \cref{chap:machine_learning} for an general explanation of Q-learning and focus here only on the specifics relevant to Hilbert space scanning of the Lieb-Liniger model.
-Note that the learning we employ is tabula rasa, meaning that there is no pretraining on a known data set and all learning occurs from scratch.
+Note that the learning we use is tabula rasa, meaning that there is no pretraining on a known data set and all learning occurs from scratch.
 
 \subsection{State and move representation}
 
 When using neural networks, we need a concrete representation of the state.
 A vector of Bethe numbers has a resolution that is too low as it hides some of the degrees of freedom of the system, notably not covering the holes that appear between particles.
-We therefore use a binary encoding for Lieb-Liniger model states, mapping the Bethe numbers to a vector where 1s represent particles and 0s represent empty locations in Bethe number space.
-Because the vector has to have a finite size this representation does force us to implement a UV-cutoff above which there are no Bethe numbers and which can not be occupied.
+Instead we use a binary encoding for Lieb-Liniger model states, mapping the Bethe numbers to a vector where 1s represent particles and 0s represent empty locations in Bethe number space.
+Because the vector has to have a finite size this representation does force the use of a UV-cutoff above which there are no Bethe numbers and which can not be occupied.
 We call this cutoff \(I_{\max}\).
 States in binary representation are then vectors of length $N_{\textrm{world}} = 2 I_{\max} + 1$.
 For example, the ground state of the $N=3$ state with $I_{\max} = 5$ is\footnote{Due to rounding errors when considering the half-integer Bethe numbers associated with even \(N\), this representation is currently only implemented for odd \(N\), and we only consider those from now on.}
@@ -1602,7 +1601,7 @@ For example, the ground state of the $N=3$ state with $I_{\max} = 5$ is\footnote
 
 Moves are determined by a neural network consisting of an input layer of size \(N_{\textrm{world}}\), two hidden layers of size \(\lfloor N_{\textrm{world}}^{3/2}\rfloor\) and an output layer of size \(N_{\textrm{world}}^2\), with each layer having hyperbolic tangent activation functions.
 The network implements the idea of changing the \(Q\)-function from the form \(Q(s,a)\) to \(Q(s)\), with an output over all possible actions\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
-This simplifies the decision-making process in that only a single evaluation of the neural net is required for each step, instead of an evaluation for all possible actions.
+This simplifies the decision-making process in that only a single evaluation of the neural net is required for each step, instead of an evaluation for every possible actions.
 We calculate loss using the mean-square error.
 
 A move is represented in the same way as AlphaZero uses in chess~\cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
@@ -1617,16 +1616,16 @@ Moves are selected based on the output of the neural net with the highest value,
 If the move with the largest Q-factor is illegal, the move with the next-highest Q-value is selected, until a legal move is encountered.
 Note that during training we use \(\epsilon\)-greedy state selection, with random (legal) action being selected a fraction \(\epsilon\) of the time and \(Q\)-network mediated actions being chosen during the remaining \(1-\epsilon\) fraction.
 
-We also consider what happens when the number of particle-hole pairs is minimized.
+We also consider what happens when we minimize the number of particle-hole pairs.
 To that end, we define the number of particle-hole pairs \(N_{\mathrm{ph}}\) as
 \begin{align}
   \label{eq:52}
   N_{\mathrm{ph}}(s, r) = N - \mathrm{len}(J{(s)}_{s_i=1}\cap J{(r)}_{r_i=1}), 
 \end{align}
-where \(s\) is the state for which the number of particle-hole pairs is determined and \(r\) is the reference state, in this case the ground state.
+where \(s\) is the state for which to determine the number of particle-hole pairs and \(r\) is the reference state, in this case the ground state.
 \(J{(s)}_{s_i=1}\) denotes the set of indices for which \(s_i = 1\) (likewise for \(r\)).
 Both the state and the reference state are in the representation of \cref{eq:representation}.
-In other words, it is the number of particles that have left the Fermi interval
+Effectively this measures the number of particles that have left the Fermi interval
 It has the desired properties of being 0 when \(r=s\) and \(N_{\mathrm{ph}} = N\) when no two particles are in the same place for \(s\) and \(r\).
 
 
@@ -1636,7 +1635,7 @@ A problem now presents itself.
 In the representation discussed above the higher pseudo-momentum states are less well represented than lower momentum states, since there are more possible combinations that result in a small momentum.
 We see this if we consider for example a Lieb-Liniger model with \(c=1\), \(L=N=5\) and \(I_{\max} =12\).
 This choice of parameters allows for \(\binom{N_{\mathrm{world}}}{N}=\binom{25}{5}=53510\) possible combinations, concentrated around the origin.
-This is a number for which it is still feasible to generate all combinations and calculate the form factors of the associated states.
+For this number of states we can feasibly generate all combinations and calculate the form factors of the associated states.
 Doing so for all possible permutations with individual particle momentum in the interval \((-12, 12)\) of length \(5\) results in a Gaussian distribution (\cref{fig:no_of_states}).
 \begin{figure}[tb]
   \centering
@@ -1649,7 +1648,7 @@ The maximum possible state momentum is given by
   P_{\max} = \frac{2\pi}{L}\sum_{i=0}^{N-1}(I_{\max}-i) = \frac{\pi}{L}N (2 I_{\max} -N +1) = \frac{\pi}{L}N (N_{\mathrm{world}} -N),
 \end{align}
 which in this case is \(\frac{L}{2\pi}P_{\max} = 35\).
-We see however that if we calculate the sum rule saturations for each momentum slice, the saturations quickly go to 0 as \(\frac{L}{2\pi}P\) becomes larger (\cref{fig:saturationsperslice}), falling off especially for \(\abs{\frac{L}{2\pi}P}>I_{\max}\).
+If we calculate the sum rule saturations for each momentum slice, the saturations go to 0 as \(\frac{L}{2\pi}P\) becomes larger (\cref{fig:saturationsperslice}), falling off especially for \(\abs{\frac{L}{2\pi}P}>I_{\max}\).
 This is caused by the lack of states with larger momentum and proves especially problematic if we calculate total sum rule saturations over all states.
 The higher momentum slices will suppress the total possible attainable sum rule.
 \begin{figure}[tb!]
@@ -1661,8 +1660,8 @@ The higher momentum slices will suppress the total possible attainable sum rule.
 
 The problem can be somewhat mitigated by giving \(I_{\max}\) two roles in the scanning.
 It acts as both the cutoff for the momentum of individual particles as well as the total allowed momentum.
-This contrasts with ABACUS, where \(I_{\max}\) acts only as the cutoff for the total momentum, meaning that states could in principle be built from particles with momentum far in excess of \(I_{\max}\), as long as particles with approximately opposite momentum cancel each other out.
-Therefore ABACUS, when considering states, can always get high saturations in every momentum slice.
+This contrasts with ABACUS, where \(I_{\max}\) acts only as the cutoff for the total momentum, meaning that states could in principle be built from particles with momentum far above \(I_{\max}\), as long as particles with approximately opposite momentum cancel each other out.
+Thus ABACUS, when considering states, can always get high saturations in every momentum slice.
 ABACUS also has the advantage that it can scan within a individual slice.
 Due to this when calculating the f-sum rule saturation we only consider states for which \(\frac{L}{2\pi}P \in [-I_{\max},I_{\max}]\).
 If we take all states in this interval and use \(N = 5\), \(I_{\max}=12\) the total sum rule saturation is approximately 83.5\%.
@@ -1696,12 +1695,12 @@ This validates the use of \cref{eq:52} while training to select for states with 
 \subsection{Numerical results}
 
 
-We consider a number of different possible ways of determining states:
+We consider six different possible ways of determining states:
 \begin{itemize}
 \item A neural network trained with and without checking the number of particle hole pairs for states;
-\item Random state selection. In this case we simply set \(\epsilon=1\) in the epsilon greedy algorithm and do not decrease it over the course of the run.
+\item Random state selection. In this case we set \(\epsilon=1\) in the \(\epsilon\)-greedy algorithm and do not decrease it over the course of the run.
 \end{itemize}
-For both methods we calculate the DSFs both with and without minimizing \(N_{\mathrm{ph}}\).\footnote{Note that during training, even when particle-hole pair minimization is enabled, we do not use it during the forward pass of Q-learning. Doing so degrades performance.}
+For both methods we calculate the DSFs both with and without minimizing \(N_{\mathrm{ph}}\).\footnote{Note that during training, even when enabling particle-hole pair minimization, we do not use it during the forward pass of Q-learning. Doing so degrades performance.}
 The measure we use to compare methods is how many states are required to reach a given f-sum rule saturation.
 Due to the representation of the states and the cutoff used, direct comparison with ABACUS is difficult (\cref{sec:exact}), but we do give some results for a rough estimate of relative performance.
 
@@ -1709,11 +1708,11 @@ Required sum rule saturation is set at 83\%, which in the given subspace corresp
 We average the number of states necessary over 5 runs with random initial seed.
 If training occurs we do so for 25 epochs of 500 states.
 We set \(\epsilon=0.1\) and do not change it during training.
-We do not start from full exploration (\(\epsilon=1\)) because many states will contribute very little to sum rule saturations, leading to poor results.
+We do not start from full exploration (\(\epsilon=1\)) because many states will contribute little to sum rule saturations, leading to poor results.
 In evaluation we also have \(\epsilon=0.1\).
 We set the hyperparameters \(\alpha=0.01\) and \(\gamma = 0.975\).
-If convergence has not been reached after 3000 states, the scanning is terminated.
-Encountered states are stored for later analysis as well as to prevent double counting.
+If convergence has not been reached after 3000 states, we terminate the scanning.
+Encountered states are stored for later analysis and to prevent double counting.
 
 As an approximate measure of the average size of matrix elements, we consider a linear trend line trough the logarithm of the  data.
 The value of the midpoint of the data acts as a proxy for the average size, allowing for a comparison between different methods.
@@ -1746,7 +1745,7 @@ where \(\mathcal{F}\) is the form factor of the current state \(\mu\), \(\lambda
   \end{algorithmic}
 \end{algorithm}
 \noindent
-In other words, it is sum of the distance each particle has traveled in Bethe number space from its original position in the reference state.
+In other words, \(d\) measures the sum of the distances each particle has traveled in Bethe number space from its original position in the reference state.
 
 
 
@@ -1765,7 +1764,7 @@ In other words, it is sum of the distance each particle has traveled in Bethe nu
 
 \Cref{fig:statestoconv} and \cref{fig:ffsizeproxy} show the results.
 We consider states with \(c=1\), \(L=N=5\) and \(I_{\max}=12\).
-Full results are found in \cref{chap:qlearningresults}.
+\Cref{chap:qlearningresults} contains full results.
 The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs during DSF calculation.
 As long as an action is valid, meaning it does not add or remove particles where that is not possible, revisit a state or create a state with too large a momentum.
 Looking at \cref{fig:saturation_rand_True_check_train_False_check_eval_False} we see that none of the runs converge after 3000 steps.
@@ -1774,10 +1773,10 @@ Average square form factor sizes are of order \(10^{-16}\), as seen in \cref{fig
 
 
 If we enforce particle-hole pair minimization, the picture changes.
-Now only approximately 700 states are necessary to reach saturation, and average form factor size is of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
+Now only 728 states are necessary to reach saturation, and average form factor size is of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
 The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states with the same value for \(N_{\mathrm{ph}}\).
 We see that enforcing particle-hole minimization is an important measure in selecting states with large form factors.
-Note the plateauing of the sum rule saturation that occurs for many runs (\cref{fig:saturation_rand_True_check_train_False_check_eval_False}). 
+Note the plateauing of the sum rule saturation that occurs for most runs (\cref{fig:saturation_rand_True_check_train_False_check_eval_False}). 
 This probably happens because most of the large form factors have already been selected and the last few percentage points have to be made up by many form factors with small contributions.
 
 
@@ -1795,15 +1794,15 @@ The performance of this method confirms that learning is occurring since there i
 
 That these results come from learning is further confirmed when considering the evaluation with particle-hole minimization disabled in training and enabled in evaluation.
 The average number of states required is 795 (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_True}), with matrix elements of order \(10^{-8}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_True}).
-This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, pointing to a possibility that the minimization leads the model to learn about states with large contributions and consequently high rewards.
+This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, pointing to a possibility that the minimization leads the model to learn about states with large contributions and thus high rewards.
 
-Finally we come to an evaluation with \(N_{\mathrm{ph}}\)-minimization disabled in both training and evaluation.
+Finally, we come to an evaluation with \(N_{\mathrm{ph}}\)-minimization disabled in both training and evaluation.
 Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) but the average form factor is of order \(10^{-12}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}), meaning learning still occurring.
 The poor results of this method shows that using only the reward function to shape action selection does not provide enough feedback for learning.
 
 
 An illustration of the learned behaviour is visible when considering the trained model of the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
-When evaluating the ground state (\cref{fig:binarygroundstate}), we clearly see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
+When evaluating the ground state (\cref{fig:binarygroundstate}), we see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
 Unoccupied positions should not be selected for removal, while occupied positions should not be selected for particle placement.
 We see this occurring in the form of bands of high and low Q-factors.
 The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval and deposit it somewhere outside.
@@ -1814,10 +1813,10 @@ The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmat
 \begin{sloppypar}
 Finally, we compare with ABACUS.\@
 When we use the same settings as above~(\(L=N=5, I_{\max}=12\)), we find that only 158 states are necessary for 99.5\% sum rule saturation, with a form factor size proxy of 0.0009 (\cref{fig:abacusformfactors_12_5}).
-It should be noted that, because ABACUS can scan within momentum slices, uniformly high saturations can be achieved (\cref{fig:abacus_saturations_12_5}).
+We should note that, because ABACUS can scan within momentum slices, uniformly high saturations can be achieved (\cref{fig:abacus_saturations_12_5}).
 \end{sloppypar}
 
-If we consider a larger system the power ABACUS becomes even more apparent.
+If we consider a larger system the power ABACUS becomes even clearer.
 We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\).
 This yields a state space of at least size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
 The desired sum rule saturation of 99.9\% (\cref{fig:abacus_saturations}) is achieved with 9376 states, summed over approximately 7 seconds.
@@ -1957,40 +1956,41 @@ I may not have gone where I intended to go, but I think I have ended up where I 
 
 \section{Discussion}
 
-A number of difficulties may be identified with the results mentioned.
+The methods used in this thesis suffer from some difficulties.
 
 \subsection{Non-Markovian nature of DSF Hilbert scanning}
 
 Firstly, while the Lieb-Liniger model is Markovian, the Hilbert space scanning used to calculate DSFs is not.
-This is because, to prevent overcounting, the entire history of previously visited states must be taken into consideration during each state selection.
-It is an example of a hidden state task, because not all relevant information required for selecting the best action is present when only considering the current state.
+This is because, to prevent overcounting, the entire history of previously-visited states must be taken into consideration during each state selection.
+This breaks the property of Markov processes that all relevant information to take the best action is present in the current state.
+DSF scanning is an example of a hidden state task, because not all relevant information required for selecting the best action is present when only considering the current state.
 Applying reinforcement learning algorithms to non-Markovian tasks (which are the norm when considering real world control tasks) may lead to suboptimal performance~\cite{whitehead95_reinf_learn_non_markov_decis_proces}.
-For the problem at hand however the use of a history over states is essential.
+But for the problem at hand the use of a history over states is essential.
 
 Furthermore the proof of convergence of the Q-learning algorithm to an optimal policy depends on the Markovian nature of a problem~\cite{watkins92_q_learn}.
-Note though that convergence happens only in the \(t\to\infty\) limit, and therefore of questionable relevance when Q-learning is actually used.
+Note though that convergence happens only in the \(t\to\infty\) limit, and thus of questionable relevance when Q-learning is actually used.
 
 
 \subsection{Problems with reinforcement learning}
 
 
-There are also a number of issues with reinforcement learning more generally.
-On of those is that reinforcement learning is data inefficient, sometimes extremely so.
+A number of issues with reinforcement learning more generally are present.
+On of those is that reinforcement learning is data inefficient.
 In~\cite{1710.02298} a study was made of performance in the Atari learning environment by combining different techniques beyond those used in~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
-Even in the best case approximately 15 million frames (at 60 Hertz) were required to reach human-level performance, corresponding to 3 days of gametime.
-This was however already an improvement on the original work done in~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, where only 1 in 4 frames where used to improve computational efficiency and which required 38 days of gametime to train on 50 million sample frames.
+Even in the best case approximately 15 million frames (at 60 Hertz) were required to reach human-level performance, corresponding to three days of gametime.
+But this was already an improvement on the original work done in~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, where only one in four frames where used to improve computational efficiency and which required 38 days of gametime to train on 50 million sample frames.
 A similar data inefficiency is seen in~\cite{heess17_emerg_locom_behav_rich_envir}.
 Although the results are impressive (an agent learns to navigate a challenging environment consisting of hurdles and gaps using only a simple reward function), training took 100 hours of wall clock time on 64 workers~\cite[Figure 1]{heess17_emerg_locom_behav_rich_envir}.
 This all in contrast to humans, who are often able to able to learn from a single example~\cite{marcus18_deep_learn}.
 
 This leads to the conjecture that a well-engineered handcrafted function may outperform a reinforcement learning solution, if such a function can be created.
 This is the case for ABACUS, where the applicability to large systems stems from the preliminary information provided by integrability, built into the algorithm~\cite{Caux2009}.
-Learning the structure of the form factor space by reinforcement would therefore probably take an inordinate number of samples.
+Thus learning the structure of the form factor space by reinforcement would probably take an inordinate number of samples.
 
 At the same time state of the art machine learning setups are experiencing an large increase in compute power used.
 Data~\cite{amodei2018} compiled by the nonprofit OpenAI\footnote{OpenAI was founded with the goal of doing research in finding safe ways towards the realization of artificial general intelligence (see \href{https://openai.com/about/}{https://openai.com/about/}).} shows an increase of a factor 300000 in the number of petaflop/s-day\footnote{A petaflop/s-day is defined as doing $10^{15}$ neural network operations per second for one day, or approximately $10^{20}$ operations per day~\cite{amodei2018}.} used in training machine learning systems between 2012 and the end of 2017 (\cref{fig:increasedaiflops}). 
-This corresponds to a doubling time of 3.5 months and is mostly the result of increased parallelism and monetary investments.
-This is far in excess of the doubling time of 18 to 24 months predicted by Moore's law.
+This corresponds to a doubling time of 3.5 months and is the result of increased parallelism and monetary investments.
+This is far lower than the doubling time of 18 to 24 months predicted by Moore's law.
 
 \begin{figure}[tb!]
   \centering
@@ -2021,33 +2021,31 @@ Concurrently we are seeing a political debate develop related to the ways in whi
 Reward function with a simple scoring also have difficulties when confronted with problems where there is a clear temporal structure.
 An example of this can be found in the game Montezuma's revenge, in which a tomb is traversed in search of treasure.
 This game has a temporal structure in that certain doors within the game are locked until the player retrieves the appropriate key.
-A reward function based only on score performs poorly in this game~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, because it is not able to causally reason about the actions required to maximize score.\footnote{There is now also progress in this field. OpenAI is working on agents which can beat professional players in the game Dota 2. Dota 2 is a five-on-five strategy game in which the goal is to destroy the other teams base. Games can last upwards of 45 minutes, and require long-term strategies to win. The agent is now able to win against amateur and semi-professional players and will match against a professional team during the yearly Dota 2 tournament ``The International'' in August 2018. Note that this agent does suffer from some of the other problems discussed above, notably used resources (100000 CPUs) and data inefficiency (each training day is equivalent to 180 years of game time). It also does not learn to play directly from pixels, but uses a data interface to get the value for each of the 20000 relevant variables in the games~\cite{OpenAIDota}.}
+A reward function based only on score performs poorly in this game~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, because the agent is not able to causally reason about the actions required to maximize score.\footnote{There is now also progress in this field. OpenAI is working on agents which can beat professional players in the game Dota 2. Dota 2 is a five-on-five strategy game in which the goal is to destroy the other teams base. Games can last upwards of 45 minutes, and require long-term strategies to win. The agent is now able to win against amateur and semi-professional players and will match against a professional team during the yearly Dota 2 tournament ``The International'' in August 2018. Note that this agent does suffer from some of the other problems discussed above, notably used resources (100000 CPUs) and data inefficiency (each training day is equivalent to 180 years of game time). It also does not learn to play directly from pixels, but uses a data interface to get the value for each of the 20000 relevant variables in the games~\cite{OpenAIDota}.}
 
 We also see this in the DSF scanning developed here.
 The obvious choice for the reward function is the absolute form factor squared for the operator under consideration.
 The problem with this approach comes from the many decades spanned by the form factors.
-This makes the rewards for many transition very small, meaning it will often only even register as noise.
+This makes the rewards for many transitions small, meaning these rewards will often only register as noise.
 
-Finally reinforcement learning research is currently facing problems with regards to reproducibility of findings.
-This is largely caused by non-determinism in the research environment.
+Finally, reinforcement learning research is facing problems with regards to reproducibility of findings.
 In~\cite{1709.06560} a systematic study was made of factors impacting performance.
 They found that simple changes, such as changing the activation function used in neural networks, can have a large effect on model performance.
 This makes the comparison between different models difficult if those effects are not taken into account.
 
 Another source of non-determinism are the random seeds used to initialize weights of neural networks.
-In \cref{fig:halfcheetahdifferentresults} two averages, each taken over a set of five random seeds, are shown for performance in the HalfCheetah environment.\footnote{HalfCheetah is a research environment for reinforcement learning in which a cheetah-like creature has the goal of learning to walk.}
-The exact seeds chosen make a large difference in performance, as can be seen.
+\Cref{fig:halfcheetahdifferentresults} shows two averages for performance in the HalfCheetah environment, each taken over a set of five random seeds.\footnote{HalfCheetah is a research environment for reinforcement learning in which a cheetah-like creature has the goal of learning to walk.}
+The exact seeds chosen make a large difference in performance.
 This may lead to inaccuracy when reporting on the performance of algorithms, because performance is often based on the average over five runs.
 
 \begin{figure}[tb!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{HalfCheetah-v1__TRPO,_Different_Random_Seeds_.pdf}
+  \centering \includegraphics[width=0.7\textwidth]{HalfCheetah-v1__TRPO,_Different_Random_Seeds_.pdf}
   \caption{Performance of a reinforcement algorithm in the HalfCheetah environment, averaged over two different sets of five random seeds each. Note the large difference in performance, even though only the seeds differ between runs. Figure taken from~\cite{1709.06560}.}\label{fig:halfcheetahdifferentresults}
 \end{figure}
 
 
-Another aspect of this can be seen in \cref{fig:halfcheetah}.
-This shows the performance over time of a new exploration method developed in~\cite{houthooft16_vime} and applied to HalfCheetah.
+\Cref{fig:halfcheetah} shows another aspect of performance influence by random seed.
+We see the performance over time of a new exploration method developed in~\cite{houthooft16_vime} and applied to HalfCheetah.
 The solid line is the median reward at each iteration, averaged over ten random seeds, with the shaded area showing the quartiles.
 Notice that the lowest quartile (the white area beneath the light orange shaded area) lies close to zero even after 1000 training iterations.
 This means that in almost a quarter of cases, performance of the trained model is poor, which is caused solely by the initial random seed.
@@ -2060,7 +2058,7 @@ This means that in almost a quarter of cases, performance of the trained model i
 
 
 
-Finally, deep learning has currently no way of learning high level concepts about the environments it is applied to.
+Finally, deep learning has currently no way of learning high level concepts about the environments.
 In learning Pong~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}, there is no knowledge about the concepts of a ``ball'' or a ``paddle'', only an input vector of pixels.
 Hierarchical structures also pose a problem, leading to difficulties when dealing with areas like language~\cite{marcus18_deep_learn}. 
 
@@ -2069,9 +2067,9 @@ Hierarchical structures also pose a problem, leading to difficulties when dealin
 
 In this thesis we considered ways in which to numerically calculate the Fourier transform of correlation functions, known as dynamical structure functions or DSFs.
 In the Lehmann series representation DSFs are a sum over matrix elements.
-In Bethe ansatz integrable models these DSFs could be calculated with the ABACUS algorithm.
+In Bethe ansatz integrable models these DSFs can be calculated with the ABACUS algorithm.
 The summation over these matrix elements is not fully optimal, meaning that matrix elements are not summed in strictly decreasing order.
-This results in inefficiency when considering finite compute times, since states with large contributions may be missed,
+This results in inefficiency when considering finite compute times, since states with large contributions may be missed.
 
 We looked at the Bethe ansatz solvable Lieb-Liniger model.
 This model was chosen because the parameters which define the wave function, known as rapidities, are real.
@@ -2079,9 +2077,9 @@ Additionally, given the quantum numbers of a state only a single solution exists
 We reviewed the Bethe ansatz, finding expression for physical properties of the Lieb-Liniger model.
 
 After this we reviewed the current operation of ABACUS.\@
-We examined how to numerically solve for the rapidities of the Lieb-Liniger model, and gave a high-level overview of the scanning of the Hilbert space as it is currently implemented.
+We examined how to numerically solve for the rapidities of the Lieb-Liniger model, and gave a high-level overview of the scanning of the Hilbert space as currently implemented.
 
-A review of some machine learning to be employed later was given.
+A review of some machine learning to be used later was given.
 We then considered whether supervised learning could make the calculation of rapidities faster by providing better initial guesses based on Bethe quantum numbers.
 We found that for small systems the number of Newton-method iterations decreased with better guesses provided by a neural network, but that this improvement decreased for increasing system size.
 Additionally the computation time added by the evaluations of the neural network made the machine learning approach slower than using a naive initial guess.
@@ -2096,12 +2094,12 @@ We found that random state selection led to poor performance, as expected.
 Activating particle-hole pair minimization increased performance, leading to better results, with larger form factors being found.
 Results from Q-learning show that particle-hole minimization is essential for learning to select high value states.
 If minimization is enabled during training and evaluation, the best results are obtained in terms of number of states required to reach saturation.
-Learning can be seen to occur when we consider minimization during training but not during evaluation.
+Learning is seen to occur when we consider minimization during training but not during evaluation.
 While saturation takes longer than in other cases, it does occur and hints at a strategy being developed during training.
 Disabling minimization during training gave poor results when also disabling during evaluation, with no convergence occurring.
 If enabled during evaluation results were better.
 
-Finally we considered shortcomings of Q-learning as applied to DSF summation and reinforcement learning generally.
+Finally, we considered shortcomings of Q-learning as applied to DSF summation and reinforcement learning generally.
 
 
 \subsection{Outlook}
@@ -2111,7 +2109,7 @@ Reinforcement learning may also be used in this.
 Given a set of Bethe numbers, the rapidities can be predicted, after which convergence to machine precision is achieved through Newton iterations.
 The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions by minimizing Newton iterations.
 
-One of the limitations of the current approach to Q-learning is that the representation used requires a UV cutoff of the Bethe numbers in order to be able to represent possible moves in Hilbert space.
+One of the limitations of the current approach to Q-learning is that the representation used requires a UV cutoff of the Bethe numbers to be able to represent possible moves in Hilbert space.
 Furthermore, the size of action space scales as \({(I_{\infty+} + I_{\infty-} + 1)}^2\), meaning that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
 This problem may be solved by using an alternative representation of actions in terms of continuous changes.
 This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
@@ -2125,18 +2123,18 @@ We did not use it here because in DSF calculation states may only be seen once t
 
 A further weakness in the current implementation is that only ``connected states'' can be reached from any given state.
 With this we mean states that differ only by a single particle move from the current state under consideration.
-This differs from ABACUS, in which a tree of states is descended and at any point any previously reached state may be used as the base for a new expansion into Hilbert space.
+This differs from ABACUS, in which a tree of states is descended and at any point any previously reached state can be used as the base for a new expansion into Hilbert space.
 The tree-like approach may be considered for further research.
 
-It should be noted that the approach explored in this thesis is in principle usable in any model, not only Bethe ansatz integrable systems.
-This is the case as long as eigenstates and matrix elements are known, a suitable expression for the f-sum rule, and a representation of states and moves can be found.
-Therefore further research is warranted in this area, since not all models may have a system such as ABACUS in place to calculate DSFs.
+We note that the approach explored in this thesis is in principle usable in any model, not only Bethe ansatz integrable systems.
+This is the case as long as eigenstates and matrix elements are known, a suitable expression for the f-sum rule exists, and a representation of states and moves can be found that is usable for computation.
+Thus further research is warranted in this area, since not all models may have a system such as ABACUS in place to calculate DSFs.
 
 On another front progress in computing DSFs may be made by Moore's law and the passage of time (as well as the development of new algorithms).
 We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible exactly~\cite{wietek18_sublat_codin_algor_distr_memor}.
 
 Furthermore, the mapping between deep learning and the renormalization group~\cite{Mehta2014} should be further explored.
-This may provide additional insight into the working of neural networks.
+This could provide provide insight into the working of neural networks.
 It may also provide clues to the optimum number of layers in a system for a given input set, the determination of which currently depends on experience (a ``gut'' feeling) and experimentation.
 
 Finally, the fields of machine learning and artificial intelligence in general are currently experiencing large changes and advances.
@@ -2144,14 +2142,14 @@ New methods and techniques are constantly developed and may also be applicable t
 
 \section{Acknowledgements}
 I would like to thank Jean-Sébastien Caux for his supervision and valuable suggestions.
-Sam Kuypers is thanked for help in understanding some derivations.
+Thanks to Sam Kuypers for help in understanding some derivations.
 I would also like to thank Sam, along with the rest of the J-S master gang (Jorran de Wit and Rebekka Koch), for always being there to have lunch with and their willingness to hear me grumble about my project.
 On the same note I would like to thank all the other people in the master room, in particular Miró van der Worp, who was always organizing lectures and talks to help distract everyone from their thesis.
-
+11
 To my theatre friends I would like to say: thanks for being non-physicists and for all the parties.
 
 Finally, I would like to thank my parents, Erik and Mickey.
-Without their emotional support over the past year this thesis would never have been finished.
+Without their support over the past year I would never have finished this thesis.
 Erik, maybe I should have followed you advice: ``\textit{leer een echt vak}''~\cite{erik}.
 
 \appendix
@@ -2198,8 +2196,8 @@ It's an ancient and honorable term for the final step in any engineering project
 
 \chapter{The f-sum rule}\label{cha:f-sum-rule}
 
-When computing the dynamical structure function numerically we need a way to measure what fraction of relevant states have been summed.
-To that end we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation~\cite{pitaevskii}.
+When computing the dynamical structure function numerically we need a way to measure what fraction of relevant states has been summed.
+For this we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation~\cite{pitaevskii}.
 We first derive the general formula and then find sum rules for specific operators.
 
 Starting with the dynamic structure function we have
@@ -2458,169 +2456,169 @@ Here we present the raw values for the number of states necessary to reach 83\% 
 
 
 \bibitem{Korepin1993} 
-V. E. Korepin, N. M. Bogoliubov and A. G. Izergin, \textit{Quantum Inverse Scattering Method and Correlation Functions}, Cambridge University Press, Cambridge, ISBN 9780511628832 (1993), \doi{10.1017/CBO9780511628832}.
+V.~E.~Korepin, N.~M.~Bogoliubov and A.~G.~Izergin, \textit{Quantum Inverse Scattering Method and Correlation Functions}, Cambridge University Press, Cambridge, ISBN~9780511628832 (1993), \doi{10.1017/CBO9780511628832}.
 
 
 
 
 \bibitem{Caux2009} 
-J.-S. Caux, \textit{Correlation functions of integrable models: A description of the ABACUS algorithm}, J. Math. Phys. \textbf{50}, 095214 (2009), \doi{10.1063/1.3216474}.
+J.-S.~Caux, \textit{Correlation functions of integrable models: A description of the ABACUS algorithm}, J. Math. Phys. \textbf{50}, 095214 (2009), \doi{10.1063/1.3216474}.
 
 
 
 
 \bibitem{mnih13_playin_atari_with_deep_reinf_learn} 
-V. Mnih, K. Kavukcuoglu, D. Silver, A. Graves, I. Antonoglou, D. Wierstra and M. Riedmiller, \textit{Playing Atari with Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1312.5602v1}{1312.5602v1}. 
+V.~Mnih, K.~Kavukcuoglu, D.~Silver, A.~Graves, I.~Antonoglou, D.~Wierstra and M.~Riedmiller, \textit{Playing Atari with Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1312.5602v1}{1312.5602v1}. 
 
 
 
 
 \bibitem{mnih15_human_level_contr_throug_deep_reinf_learn}
-V. Mnih et al., \textit{Human-level control through deep reinforcement learning}, Nature \textbf{518}, 529 (2015), \doi{10.1038/nature14236}.
+V.~Mnih et al., \textit{Human-level control through deep reinforcement learning}, Nature \textbf{518}, 529 (2015), \doi{10.1038/nature14236}.
 
 
 
 
 \bibitem{silver16_master_game_go_with_deep}
-D. Silver et al., \textit{Mastering the game of Go with deep neural networks and tree search}, Nature \textbf{529}, 484 (2016), \doi{10.1038/nature16961}.
+D.~Silver et al., \textit{Mastering the game of Go with deep neural networks and tree search}, Nature \textbf{529}, 484 (2016), \doi{10.1038/nature16961}.
 
 
 
 
 \bibitem{Silver2017a}
-D. Silver et al., \textit{Mastering the game of Go without human knowledge}, Nature \textbf{550}, 354 (2017), \doi{10.1038/nature24270}.
+D.~Silver et al., \textit{Mastering the game of Go without human knowledge}, Nature \textbf{550}, 354 (2017), \doi{10.1038/nature24270}.
 
 
 
 
 \bibitem{Silver2017} 
-D. Silver et al., \textit{Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm}, arXiv:\href{https://arxiv.org/abs/1712.01815v1}{1712.01815v1}. 
+D.~Silver et al., \textit{Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm}, arXiv:\href{https://arxiv.org/abs/1712.01815v1}{1712.01815v1}. 
 
 
 
 
 \bibitem{Bethe1931}
-H. Bethe, \textit{Zur Theorie der Metalle I. Eigenwerte und Eigenfunktionen der linearen Atomkette}, Z. Physik \textbf{71}, 205 (1931), \doi{10.1007/BF01341708}.
+H.~Bethe, \textit{Zur Theorie der Metalle I. Eigenwerte und Eigenfunktionen der linearen Atomkette}, Z. Physik \textbf{71}, 205 (1931), \doi{10.1007/BF01341708}.
 
 
 
 
 \bibitem{Lieb1963}
-E. H. Lieb and W. Liniger, \textit{Exact Analysis of an Interacting Bose Gas. I. The General Solution and the Ground State}, Phys. Rev. \textbf{130}, 1605 (1963), \doi{10.1103/PhysRev.130.1605}.
+E.~H.~Lieb and W.~Liniger, \textit{Exact Analysis of an Interacting Bose Gas. I. The General Solution and the Ground State}, Phys. Rev. \textbf{130}, 1605 (1963), \doi{10.1103/PhysRev.130.1605}.
 
 
 
 
 \bibitem{Lieb1963a}
-E. H. Lieb, \textit{Exact Analysis of an Interacting Bose Gas. II.\ The Excitation Spectrum}, Phys. Rev. \textbf{130}, 1616 (1963), \doi{10.1103/PhysRev.130.1616}.
+E.~H.~Lieb, \textit{Exact Analysis of an Interacting Bose Gas. II.\ The Excitation Spectrum}, Phys. Rev. \textbf{130}, 1616 (1963), \doi{10.1103/PhysRev.130.1616}.
 
 
 
 
 \bibitem{Franchini2017} 
-F. Franchini, \textit{An Introduction to Integrable Techniques for One-Dimensional Quantum Systems}, Springer International Publishing, Cham, ISBN 9783319484860 (2017), \doi{10.1007/978-3-319-48487-7}.
+F.~Franchini, \textit{An Introduction to Integrable Techniques for One-Dimensional Quantum Systems}, Springer International Publishing, Cham, ISBN~9783319484860 (2017), \doi{10.1007/978-3-319-48487-7}.
 
 
 
 
 \bibitem{Panfil2014} 
-M. Panfil and J.-S. Caux, \textit{Finite-temperature correlations in the Lieb-Liniger one-dimensional Bose gas}, Phys. Rev. A \textbf{89}, 033605 (2014), \doi{10.1103/PhysRevA.89.033605}.
+M.~Panfil and J.-S.~Caux, \textit{Finite-temperature correlations in the Lieb-Liniger one-dimensional Bose gas}, Phys. Rev. A \textbf{89}, 033605 (2014), \doi{10.1103/PhysRevA.89.033605}.
 
 
 
 
 \bibitem{Caux2015} 
-J.-S. Caux, \emph{Integrability in atomic and condensed matter physics in and out of equilibrium}, Lectures for S{\'e}minaire d'excellence en physique, Paris, June 2015, unpublished (2015).
+J.-S.~Caux, \emph{Integrability in atomic and condensed matter physics in and out of equilibrium}, Lectures for S{\'e}minaire d'excellence en physique, Paris, June 2015, unpublished (2015).
 
 
 
 \bibitem{Gaudin2009} 
-M. Gaudin and J.-S. Caux, \textit{The Bethe Wavefunction}, Cambridge University Press, Cambridge, ISBN 9781107053885 (2009), \doi{10.1017/cbo9781107053885}.
+M.~Gaudin and J.-S.~Caux, \textit{The Bethe Wavefunction}, Cambridge University Press, Cambridge, ISBN~9781107053885 (2009), \doi{10.1017/cbo9781107053885}.
 
 
 
 
 \bibitem{Yang1969}
-C. N. Yang and C. P. Yang, \textit{Thermodynamics of a One‐Dimensional System of Bosons with Repulsive Delta‐Function Interaction}, J. Math. Phys. \textbf{10}, 1115 (1969), \doi{10.1063/1.1664947}.
+C.~N.~Yang and C.~P.~Yang, \textit{Thermodynamics of a One‐Dimensional System of Bosons with Repulsive Delta‐Function Interaction}, J. Math. Phys. \textbf{10}, 1115 (1969), \doi{10.1063/1.1664947}.
 
 
 
 
 \bibitem{Caux2007}
-J.-S. Caux, P. Calabrese and N. A. Slavnov, \textit{One-particle dynamical correlations in the one-dimensional Bose gas}, J. Stat. Mech. P01008 (2007), \doi{10.1088/1742-5468/2007/01/P01008}.
+J.-S.~Caux, P.~Calabrese and N.~A.~Slavnov, \textit{One-particle dynamical correlations in the one-dimensional Bose gas}, J. Stat. Mech. P01008 (2007), \doi{10.1088/1742-5468/2007/01/P01008}.
 
 
 
 
 \bibitem{Zemyan2012} 
-S. M. Zemyan, \textit{The Classical Theory of Integral Equations}, Birkhäuser Boston, Boston, ISBN 9780817683481 (2012), \doi{10.1007/978-0-8176-8349-8}.
+S.~M.~Zemyan, \textit{The Classical Theory of Integral Equations}, Birkhäuser Boston, Boston, ISBN~9780817683481 (2012), \doi{10.1007/978-0-8176-8349-8}.
 
 
 
 
 \bibitem{feynman} 
-R.~P. Feynman, \emph{Statistical Mechanics: A Set of Lectures}, Westview Press, ISBN 9780201360769 (1998).
+R.~P.~Feynman, \emph{Statistical Mechanics: A Set of Lectures}, Westview Press, ISBN~9780201360769 (1998).
 
 
 
 
 
 \bibitem{Piroli2015} 
-L. Piroli and P. Calabrese, \textit{Exact formulas for the form factors of local operators in the Lieb-Liniger model}, J. Phys. A:\ Math. Theor. \textbf{48}, 454002 (2015), \doi{10.1088/1751-8113/48/45/454002}.
+L.~Piroli and P.~Calabrese, \textit{Exact formulas for the form factors of local operators in the Lieb-Liniger model}, J. Phys. A:\ Math. Theor. \textbf{48}, 454002 (2015), \doi{10.1088/1751-8113/48/45/454002}.
 
 
 
 
 \bibitem{slavnov18_algeb_bethe_ansat} 
-N. A. Slavnov, \textit{Algebraic Bethe ansatz}, arXiv:\href{https://arxiv.org/abs/1804.07350}{1804.07350}.
+N.~A.~Slavnov, \textit{Algebraic Bethe ansatz}, arXiv:\href{https://arxiv.org/abs/1804.07350}{1804.07350}.
 
 
 
 
 \bibitem{slavnov90_noneq_time_curren_correl_funct}
-N. A. Slavnov, \textit{Nonequal-time current correlation function in a one-dimensional Bose gas}, Theor. Math. Phys. \textbf{82}, 273 (1990), \doi{10.1007/bf01029221}.
+N.~A.~Slavnov, \textit{Nonequal-time current correlation function in a one-dimensional Bose gas}, Theor. Math. Phys. \textbf{82}, 273 (1990), \doi{10.1007/bf01029221}.
 
 
 
 
 \bibitem{Nardis2015}
-J. De Nardis and M. Panfil, \textit{Density form factors of the 1D Bose gas for finite entropy states}, J. Stat. Mech. P02019 (2015), \doi{10.1088/1742-5468/2015/02/P02019}.
+J.~De~Nardis and M.~Panfil, \textit{Density form factors of the 1D Bose gas for finite entropy states}, J. Stat. Mech. P02019 (2015), \doi{10.1088/1742-5468/2015/02/P02019}.
 
 
 
 
 \bibitem{Caux2005}
-J.-S. Caux, R. Hagemans and J. Michel Maillet, \textit{Computation of dynamical correlation functions of Heisenberg chains: the gapless anisotropic regime}, J. Stat. Mech. P09003 (2005), \doi{10.1088/1742-5468/2005/09/P09003}.
+J.-S.~Caux, R.~Hagemans and J.~M.~Maillet, \textit{Computation of dynamical correlation functions of Heisenberg chains: the gapless anisotropic regime}, J. Stat. Mech. P09003 (2005), \doi{10.1088/1742-5468/2005/09/P09003}.
 
 
 
 
 \bibitem{Caux2007a}
-J.-S. Caux and P. Calabrese, \textit{Dynamical density-density correlations in the one-dimensional Bose gas}, Phys. Rev. A \textbf{74}, 031605 (2006), \doi{10.1103/PhysRevA.74.031605}.
+J.-S.~Caux and P.~Calabrese, \textit{Dynamical density-density correlations in the one-dimensional Bose gas}, Phys. Rev. A \textbf{74}, 031605 (2006), \doi{10.1103/PhysRevA.74.031605}.
 
 
 
 \bibitem{Caux2005a}
-J.-S. Caux and J. Michel Maillet, \textit{Computation of Dynamical Correlation Functions of Heisenberg Chains in a Magnetic Field}, Phys. Rev. Lett. \textbf{95}, 077201 (2005), \doi{10.1103/PhysRevLett.95.077201}.
+J.-S.~Caux and J.~Michel Maillet, \textit{Computation of Dynamical Correlation Functions of Heisenberg Chains in a Magnetic Field}, Phys. Rev. Lett. \textbf{95}, 077201 (2005), \doi{10.1103/PhysRevLett.95.077201}.
 
 
 
 
 \bibitem{Nardis2016} 
-J. De Nardis and M. Panfil, \textit{Exact correlations in the Lieb-Liniger model and detailed balance  out-of-equilibrium}, SciPost Phys. \textbf{1}, 015 (2016), \doi{10.21468/SciPostPhys.1.2.015}.
+J.~De Nardis and M.~Panfil, \textit{Exact correlations in the Lieb-Liniger model and detailed balance  out-of-equilibrium}, SciPost Phys. \textbf{1}, 015 (2016), \doi{10.21468/SciPostPhys.1.2.015}.
 
 
 
 
 \bibitem{Sueli2003} 
-E. S{\"u}li and D. Mayers, \textit{An introduction to numerical analysis}, Cambridge University Press, Cambridge, ISBN 9780521007948 (2003).
+E.~S{\"u}li and D.~Mayers, \textit{An introduction to numerical analysis}, Cambridge University Press, Cambridge, ISBN~9780521007948 (2003).
 
 
 
 
 
 \bibitem{Press2007}
-W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery, \textit{Numerical Recipes: The Art of Scientific Computing}, Cambridge University Press, Cambridge, ISBN 9780521880688 (2007).
+W.~H.~Press, S.~A.~Teukolsky, W.~T.~Vetterling and B.~P.~Flannery, \textit{Numerical Recipes: The Art of Scientific Computing}, Cambridge University Press, Cambridge, ISBN~9780521880688 (2007).
 
 
 
@@ -2641,144 +2639,144 @@ W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery, \textit{Numer
 
 
 \bibitem{levinson11_towar}
-J. Levinson et al., \textit{Towards fully autonomous driving: Systems and algorithms}, 2011 IEEE Intelligent Vehicles Symposium (IV) (2011), \doi{10.1109/ivs.2011.5940562}.
+J.~Levinson et al., \textit{Towards fully autonomous driving: Systems and algorithms}, 2011 IEEE Intelligent Vehicles Symposium (IV) (2011), \doi{10.1109/ivs.2011.5940562}.
 
 
 
 
 \bibitem{poplin17_predic_cardiov_risk_factor_from} 
-R. Poplin, A. V. Varadarajan, K. Blumer, Y. Liu, M. V. McConnell, G. S. Corrado, L. Peng and D. R. Webster, \textit{Prediction of cardiovascular risk factors from retinal fundus photographs via deep learning}, Nat. Biomed. Eng. \textbf{2}, 158 (2018), \doi{10.1038/s41551-018-0195-0}.
+R.~Poplin, A.~V.~Varadarajan, K.~Blumer, Y.~Liu, M.~V.~McConnell, G.~S.~Corrado, L.~Peng and D.~R.~Webster, \textit{Prediction of cardiovascular risk factors from retinal fundus photographs via deep learning}, Nat. Biomed. Eng. \textbf{2}, 158 (2018), \doi{10.1038/s41551-018-0195-0}.
 
 
 
 
 \bibitem{Poplin2016} 
-R. Poplin et al., \textit{Creating a universal SNP and small indel variant caller with deep neural networks}, bioRxiv 092890 (2016), \doi{10.1101/092890}.
+R.~Poplin et al., \textit{Creating a universal SNP and small indel variant caller with deep neural networks}, bioRxiv 092890 (2016), \doi{10.1101/092890}.
 
 
 
 
 \bibitem{Liu2017}
-Z. Liu, S. P. Rodrigues and W. Cai, \textit{Simulating the Ising Model with a Deep Convolutional Generative Adversarial Network}, arXiv:\href{https://arxiv.org/abs/1710.04987}{1710.04987}.
+Z.~Liu, S.~P.~Rodrigues and W.~Cai, \textit{Simulating the Ising Model with a Deep Convolutional Generative Adversarial Network}, arXiv:\href{https://arxiv.org/abs/1710.04987}{1710.04987}.
 
 
 
 \bibitem{paganini17_machin_learn_algor_jet_taggin} \
-M. Paganini, \textit{Machine Learning Algorithms for $b$-Jet Tagging at the ATLAS Experiment}, arXiv:\href{https://arxiv.org/abs/1711.08811}{1711.08811}. 
+M.~Paganini, \textit{Machine Learning Algorithms for $b$-Jet Tagging at the ATLAS Experiment}, arXiv:\href{https://arxiv.org/abs/1711.08811}{1711.08811}. 
 
 
 
 \bibitem{ball10_data_minin_and_machin_learn_in_astron}
-N. M. Ball and R. J. Brunner, \textit{Data mining and machine learning in astronomy}, Int. J. Mod. Phys. D \textbf{19}, 1049 (2010), \doi{10.1142/s0218271810017160}.
+N.~M.~Ball and R.~J.~Brunner, \textit{Data mining and machine learning in astronomy}, Int. J. Mod. Phys. D \textbf{19}, 1049 (2010), \doi{10.1142/s0218271810017160}.
 
 
 
 
 \bibitem{Carleo2017}
-G. Carleo and M. Troyer, \textit{Solving the quantum many-body problem with artificial neural networks}, Science \textbf{355}, 602 (2017), \doi{10.1126/science.aag2302}.
+G.~Carleo and M.~Troyer, \textit{Solving the quantum many-body problem with artificial neural networks}, Science \textbf{355}, 602 (2017), \doi{10.1126/science.aag2302}.
 
 
 
 
 \bibitem{Saito2017} 
-H. Saito, \textit{Solving the Bose–Hubbard Model with Machine Learning}, J. Phys. Soc. Jpn. \textbf{86}, 093001 (2017), \doi{10.7566/jpsj.86.093001}.
+H.~Saito, \textit{Solving the Bose–Hubbard Model with Machine Learning}, J. Phys. Soc. Jpn. \textbf{86}, 093001 (2017), \doi{10.7566/jpsj.86.093001}.
 
 
 
 
 \bibitem{Nieuwenburg2017}
-E. van Nieuwenburg, E. Bairey and G. Refael, \textit{Learning phase transitions from dynamics}, arXiv:\href{https://arxiv.org/abs/1712.00450v1}{1712.00450v1}.
+E.~van~Nieuwenburg, E.~Bairey and G.~Refael, \textit{Learning phase transitions from dynamics}, arXiv:\href{https://arxiv.org/abs/1712.00450v1}{1712.00450v1}.
 
 
 
 
 \bibitem{Dunjko2017}
-V. Dunjko and H. J. Briegel, \textit{Machine learning \& artificial intelligence in the quantum domain: a review of recent progress}, Rep. Prog. Phys. \textbf{81}, 074001 (2018), \doi{10.1088/1361-6633/aab406}.
+V.~Dunjko and H.~J.~Briegel, \textit{Machine learning \& artificial intelligence in the quantum domain: a review of recent progress}, Rep. Prog. Phys. \textbf{81}, 074001 (2018), \doi{10.1088/1361-6633/aab406}.
 
 
 
 \bibitem{Mehta2014} 
-P. Mehta and D. J. Schwab, \textit{An exact mapping between the Variational Renormalization Group and Deep Learning}, arXiv:\href{https://arxiv.org/abs/1410.3831v1}{1410.3831v1}. 
+P.~Mehta and D.~J.~Schwab, \textit{An exact mapping between the Variational Renormalization Group and Deep Learning}, arXiv:\href{https://arxiv.org/abs/1410.3831v1}{1410.3831v1}. 
 
 
 
 
 \bibitem{Bishop2006}
-C. Bishop, \emph{Pattern Recognition and Machine Learning}, Springer-Verlag, New York, ISBN 9780387310732 (2006).
+C.~Bishop, \emph{Pattern Recognition and Machine Learning}, Springer-Verlag, New York, ISBN~9780387310732 (2006).
 
 
 \bibitem{Sutton} 
-R. S. Sutton and A. G. Barto, \emph{Reinforcement Learning: An Introduction}, MIT Press, Cambridge, ISBN 9780262193986 (2018).
+R.~S.~Sutton and A.~G.~Barto, \emph{Reinforcement Learning: An Introduction}, MIT Press, Cambridge, ISBN~9780262193986 (2018).
 
 
 
 
 \bibitem{watkins92_q_learn}
-C. J. C. H. Watkins and P. Dayan, \textit{Q-learning}, Mach. Learn. \textbf{8}, 279 (1992), \doi{10.1007/bf00992698}.
+C.~J.~C.~H.~Watkins and P.~Dayan, \textit{Q-learning}, Mach. Learn. \textbf{8}, 279 (1992), \doi{10.1007/bf00992698}.
 
 
 
 
 \bibitem{chollet2015keras} 
-F. Chollet et al., \emph{Keras}, \href{https://keras.io}{https://keras.io} (2015).
+F.~Chollet et al., \emph{Keras}, \href{https://keras.io}{https://keras.io} (2015).
 
 
 
 
 
 \bibitem{tensorflow2015-whitepaper} 
-M. Abadi et al., \emph{{TensorFlow}: Large-scale machine learning on heterogeneous systems}, \href{https://www.tensorflow.org/}{https://www.tensorflow.org/} (2015).
+M.~Abadi et al., \emph{{TensorFlow}: Large-scale machine learning on heterogeneous systems}, \href{https://www.tensorflow.org/}{https://www.tensorflow.org/} (2015).
 
 
 
 
 
 \bibitem{whitehead95_reinf_learn_non_markov_decis_proces}
-S. D. Whitehead and L.-J. Lin, \textit{Reinforcement learning of non-Markov decision processes}, Artif. Intell. \textbf{73}, 271 (1995), \doi{10.1016/0004-3702(94)00012-p}.
+S.~D.~Whitehead and L.-J.~Lin, \textit{Reinforcement learning of non-Markov decision processes}, Artif.~Intell. \textbf{73}, 271 (1995), \doi{10.1016/0004-3702(94)00012-p}.
 
 
 
 
 \bibitem{1710.02298} 
-M. Hessel et al., \textit{Rainbow: Combining Improvements in Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1710.02298}{1710.02298}.
+M.~Hessel et al., \textit{Rainbow: Combining Improvements in Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1710.02298}{1710.02298}.
 
 
 
 \bibitem{heess17_emerg_locom_behav_rich_envir}
-N. Heess et al., \textit{Emergence of Locomotion Behaviours in Rich Environments}, arXiv:\href{https://arxiv.org/abs/1707.02286}{1707.02286}.
+N.~Heess et al., \textit{Emergence of Locomotion Behaviours in Rich Environments}, arXiv:\href{https://arxiv.org/abs/1707.02286}{1707.02286}.
 
 
 
 \bibitem{marcus18_deep_learn}
-G. Marcus, \textit{Deep Learning: A Critical Appraisal}, arXiv:\href{https://arxiv.org/abs/1801.00631}{1801.00631}. 
+G.~Marcus, \textit{Deep Learning: A Critical Appraisal}, arXiv:\href{https://arxiv.org/abs/1801.00631}{1801.00631}. 
 
 
 
 
 \bibitem{amodei2018}
-D. Amodei and D.Hernandez, \textit{AI and Compute}, \href{https://blog.openai.com/ai-and-compute/}{https://blog.openai.com/ai-and-compute/} (2018).
+D.~Amodei and D.Hernandez, \textit{AI and Compute}, \href{https://blog.openai.com/ai-and-compute/}{https://blog.openai.com/ai-and-compute/} (2018).
 
 
 \bibitem{1803.03453}
-J. Lehman et al., \textit{The Surprising Creativity of Digital Evolution: A Collection of Anecdotes from the Evolutionary Computation and Artificial Life Research Communities}, arXiv:\href{https://arxiv.org/abs/1803.03453}{1803.03453}. 
+J.~Lehman et al., \textit{The Surprising Creativity of Digital Evolution: A Collection of Anecdotes from the Evolutionary Computation and Artificial Life Research Communities}, arXiv:\href{https://arxiv.org/abs/1803.03453}{1803.03453}. 
 
 
 
 
 \bibitem{amodei16_concr_probl_ai_safet}
-D. Amodei, C. Olah, J. Steinhardt, P. Christiano, J. Schulman and D. Mané, \textit{Concrete Problems in AI Safety}, arXiv:\href{https://arxiv.org/abs/1606.06565}{1606.06565}. 
+D.~Amodei, C.~Olah, J.~Steinhardt, P.~Christiano, J.~Schulman and D.~Mané, \textit{Concrete Problems in AI Safety}, arXiv:\href{https://arxiv.org/abs/1606.06565}{1606.06565}. 
 
 
 
 
 \bibitem{brundage18_malic_use_artif_intel}
-M. Brundage et al., \textit{The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation}, arXiv:\href{https://arxiv.org/abs/1802.07228}{1802.07228}. 
+M.~Brundage et al., \textit{The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation}, arXiv:\href{https://arxiv.org/abs/1802.07228}{1802.07228}. 
 
 
 
 
 \bibitem{1709.06560}
-P. Henderson, R. Islam, P. Bachman, J. Pineau, D. Precup and D. Meger, \textit{Deep Reinforcement Learning that Matters}, arXiv:\href{https://arxiv.org/abs/1709.06560}{1709.06560}. 
+P.~Henderson, R.~Islam, P.~Bachman, J.~Pineau, D.~Precup and D.~Meger, \textit{Deep Reinforcement Learning that Matters}, arXiv:\href{https://arxiv.org/abs/1709.06560}{1709.06560}. 
 
 \bibitem{OpenAIDota}
 OpenAI, \textit{OpenAI Five}, \href{https://blog.openai.com/openai-five/}{https://blog.openai.com/openai-five/} (2018).
@@ -2786,36 +2784,36 @@ OpenAI, \textit{OpenAI Five}, \href{https://blog.openai.com/openai-five/}{https:
 
 
 \bibitem{houthooft16_vime}
-R. Houthooft, X. Chen, Y. Duan, J. Schulman, F. De Turck and P. Abbeel, \emph{Vime: Variational Information Maximizing Exploration}, Advances in Neural Information Processing Systems 29, p. 1109--1117 (2016).
+R.~Houthooft, X.~Chen, Y.~Duan, J.~Schulman, F.~De~Turck and P.~Abbeel, \emph{Vime: Variational Information Maximizing Exploration}, Advances in Neural Information Processing Systems 29, p. 1109--1117 (2016).
 
 
 
 
 
 \bibitem{lillicrap15_contin_contr_with_deep_reinf_learn}
-T. P. Lillicrap, J. J. Hunt, A. Pritzel, N. Heess, T. Erez, Y. Tassa, D. Silver and D. Wierstra, \textit{Continuous control with deep reinforcement learning}, arXiv:\href{https://arxiv.org/abs/1509.02971}{1509.02971}.
+T.~P.~Lillicrap, J.~J.~Hunt, A.~Pritzel, N.~Heess, T.~Erez, Y.~Tassa, D.~Silver and D.~Wierstra, \textit{Continuous control with deep reinforcement learning}, arXiv:\href{https://arxiv.org/abs/1509.02971}{1509.02971}.
 
 
 
 
 \bibitem{gu16_contin_deep_q_learn_with}
-S. Gu, T. Lillicrap, I. Sutskever and S. Levine, \textit{Continuous Deep Q-Learning with Model-based Acceleration}, Proceedings of the 33rd International Conference on Machine Learning, p. 2829--2838 (2016). 
+S.~Gu, T.~Lillicrap, I.~Sutskever and S.~Levine, \textit{Continuous Deep Q-Learning with Model-based Acceleration}, Proceedings of the 33rd International Conference on Machine Learning, p. 2829--2838 (2016). 
 
 
 
 \bibitem{wietek18_sublat_codin_algor_distr_memor}
-A. Wietek and A. M. Läuchli, \textit{Sublattice Coding Algorithm and Distributed Memory Parallelization for Large-Scale Exact Diagonalizations of Quantum Many-Body Systems}, arXiv:\href{https://arxiv.org/abs/1804.05028}{1804.05028}.
+A.~Wietek and A.~M.~Läuchli, \textit{Sublattice Coding Algorithm and Distributed Memory Parallelization for Large-Scale Exact Diagonalizations of Quantum Many-Body Systems}, arXiv:\href{https://arxiv.org/abs/1804.05028}{1804.05028}.
 
 
 
 
 \bibitem{tegmark}
-M. Tegmark, \emph{Life 3.0: Being Human in the Age of Artificial Intelligence}, Random House, ISBN 9781101946596 (2017).
+M.~Tegmark, \emph{Life 3.0: Being Human in the Age of Artificial Intelligence}, Random House, ISBN~9781101946596 (2017).
 
 
 
 \bibitem{erik} 
-E. W. Zwart, \emph{Fluid inclusions in carbonate rocks and calcite cements}, Ph.D. thesis, Vrije Universiteit Amsterdam, ISBN 9090085955 (1995).
+E.~W.~Zwart, \emph{Fluid inclusions in carbonate rocks and calcite cements}, Ph.D. thesis, Vrije Universiteit Amsterdam, ISBN~9090085955 (1995).
 
 
 
@@ -2823,13 +2821,13 @@ E. W. Zwart, \emph{Fluid inclusions in carbonate rocks and calcite cements}, Ph.
 
 
 \bibitem{pitaevskii} 
-L. Pitaevskii and S. Stringari, \textit{Bose-Einstein Condensation and Superfluidity}, Oxford University Press, Oxford, ISBN 9780198758884 (2016), \doi{10.1093/acprof:oso/9780198758884.001.0001}.
+L.~Pitaevskii and S.~Stringari, \textit{Bose-Einstein Condensation and Superfluidity}, Oxford University Press, Oxford, ISBN~9780198758884 (2016), \doi{10.1093/acprof:oso/9780198758884.001.0001}.
 
 
 
 
 \bibitem{Cauxfsum} 
-J.-S. Caux, \emph{The f-sum rule}, unpublished (2011).
+J.-S.~Caux, \emph{The f-sum rule}, unpublished (2011).
 
 
 
