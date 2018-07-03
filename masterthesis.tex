@@ -91,7 +91,7 @@
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
 		\huge{\textbf{Summing matrix elements of the Lieb-Liniger model with reinforcement learning\\}}
 		\rule{\textwidth}{0.4mm}\\[0.5cm]
-		\large{Master's Thesis Theoretical Physics\\conducted between 04-09-2017 and 01-08-2018}\\[0.5cm]
+		\large{Master's thesis theoretical physics\\conducted between September 2017 and July 2018}\\[0.5cm]
 		\begin{minipage}[t]{0.4\textwidth}
 			\begin{flushleft}
 				\large\emph{Author}\\{Teun Zwart (10499873)}
@@ -126,7 +126,7 @@
 \ 
 \vfill
 \noindent
-\textbf{Cover image credit:} Randall Munroe, \textit{Machine Learning}, xkcd, \href{https://xkcd.com/1838/}{https://xkcd.com/1838/}.
+\textbf{Cover image:} Randall Munroe, \textit{Machine Learning}, xkcd, \href{https://xkcd.com/1838/}{https://xkcd.com/1838/}.
 
 
 
@@ -139,16 +139,15 @@ In the distance, the cat hears the sound of lobster minds singing in the void, a
 \qauthor{Charles Stross, Accelerando}
 \end{savequote}
 \chapter*{ }
-
-
-\tableofcontents
+\thispagestyle{empty}
 
 
 
 \newpage
-\thispagestyle{plain}
 
 \section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+
 
 Correlation functions play an important role in physics, but analytical results do not always exist.
 For Bethe ansatz solvable models the ABACUS algorithm can numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
@@ -156,10 +155,13 @@ This occurs through summing of matrix elements in the Lehmann series representat
 This summing is not optimal, in that it does not sum matrix elements in strictly  monotonically decreasing order.
 
 In this thesis we apply reinforcement learning to the summing of matrix elements, hoping to develop a strategy that leads to more optimal summation than done by ABACUS.\@
-We develop a representation of the Lieb-Liniger model suitable for use in machine learning and use Q-learning to learn the summation strategy.
+We develop a representation of the Lieb-Liniger model suitable for use in machine learning and use Q-learning to learn the summation strategy of the density operator.
 We find that the algorithm is able to learn to sum in such a way that it gives preference to highly contributing states, but that performance is far inferior to that shown by ABACUS.\@
 As a corollary we also use supervised learning to try to optimize the numerical evaluation of Bethe ansatz parameters known as rapidities, but find that any advantage this method has declines considerably with system size.
 The evaluation time added by the neural network makes this method unfit for finding rapidities.
+
+\tableofcontents
+
 
 \begin{savequote}[50mm]
 The future is already here --- it's just not very evenly distributed.
@@ -176,7 +178,7 @@ These functions, generally of the form
   \expval{\mathcal{O}(x,t)\mathcal{O}(0,0)},
 \end{align}
 describe the correlations in time and space of microscopic variables.
-Much work has gone into finding correlation functions, but for it is not clear that for a given model closed form solutions exist.
+Much work has gone into finding correlation functions, but it is not clear that for a given model closed form solutions exist.
 
 In this thesis we consider the numerical evaluation of correlation functions for a class of models which are exactly solvable using the Bethe ansatz.
 Solutions of Bethe ansatz solvable models take the form of (superpositions of) plane waves, parameterized by numbers known as rapidities.
@@ -186,7 +188,7 @@ For this class of models the ABACUS algorithm~\cite{Caux2009} allows for the num
 
 The DSF can be evaluated by considering its Lehmann series representation:
 \begin{equation}\label{eq:lehmanintro}
-  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
+  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta\qty(\omega-E_{\mu}+E_0), 
 \end{equation}
 where the sum runs over the eigenstates of the model under consideration.
 We focus on this summation here.
@@ -194,7 +196,7 @@ The summing of the matrix elements in \cref{eq:lehmanintro} is difficult because
 To maximize efficiency in the calculation of DSFs it is thus desirable to start summing the largest matrix elements first and continue with progressively smaller values.
 This ensures that the largest possible contributions to the DSFs are taken into account when a calculation reaches the maximum allowed computation time.
 Ensuring this ordering of matrix elements is a non-trivial task and ABACUS does not sum matrix elements in strictly monotonically decreasing order.
-Here that we may hope to see an improvement.
+Here we may hope to see an improvement.
 
 To that end we turn to reinforcement learning.
 Reinforcement learning is a machine learning technique in which a computer learns a strategy for solving a problem by trying different actions, observing the rewards these actions bring, and then altering it decision making process to optimize for higher rewards.
@@ -209,11 +211,11 @@ The Google Deepmind team behind these breakthroughs noted that~\cite{Silver2017a
 This final quote inspired the use of reinforcement learning in the domain of DSF calculation.
 Our hope is that a reinforcement learning algorithm may beat the handcrafted heuristics used in ABACUS in efficiently summing matrix elements.
 The main question we seek to answer in this thesis is whether we can train a reinforcement learning algorithm to do so.
-To that end we must also determine which reinforcement learning algorithm is best suited for exploring the Hilbert space and how different states should be represented for use in a reinforcement learning environment.
+To that end we must also determine how reinforcement learning works and can be applied exploring the Hilbert space, and how different states should be represented for use in a reinforcement learning environment.
 As an addendum we will also consider whether the numerical calculation of rapidities benefits from using machine learning techniques.
 
 We structure this thesis as follows:
-in \cref{chap:bethe_ansatz} we review some of the basics of the Bethe ansatz and its application in the Lieb-Liniger model, which we will use throughout this thesis because it has properties that make it simpler to work with.
+in \cref{chap:bethe_ansatz} we review some of the basics of the Bethe ansatz and its use in solving the Lieb-Liniger model, which we will use throughout this thesis because it has properties that make it simpler to work with.
 \Cref{chap:abacus} describes the ABACUS algorithm, its use, and the state scanning algorithm.
 In \cref{chap:machine_learning} we give an introduction to machine learning and specifically reinforcement learning.
 We describe our approach and results in \cref{chap:results}.
@@ -238,10 +240,10 @@ Proposed by Bethe in 1931 to solve the Heisenberg model, it refined and correcte
 \section{The Lieb-Liniger model}
 
 Here, to introduce and understand the Bethe ansatz, we focus on the Lieb-Liniger model, finding its eigenfunctions and excitation spectrum.
-The Lieb-Liniger model, first introduced by Lieb and Liniger in 1963~\cite{Lieb1963, Lieb1963a}, consists of bosons interacting through a delta-function potential.
+The Lieb-Liniger model, first proposed by Lieb and Liniger in 1963~\cite{Lieb1963, Lieb1963a}, consists of bosons interacting through a delta-function potential.
 The Hamiltonian is
 \begin{equation}
-	H = - \sum_{j=1}^{N} \frac{\partial^2}{\partial x_j^2} + 2c \sum_{j<l} \delta(x_j - x_l).
+	H = - \sum_{j=1}^{N} \frac{\partial^2}{\partial x_j^2} + 2c \sum_{j<l} \delta\qty(x_j - x_l).
 \end{equation}
 Here \(c\) is the interaction strength of the model, \(\hbar=1\) and we set \(2m=1\).
 In the limit \(c\to0\) particles behave as free bosons, while \(c\to\infty\) yields fermionic behaviour and is known as the Tonks-Girardeau model~\cite{Lieb1963, Franchini2017}.
@@ -253,13 +255,13 @@ We will start solving the Lieb-Liniger model in the two-particle case, which rea
 
 For two particles, the Hamiltonian becomes
 \begin{equation}
-	H =  - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta(x_1 - x_2).
+	H =  - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} + 2c \delta\qty(x_1 - x_2).
 \end{equation}
 We can write this in a more convenient form without the delta-function by integrating the Schrödinger equation over a small interval \([-\epsilon,\epsilon]\).
 This yields the condition~\cite{Lieb1963} (see \cref{cha:boundary} for an explicit derivation)
 
 \begin{equation}\label{eq:lieblinigerboundary}
-	\left[\frac{\partial}{\partial x_2} - \frac{\partial}{\partial x_1} - c\right] \psi(x_1, x_2)\bigg\rvert_{x_1 = x_2} = 0.
+	\eval{\left[\frac{\partial}{\partial x_2} - \frac{\partial}{\partial x_1} - c\right] \psi(x_1, x_2)}_{x_1 = x_2} = 0.
 \end{equation}
 Since particles only interact with each other when their positions coincide, this allows us to simplify the Schrödinger equation to
 \begin{equation}\label{eq:lieblinigersimple}
@@ -274,11 +276,11 @@ The boundary condition then reintroduces the interaction terms.
 We can now conjecture a solution for the Lieb-Liniger model based on \cref{eq:lieblinigersimple}.
 The Bethe ansatz solves the Schrödinger equation with a superposition of plane waves:
 \begin{equation}
-	\psi(x_1,x_2) = A_{12} e^{i(\lambda_1x_1 + \lambda_2 x_2)} + A_{21} e^{i(\lambda_2 x_1 + \lambda_1 x_2)},
+	\psi(x_1,x_2) = A_{12} e^{i\qty(\lambda_1x_1 + \lambda_2 x_2)} + A_{21} e^{i(\lambda_2 x_1 + \lambda_1 x_2)},
 \end{equation}
 where the \(\lambda\)'s are pseudo-momenta, so-called because they are unobservable~\cite{Franchini2017}.
 The \(A\)'s are the amplitudes of the plane waves making up the wave function.
-Since we must fulfill \cref{eq:lieblinigerboundary} the amplitudes must obey the equation
+Since we must fulfill \cref{eq:lieblinigerboundary} the amplitudes have to obey the equation
 \begin{align}
 	\frac{A_{12}}{A_{21}} = -\frac{c-i(\lambda_1 - \lambda_2) }{c+i(\lambda_1 - \lambda_2)}.
 \end{align}
@@ -302,7 +304,7 @@ We can now write the two-particle wave function by setting \(A_{21}=1\) (and ign
 \end{equation}
 Generalization to the whole domain (not just where \(x_1 < x_2\)) follows from requiring the wave function to be fully symmetric under coordinate exchange, yielding
 \begin{equation}
-  \psi(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} {(-1)}^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
+  \psi\qty(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} {(-1)}^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
 \end{equation}
 The sum runs over the permutations of the set \((1,2)\)~\cite{Caux2015}.
 This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
@@ -311,12 +313,12 @@ This wave function is antisymmetric under exchange of quasimomenta, meaning that
 Going to the many-particle state is now a straightforward generalization of the two-particle case.
 The wave function in this case becomes~\cite{Gaudin2009}
 \begin{equation}
-	\psi(x_1,\ldots,x_N) = \sum_{P\in\pi_N} A(P) e^{i\sum_j \lambda_{\mathcal{P}_j} x_j}
+	\psi\qty(x_1,\ldots,x_N) = \sum_{P\in\pi_N} A(P) e^{i\sum_j \lambda_{P_j} x_j}
 \end{equation}
 where we sum over permutations of the set \((1,\ldots,N)\), and we have a condition on the amplitudes~\cite{Franchini2017}
 \begin{align}
   \label{eq:41}
-  \frac{A(\mathcal{P})}{A(\mathcal{P'})} = -e^{i\phi(\lambda_{\mathcal{P}} - \lambda_{\mathcal{P'}})}.
+  \frac{A\qty(P)}{A\qty(P')} = -e^{i\phi\qty(\lambda_{P} - \lambda_{{P'}})}.
 \end{align}
 
 
@@ -326,18 +328,18 @@ Since we would like to study the properties of the system for finite densities, 
 This translates into a periodicity requirement on the wave function.
 It require that the wave functions obeys~\cite{Franchini2017}
 \begin{align}
-	\psi(x_1,\ldots,x_j+L,\ldots,x_N) = \psi(x_1,\ldots,x_j,\ldots,x_N) \qquad \forall j\in 1,\ldots,N.
+	\psi\qty(x_1,\ldots,x_j+L,\ldots,x_N) = \psi\qty(x_1,\ldots,x_j,\ldots,x_N) \qquad \forall j\in 1,\ldots,N.
 \end{align}
-If we impose this condition on the wave function, the boundary term the quasimomenta have to obey the relation~\cite{Korepin1993}
+If we impose this condition on the wave function, the quasimomenta have to obey the relation~\cite{Korepin1993}
 \begin{equation}
   \label{eq:expbethe}
-  e^{i\lambda_j L} = \prod_{l\neq j} \frac{\lambda_j-\lambda_l + ic}{\lambda_j - \lambda_l - ic}
+  e^{i\lambda_j L} = \prod_{l\neq j} \frac{\lambda_j-\lambda_l + ic}{\lambda_j - \lambda_l - ic}.
 \end{equation}
 These are the Bethe equations.
 If we take the logarithm of \cref{eq:expbethe} we get
 \begin{align}
   \label{eq:bethe_equations}
-  \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
+  \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi\qty(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
 \end{align}
 where
 \begin{align}
@@ -345,7 +347,7 @@ I_j \in
 \begin{cases}
   \mathbb{Z} + \frac{1}{2}, \qquad &N \textrm{ even}\\
   \mathbb{Z}  &N \textrm{ odd}
-\end{cases}
+\end{cases}.
 \end{align}
 The numbers \(I_j\) uniquely label the quasimomenta and are half-odd integers. 
 They act as the quantum numbers of the theory.
@@ -374,22 +376,22 @@ The solutions of the Bethe equations \cref{eq:bethe_equations} are unique and ex
 This follows from a variational argument, where the Bethe equations are the extremum of an action.
 The Yang-Yang action for the Lieb-Liniger model is
 \begin{align}
-	S= \frac{L}{2} \sum_{j=1}^{N} \lambda_j^2 - 2\pi\sum_{j=1}^{N} n_j \lambda_j + \frac{1}{2} \sum_{j=1}^N \sum_{k=1}^{N} \theta_1(\lambda_j - \lambda_k),
+	S= \frac{L}{2} \sum_{j=1}^{N} \lambda_j^2 - 2\pi\sum_{j=1}^{N} n_j \lambda_j + \frac{1}{2} \sum_{j=1}^N \sum_{k=1}^{N} \theta_1\qty(\lambda_j - \lambda_k),
 \end{align}
 where \(\theta_1(\lambda) = \int_0^{\lambda} \theta(\mu)\dd\mu\).
 The Bethe equations follow from this by setting \(\frac{\partial S}{\partial \lambda_j} = 0\), which corresponds to a minimum.
 To show this is indeed a minimum, we need to have a positive definite matrix of second derivatives:
 \begin{align}
-	\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} = \delta_{jl} \left[L + \sum_{m=1}^{N} \mathcal{C}(\lambda_j-\lambda_m)\right] - \mathcal{C}(\lambda_j- \lambda_l),
+	\frac{\partial^2S}{\partial\lambda_j\partial\lambda_l} = \delta_{jl} \left[L + \sum_{m=1}^{N} \mathcal{C}\qty(\lambda_j-\lambda_m)\right] - \mathcal{C}\qty(\lambda_j- \lambda_l),
 \end{align}
 where we have the kernel
 \begin{align}
-	\mathcal{C}(\lambda - \mu) = \left.\frac{\dd \phi(x)}{\dd x} \right|_{x=\lambda-\mu} = \frac{2c}{c^2 + {(\lambda - \mu)}^2}.
+	\mathcal{C}(\lambda - \mu) = \eval{\frac{\dd \phi(x)}{\dd x}}_{x=\lambda-\mu} = \frac{2c}{c^2 + {(\lambda - \mu)}^2}.
 \end{align}
 
 By introducing a vector \(v_j\) with real components, we get~\cite{Korepin1993}
 \begin{align}
-  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j \partial\lambda_l} v_j v_l = \sum_{j=1}^N L v_{j}^2 + \sum_{j>l=1}^{N} \mathcal{C}(\lambda_j-\lambda_m) {(v_j - v_l)}^2 \geq L \sum_{j=1}^N v_j^{2} > 0,
+  	\sum_{j,l}\frac{\partial^2S}{\partial\lambda_j \partial\lambda_l} v_j v_l = \sum_{j=1}^N L v_{j}^2 + \sum_{j>l=1}^{N} \mathcal{C}\qty(\lambda_j-\lambda_m) {\qty(v_j - v_l)}^2 \geq L \sum_{j=1}^N v_j^{2} > 0,
 \end{align}
 meaning that the action is convex, and the minimum defining the Bethe equations is unique.
 \end{proof}
@@ -405,11 +407,11 @@ We consider the set of complex solutions to the Bethe equations \(\{\lambda_j\}\
 \end{align}
 If we put this into the non-logarithmic form of the Bethe equations and take the modulus we get
 \begin{align}
-  \left| e^{i\lambda_{\max} L} \right|= \left| \prod_k \frac{\lambda_{\max} - \lambda_k + ic}{\lambda_{\max} - \lambda_k - ic} \right|\geq 1,
+  \abs{e^{i\lambda_{\max} L}}= \abs{\prod_k \frac{\lambda_{\max} - \lambda_k + ic}{\lambda_{\max} - \lambda_k - ic}}\geq 1,
 \end{align}
 since
 \begin{align}
-\left|\frac{\lambda+ic}{\lambda-ic} \right| \geq 1 \qquad \textrm{if Im}\, \lambda \geq 0.
+\abs{\frac{\lambda+ic}{\lambda-ic}} \geq 1 \qquad \textrm{if Im}\, \lambda \geq 0.
 \end{align}
 This means that \(\textrm{Im}\, \lambda_{\max} \leq 0\) since only then \(e^{i\lambda_{\max}L} \geq 1\).
 Defining \(\textrm{Im}\,\lambda_{\min}\leq \lambda_j\) as the smallest imaginary part of a rapidity we can in the same way prove that \(\textrm{Im}\,\lambda_{\min} \geq 0\).
@@ -423,38 +425,38 @@ If \(I_j >I_k\), then \(\lambda_j > \lambda_k\). If \(I_j=I_k\) then \(\lambda_j
 \begin{proof}
 Subtracting the relevant Bethe equations from each other we get
 \begin{align}
-  \lambda_j - \lambda_k + \frac{1}{L}\sum_{l=1}^N \left[\phi(\lambda_j - \lambda_l) - \phi(\lambda_k - \lambda_l)\right] = \frac{2\pi}{L} (I_j - I_k).
+  \lambda_j - \lambda_k + \frac{1}{L}\sum_{l=1}^N \left[\phi\qty(\lambda_j - \lambda_l) - \phi\qty\big(\lambda_k - \lambda_l) \right] = \frac{2\pi}{L} \qty(I_j - I_k).
 \end{align}
 Because \(\abs{\atan(x)-\atan(y)}\leq\abs{x-y}\), the left side has the same sign as its first term, since the first term in the sum is larger than the second term, hence showing the theorem to be true~\cite{Korepin1993,Gaudin2009}.
 \end{proof}
 
 
 
-\subsection{Gaudin norm}
+\subsection{The Gaudin norm}
 The norm of a Bethe eigenstate has an expression proportional to a determinant.
 This result was first conjectured by Gaudin and for the Lieb-Liniger model takes the form~\cite{Caux2007}
 \begin{align}
-  \braket{\{\lambda\}}{\{\lambda\}} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det(\mathcal{G}(\{\lambda\})),
+  \braket{\{\lambda\}}{\{\lambda\}} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det\qty(\mathcal{G}\qty(\{\lambda\})),
 \end{align}
 where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with elements
 \begin{align}\label{eq:gaudin}
-  \mathcal{G}{(\{\lambda\})}_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}\mathcal{C}(\lambda_j-\lambda_m)\right) - \mathcal{C}(\lambda_j, \lambda_k),
+  \mathcal{G}{(\{\lambda\})}_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}\mathcal{C}\qty(\lambda_j-\lambda_m)\right) - \mathcal{C}\qty(\lambda_j, \lambda_k),
 \end{align}
 and \(\lambda_{jk} = \lambda_j-\lambda_k\).
 
 
 \section{The thermodynamic limit}
-\subsection{Ground state}
+\subsection{The ground state}
 In going to the thermodynamic limit we let \(N\) and \(L\) tend to infinity, keeping \(D=N/L\) constant.
 We first introduce a continuum version of the Bethe equations in terms of the function \(\lambda(x)\):
 \begin{align}
   \label{eq:contbethe}
-  L \lambda(x) + \sum_{k=1}^N\theta(\lambda(x)-\lambda_k) = 2 \pi L x.
+  L \lambda(x) + \sum_{k=1}^N\theta\qty(\lambda(x)-\lambda_k) = 2 \pi L x.
 \end{align}
 where \(\lambda(x)\) takes values that are solutions to the original Bethe equations when \(x=I_j/L\): \(\lambda_j=\lambda(I_j/L)\).
 If we invert the equation and take its derivative with respect to \(\lambda\) we get the density of particles in momentum space:
 \begin{align}
-  \rho(\lambda(x)) = \frac{\dd x(\lambda)}{\dd \lambda}.
+  \rho(\lambda(x)) = \frac{\dd x\qty(\lambda)}{\dd \lambda}.
 \end{align}
 This allows us to differentiate \cref{eq:contbethe} with respect to \(\lambda\) and write it as 
 \begin{align}
@@ -463,7 +465,7 @@ This allows us to differentiate \cref{eq:contbethe} with respect to \(\lambda\) 
 
 If we now change the sum to an integral we get 
 \begin{align}
-  \frac{1}{L} \sum_l \mathcal{C}(\lambda(x)- \lambda_l) = \int_{-\lambda_F}^{\lambda_F} \mathcal{C}(\lambda,\mu) \rho(\mu) \dd \mu, 
+  \frac{1}{L} \sum_l \mathcal{C}\qty(\lambda(x)- \lambda_l) \to \int_{-\lambda_F}^{\lambda_F} \mathcal{C}(\lambda,\mu) \rho(\mu) \dd \mu, 
 \end{align}
 leading to~\cite{Korepin1993}
 \begin{align}
@@ -480,7 +482,7 @@ this allows for the calculation of \(\rho(\lambda)\) for a given value of \(D\).
 \subsection{Excitations}
 
 Given the ground state we can build different excited states.
-Two types of excitations exist: particle-like (type I) excitations in which a new particle outside the Fermi interval is added with momentum \(k > \left|\lambda_F\right|\) and hole-like (type II) excitations, where a particle is removed from the Fermi interval with momentum \(k < \left|\lambda_F\right|\).
+Two types of excitations exist: particle-like (type I) excitations in which a new particle outside the Fermi interval is added with momentum \(k > \abs{\lambda_F}\) and hole-like (type II) excitations, where a particle is removed from the Fermi interval with momentum \(k < \abs{\lambda_F}\).
 A particle may also be excited out of the Fermi interval, but this is a combination of the other two excitations~\cite{Franchini2017}.
 
 The \(N\)-particle ground state in terms of Bethe numbers is
@@ -505,29 +507,29 @@ with the superscript denoting that the rapidity is part of the ground state rapi
 Subtracting the Bethe equations of the ground state from the excited state we get~\cite{Franchini2017,Caux2015}
 \begin{align}
   \label{eq:25}
-   d_j = - \pi - \phi(\lambda_j-q) - \sum_{l=1}^{N} \left[\phi(\lambda_j - \lambda_l) - \phi(\lambda_j^0-\lambda_l^0)\right],
+   d_j = - \pi - \phi\qty(\lambda_j-q) - \sum_{l=1}^{N} \left[\phi\qty\Big(\lambda_j - \lambda_l) - \phi\qty(\lambda_j^0-\lambda_l^0)\right],
 \end{align}
 where \(q\) is the rapidity of the new particle.
 Expanding the term in brackets gives\footnote{The expansions goes as follows:
   \begin{align*}
-    \phi(\lambda_j-\lambda_l) - \phi(\lambda_j^0 - \lambda_l^0) &= \phi(\lambda_j^0 - \lambda_l^0 + \Delta\lambda) - \phi(\lambda_j^0 - \lambda_l^0) \quad \mathrm{where}\quad \Delta \lambda = \frac{1}{L}(d_j - d_l)\\
-    &\approx\Delta \lambda \left.\frac{\partial\phi(x)}{\partial x} \right|_{x = \lambda_j^0-\lambda_l^0}
-    = \frac{1}{L}(d_j-d_l) \frac{2c}{c^2 + {\qty(\lambda_j^0-\lambda_l^0)}^2}.
+    \phi\qty\Big(\lambda_j-\lambda_l) - \phi\qty(\lambda_j^0 - \lambda_l^0) &= \phi\qty(\lambda_j^0 - \lambda_l^0 + \Delta\lambda) - \phi\qty(\lambda_j^0 - \lambda_l^0) \quad \mathrm{where}\quad \Delta \lambda = \frac{1}{L}\qty\Big(d_j - d_l)\\
+    &\approx\Delta \lambda \eval{\frac{\partial\phi(x)}{\partial x}}_{x = \lambda_j^0-\lambda_l^0}
+    = \frac{1}{L}\qty\Big(d_j-d_l) \frac{2c}{c^2 + {\qty(\lambda_j^0-\lambda_l^0)}^2}.
   \end{align*}
 }
 \begin{align}
   \label{eq:27}
-  d_j = -\pi - \phi(\lambda_j-q) - \frac{1}{L} \sum_{l=1}^N \frac{2c}{c^2 + {(\lambda_j^0-\lambda_l^0)}^2} (d_j-d_l) + \mathcal{O}\left(\frac{N}{L^2}\right),
+  d_j = -\pi - \phi\qty(\lambda_j-q) - \frac{1}{L} \sum_{l=1}^N \frac{2c}{c^2 + {\qty(\lambda_j^0-\lambda_l^0)}^2} \qty(d_j-d_l) + \mathcal{O}\left(\frac{N}{L^2}\right),
 \end{align}
 or, by rearranging and turning the sums into integrals, extending \(d_j\to d(\lambda,q)\) to the continuum
 \begin{multline}
   \label{eq:28}
-  d(\lambda,q) \left(1+2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda'\mathcal{C}(\lambda'-\lambda)\rho(\lambda')\right) = \\-\pi -\phi(\lambda-q) + 2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}(\lambda'-\lambda) \rho(\lambda') d(\lambda',q).
+  d(\lambda,q) \left(1+2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda'\mathcal{C}\qty(\lambda'-\lambda)\rho\qty(\lambda')\right) = \\-\pi -\phi\qty\big(\lambda-q) + 2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}\qty(\lambda'-\lambda) \rho\qty(\lambda') d\qty(\lambda',q).
 \end{multline}
 If we use the Lieb equation and introduce \(D_p(\lambda,q)=d(\lambda,q)\rho(\lambda)\), which is the displacement function for particle-like excitations, we get the integral equation~\cite{Caux2015,Franchini2017}
 \begin{align}
   \label{eq:partdisplacement}
-  D_p(\lambda,q) - \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}(\lambda'-\lambda) D_p(\lambda', q) = \frac{-1}{2\pi} (\pi+\phi(\lambda-q)).
+  D_p\qty\big(\lambda,q) - \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}\qty(\lambda'-\lambda) D_p\qty(\lambda', q) = \frac{-1}{2\pi} \qty\big(\pi+\phi(\lambda-q)).
 \end{align}
 
 When dealing with holes we use the same idea.
@@ -539,7 +541,7 @@ Starting from the \(N\)-particle ground state we can create a hole-like excitati
 Here \(0<m<\frac{N}{2}\) and we get a hole displacement function described by the integral equation~\cite{Caux2015}
 \begin{align}
   \label{eq:holedisplacement}
-  D_h(\lambda,q) - \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}(\lambda-\lambda') D_h(\lambda',q) = \frac{1}{2\pi}(\pi+\phi(\lambda-q)).
+  D_h\qty\big(\lambda,q) - \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}\qty\big(\lambda-\lambda') D_h\qty(\lambda',q) = \frac{1}{2\pi}\qty\big(\pi+\phi(\lambda-q)).
 \end{align}
 
 
@@ -554,13 +556,13 @@ We now turn to solving these equations.
 To that end we introduce the truncated kernel:
 \begin{align}
   \label{eq:inversetruncated}
-  \mathcal{C}^{(F)}(\lambda,\lambda') = \theta(\lambda_F-\abs{\lambda}) \mathcal{C}(\lambda'-\lambda) \theta(\lambda_F-\abs{\lambda}).
+  \mathcal{C}^{(F)}\qty(\lambda,\lambda') = \theta\qty\big(\lambda_F-\abs{\lambda}) \mathcal{C}\qty(\lambda'-\lambda) \theta\qty\big(\lambda_F-\abs{\lambda}).
 \end{align}
 
 Its associated inverse is defined by
 \begin{align}
   \label{eq:32}
-  	\left(1 + \mathcal{L}^{(F)}\right) * \left(1 - \mathcal{C}^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R},
+  	\left(1 + \mathcal{L}^{(F)}\right) * \left(1 - \mathcal{C}^{(F)}\right)\qty(\lambda,\lambda')=\delta\qty(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R},
 \end{align}
 where we define \(*\) as the convolution:
 \begin{align}
@@ -572,51 +574,51 @@ With this we can rewrite the differential equations for the displacement functio
 Using \cref{eq:inversetruncated} we can write the particle displacement integral equation as 
 \begin{align}
   \label{eq:33}
-  (1 - \mathcal{C}^{(F)}) * D_p(\lambda, \lambda_p) = -\frac{\theta(\lambda_F-\abs{\lambda})}{2\pi} \qty(\pi\textrm{sgn}(\lambda_p)) + \phi(\lambda-\lambda_p)
+  \qty(1 - \mathcal{C}^{(F)}) * D_p\qty(\lambda, \lambda_p) = -\frac{\theta\qty\big(\lambda_F-\abs{\lambda})}{2\pi} \qty(\pi\textrm{sgn}\qty(\lambda_p)) + \phi\qty(\lambda-\lambda_p)
 \end{align}
 for which the solution is 
 \begin{align}
   \label{eq:34}
-  D_p(\lambda,\lambda_p) = -\frac{1}{2\pi} \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \left(\delta(\lambda-\lambda') + \mathcal{L}^{(F)}(\lambda,\lambda') \right)(\pi \mathrm{sgn}(\lambda_p) + \phi(\lambda'-\lambda_p)),
+  D_p\qty(\lambda,\lambda_p) = -\frac{1}{2\pi} \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \left(\delta\qty(\lambda-\lambda') + \mathcal{L}^{(F)}\qty(\lambda,\lambda') \right)\qty(\pi \mathrm{sgn}\qty(\lambda_p) + \phi\qty(\lambda'-\lambda_p)),
 \end{align}
 which is valid for all \(\abs{\lambda_p}>\lambda_F\) and all \(\lambda\).
 We can use that
 \begin{align}
   \label{eq:35}
-  -\frac{1}{2\pi}(\pi \mathrm{sgn}(\lambda_p) + \phi(\lambda'-\lambda_p)) &= \frac{1}{2\pi} \int_{\lambda_p}^{\mathrm{sgn}(\lambda_p)\infty} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi(\lambda-\lambda') \\
-                                                                          &= - \int_{\lambda_p}^{\mathrm{sgn}(\lambda_p)\infty}\dd \lambda' \mathcal{C}(\lambda-\lambda'),
+  -\frac{1}{2\pi}\qty(\pi \mathrm{sgn}\qty(\lambda_p) + \phi\qty(\lambda'-\lambda_p)) &= \frac{1}{2\pi} \int_{\lambda_p}^{\mathrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi\qty(\lambda-\lambda') \\
+                                                                          &= - \int_{\lambda_p}^{\mathrm{sgn}\qty(\lambda_p)\infty}\dd \lambda' \mathcal{C}\qty(\lambda-\lambda'),
 \end{align}
 leading to~\cite{Caux2015}
 \begin{align}
   \label{eq:particledisplacement}
-  	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda').
+  	D_p\qty(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda').
 \end{align}
 
 For holes we have 
 \begin{align}
   \label{eq:37}
-  (1-\mathcal{C}^{(F)})* D_h(\lambda,\lambda_h) = \frac{\theta(\lambda_F-\abs{\lambda})}{2\pi} (\pi\mathrm{sgn}(\lambda_h) + \phi(\lambda-\lambda_F)),
+  \qty(1-\mathcal{C}^{(F)})* D_h\qty\big(\lambda,\lambda_h) = \frac{\theta\qty\big(\lambda_F-\abs{\lambda})}{2\pi} \qty\big(\pi\mathrm{sgn}\qty(\lambda_h) + \phi\qty(\lambda-\lambda_F)),
 \end{align}
 for which the solution is 
 \begin{align}
   \label{eq:38}
-  D_h(\lambda,\lambda_h) = \frac{1}{2\pi} \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \left(\delta(\lambda-\lambda')+\mathcal{L}^{(F)}(\lambda,\lambda')\right)(\pi\mathrm{sgn}(\lambda_h) + \phi(\lambda'-\lambda_h)).
+  D_h\qty\big(\lambda,\lambda_h) = \frac{1}{2\pi} \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \left(\delta\qty(\lambda-\lambda')+\mathcal{L}^{(F)}\qty(\lambda,\lambda')\right)\qty(\pi\mathrm{sgn}\qty(\lambda_h) + \phi\qty(\lambda'-\lambda_h)).
 \end{align}
 Rewriting using
 \begin{align}
   \label{eq:39}
-  \frac{1}{2\pi} (\pi \mathrm{sgn}(\lambda_h) + \phi(\lambda-\lambda_h)) &= \frac{1}{2\pi} \int_{-\mathrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi(\lambda - \lambda') \\
-                                                                         &= - \int_{-\mathrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}(\lambda-\lambda')
+  \frac{1}{2\pi} \qty\big(\pi \mathrm{sgn}(\lambda_h) + \phi(\lambda-\lambda_h)) &= \frac{1}{2\pi} \int_{-\mathrm{sgn}\qty(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi\qty(\lambda - \lambda') \\
+                                                                         &= - \int_{-\mathrm{sgn}\qty(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}\qty(\lambda-\lambda')
 \end{align}
 gives
 \begin{align}
   \label{eq:40}
-  D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda'),
+  D_h\qty\big(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda'),
 \end{align}
 which is valid for all \(\abs{\lambda_h}<\lambda_F\) and all \(\lambda\)~\cite{Caux2015}.
 
 We now simplify the displacement functions for particle-like (type I) and hole-like (type~II) excitations, first for the ground state and then for excited states.
-Note that the expression we find differ from those in e.g.~\cite{Korepin1993}, because they assume that in the displacement functions \(\mathcal{L}^{F}\) inverts \(\mathcal{C}\), which is not the case.
+Note that the expression we find differ from those in e.g.~\cite{Korepin1993}, because they assume that in the displacement functions \(\mathcal{L}^{(F)}\) inverts \(\mathcal{C}\), which is not the case.
 
 \subsection{The ground state}
 \begin{sloppypar}
@@ -624,14 +626,14 @@ For type I excitations we have the displacement function \cref{eq:particledispla
 We can rewrite this in a more explicit way.
 Lets first focus on the part involving the \(\delta\)-function, which we can rewrite, using a Heaviside step function, as
 \begin{align}
-	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \delta(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda') \\
-	&=- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \theta(\lambda_F - \abs{\lambda''})  \delta(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda')\\
-	&= - \theta(\lambda_F - \abs{\lambda}) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \mathcal{C}(\lambda-\lambda').
+	- \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \delta\qty(\lambda-\lambda'') \mathcal{C}\qty(\lambda''-\lambda') \\
+	&=- \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \theta\qty(\lambda_F - \abs{\lambda''})  \delta\qty(\lambda-\lambda'') \mathcal{C}\qty(\lambda''-\lambda')\\
+	&= - \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda'     \mathcal{C}\qty(\lambda-\lambda').
 \end{align}
 We change variables \(a=\lambda-\lambda'\):
 \begin{equation}\label{eq:integratedkerneldeltapart}
-	- \theta(\lambda_F - \abs{\lambda}) \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'     \mathcal{C}(\lambda-\lambda')=
-	 \theta(\lambda_F - \abs{\lambda}) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a).
+	- \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda'     \mathcal{C}\qty(\lambda-\lambda')=
+	 \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}\qty(\lambda_p)\infty} \dd a\,\mathcal{C}\qty\big(a).
 \end{equation}
 Assuming \(\lambda\) to be finite, the upper bound of the integral reduces to \(-\textrm{sgn}(\lambda_p)\infty\).
 \end{sloppypar}
@@ -640,36 +642,36 @@ Assuming \(\lambda\) to be finite, the upper bound of the integral reduces to \(
 Then \(\lambda-\lambda_p\) always has the opposite sign from~\(\lambda_p\).
 Thus we can rewrite \cref{eq:integratedkerneldeltapart} as
 \begin{align}
-	\theta(\lambda_F - \abs{\lambda}) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) &=
-	\theta(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}(\lambda_p)\abs{\lambda-\lambda_p}}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a).
+	\theta\qty(\lambda_F - \abs{\lambda}) \int_{\lambda-\lambda_p}^{\lambda - \textrm{sgn}\qty(\lambda_p)\infty} \dd a\,\mathcal{C}\qty(a) &=
+	\theta(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}\qty(\lambda_p)\abs{\lambda-\lambda_p}}^{ - \textrm{sgn}\qty(\lambda_p)\infty} \dd a\,\mathcal{C}\qty(a).
 \end{align}
 
-Since the kernel is symmetric,  the value of the integral does not depend on whether \(\mathrm{sgn}(\lambda_p)\) is \(+1\) or \(-1\).
+Since the kernel is symmetric,  the value of the integral does not depend on whether \(\mathrm{sgn}\qty(\lambda_p)\) is \(+1\) or \(-1\).
 This only adds a sign-function in front of the integral:
 \begin{align}
-	\theta(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}(\lambda_p)\abs{\lambda-\lambda_p}}^{ - \textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) &= - \textrm{sgn}(\lambda_p) \theta(\lambda_F - \abs{\lambda}) \int_{\abs{\lambda-\lambda_p}}^{\infty} \dd a\,\mathcal{C}(a)\\
-	&= - \frac{1}{2\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \abs{\lambda})  \left( \pi - 2\atan(\frac{\abs{\lambda - \lambda_p}}{c})\right)\label{eq:dpdeltanonsimplified}\\
-	&= - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right),
+	\theta\qty\big(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}\qty(\lambda_p)\abs{\lambda-\lambda_p}}^{ - \textrm{sgn}\qty(\lambda_p)\infty} \dd a\,\mathcal{C}\qty\big(a) &= - \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{\abs{\lambda-\lambda_p}}^{\infty} \dd a\,\mathcal{C}\qty\big(a)\\
+	&= - \frac{1}{2\pi} \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda})  \left( \pi - 2\atan(\frac{\abs{\lambda - \lambda_p}}{c})\right)\label{eq:dpdeltanonsimplified}\\
+	&= - \frac{1}{\pi} \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right),
 \end{align}
 where the last equality is valid because the argument of the arctangent is strictly positive.
 The above expression would not be valid without the Heaviside function, since the integral can only be solved in the manner above when \(\abs{\lambda}< \lambda_F\).
 
-The second part of \cref{eq:particledisplacement}, which involves \(\mathcal{L}^{(F)}(\lambda,\lambda')\), can't be rewritten in closed form, since there is no closed form solution for \(\mathcal{L}^{(F)}(\lambda,\lambda')\).
+The second part of \cref{eq:particledisplacement}, which involves \(\mathcal{L}^{(F)}\qty(\lambda,\lambda')\), can't be rewritten in closed form, since there is no closed form solution for \(\mathcal{L}^{(F)}\qty(\lambda,\lambda')\).
 But we can rewrite this term to get rid of the improper integral, which will help in numerical evaluation of the expression.
 We have
 \begin{align}
-	- \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda')\\
-	&= -  \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda'\mathcal{C}(\lambda''-\lambda') \right]\\
-	&=   \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\int_{\lambda''-\lambda_p}^{\lambda''-\textrm{sgn}(\lambda_p)\infty} \dd a\,\mathcal{C}(a) \right]\\
-	&= -\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\int_{\abs{\lambda''-\lambda_p}}^{\infty} \dd a\,\mathcal{C}(a) \right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \left[\frac{\pi}{2} - \atan(\frac{\abs{\lambda''-\lambda_p}}{c})\right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\abs{\lambda''-\lambda_p}}),
+	- \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \mathcal{C}\qty(\lambda''-\lambda')\\
+	&= -  \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda'\mathcal{C}\qty(\lambda''-\lambda') \right]\\
+	&=   \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\int_{\lambda''-\lambda_p}^{\lambda''-\textrm{sgn}\qty(\lambda_p)\infty} \dd a\,\mathcal{C}\qty\big(a) \right]\\
+	&= -\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\int_{\abs{\lambda''-\lambda_p}}^{\infty} \dd a\,\mathcal{C}\qty\big(a) \right]\\
+	&= -\frac{1}{\pi}\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\frac{\pi}{2} - \atan(\frac{\abs{\lambda''-\lambda_p}}{c})\right]\\
+	&= -\frac{1}{\pi}\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \atan(\frac{c}{\abs{\lambda''-\lambda_p}}),
 \end{align}
 where, as before, we argued that \(\abs{\lambda''} < \abs{\lambda_p}\) and thus that \(\lambda'' - \lambda_p\) always has the opposite sign from \(\lambda_p\).
 
 Taking these results together, the displacement function for type I excitations becomes 
 \begin{multline}
-	D_p(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}(\lambda_p) \theta(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right) \\-\frac{1}{\pi}\textrm{sgn}(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}(\lambda,\lambda'') \atan(\frac{c}{\abs{\lambda''-\lambda_p}}).
+	D_p\qty(\lambda, \lambda_p) = - \frac{1}{\pi} \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right) \\-\frac{1}{\pi}\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \atan(\frac{c}{\abs{\lambda''-\lambda_p}}).
 \end{multline}
 \Cref{fig:dpplot} shows an example.
 \begin{figure}[tb!]
@@ -680,18 +682,18 @@ Taking these results together, the displacement function for type I excitations 
 
 For type II excitations the idea is much the same as type I.\@ Recalling \cref{eq:40}, the displacement is
 \begin{equation}
-	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'') \right)\mathcal{C}(\lambda''-\lambda'),
+	D_h\qty(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda'),
 \end{equation}
 which is valid for all \(\lambda_h\) (if \(\abs{\lambda_h} < \lambda_F\)) and all \(\lambda\)~\cite{Caux2015}.
 The \(\delta\)-function part of this equation becomes
 \begin{align}
-	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \delta(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda') 
-		= - \theta(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \mathcal{C}(\lambda-\lambda').
+	-\int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \delta\qty(\lambda-\lambda'') \mathcal{C}\qty(\lambda''-\lambda') 
+		= - \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \mathcal{C}\qty(\lambda-\lambda').
 \end{align}
 A change of variables \(a=\lambda-\lambda'\) results in:
 \begin{align}
-	 - \theta(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \mathcal{C}(\lambda-\lambda') = 
-	  \theta(\lambda_F - \abs{\lambda}) \int_{\lambda+\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \mathcal{C}(a).
+	 - \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda'     \mathcal{C}\qty(\lambda-\lambda') = 
+	  \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{\lambda+\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \mathcal{C}\qty\big(a).
 \end{align}
 Since we again assume \(\lambda\) to be finite, the lower bound of the integral reduces to \(\textrm{sgn}(\lambda_h)\infty\).
 Because both \({\abs{\lambda_h} < \lambda_F}\) and \({\abs{\lambda} < \lambda_F}\) (due to the Heaviside function), we can no longer make statements about the sign of \(\lambda-\lambda_h\) and have to be a bit more general in our expression.
@@ -703,17 +705,17 @@ We get
 
 For hole-like excitations, the part of the displacement function involving \(\mathcal{L}^{(F)}(\lambda,\lambda')\) becomes
 \begin{align}
-	 - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda')\\
-	 &= - \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}(\lambda''-\lambda')\right]\\
-	 &= \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \dd a \, \mathcal{C}(a)\right]\\
-	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right],
+	 - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \mathcal{C}\qty(\lambda''-\lambda')\\
+	 &= - \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\left[ \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}\qty(\lambda''-\lambda')\right]\\
+	 &= \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \dd a \, \mathcal{C}\qty\big(a)\right]\\
+	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}\qty\big(\lambda_h)\frac{\pi}{2}\right],
 \end{align}
 assuming \(\lambda''\) finite.
 
 The expression for the displacement of type II excitations is thus
 \begin{multline}
-	D_h(\lambda, \lambda_h) = \frac{1}{\pi}\theta(\lambda_F - \abs{\lambda}) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right] \\+
-	\frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right],
+	D_h\qty\big(\lambda, \lambda_h) = \frac{1}{\pi}\theta\qty\big(\lambda_F - \abs{\lambda}) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}\qty\big(\lambda_h)\frac{\pi}{2}\right] \\+
+	\frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}\qty\big(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}\qty\big(\lambda_h)\frac{\pi}{2}\right],
 \end{multline}
 with an example plotted in \cref{fig:dhplot}.
 \begin{figure}[tb!]
@@ -728,17 +730,17 @@ In the above expressions we still have \(\mathcal{L}^{(F)}\), for which there is
 
 Recalling \cref{eq:32}, the definition of \(\mathcal{L}^{(F)}\) is~\cite{Caux2015}
 \begin{equation}
-	\left(1 + \mathcal{L}^{(F)}\right) * \left(1 - \mathcal{C}^{(F)}\right)(\lambda,\lambda')=\delta(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R}
+	\left(1 + \mathcal{L}^{(F)}\right) * \left(1 - \mathcal{C}^{(F)}\right)\qty(\lambda,\lambda')=\delta\qty(\lambda-\lambda'), \quad \lambda, \lambda' \in \mathbb{R}
 \end{equation}
 or explicitly
 \begin{equation}
-	\int_{-\infty}^{\infty} \dd \lambda'' \left( \delta(\lambda-\lambda'') + \mathcal{L}^{(F)}(\lambda,\lambda'')\right)\left(\delta(\lambda''-\lambda') - \mathcal{C}^{(F)}(\lambda'',\lambda')\right) = \delta(\lambda-\lambda'),
+	\int_{-\infty}^{\infty} \dd \lambda'' \left( \delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\right)\left(\delta\qty(\lambda''-\lambda') - \mathcal{C}^{(F)}\qty(\lambda'',\lambda')\right) = \delta\qty(\lambda-\lambda'),
 \end{equation}
 with  \(\lambda, \lambda', \lambda'' \in \mathbb{R}\).
 If we perform the integration, cancel common terms and rearrange, we get the integral equation
 \begin{align}
-	\mathcal{L}^{(F)}(\lambda,\lambda') &= \int_{-\infty}^{\infty} \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}^{(F)}(\lambda'',\lambda') + \mathcal{C}^{(F)}(\lambda,\lambda')\\
-	&= \theta(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \mathcal{L}^{(F)}(\lambda,\lambda'') \mathcal{C}(\lambda''-\lambda') + \mathcal{C}^{(F)}(\lambda,\lambda')
+	\mathcal{L}^{(F)}\qty(\lambda,\lambda') &= \int_{-\infty}^{\infty} \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \mathcal{C}^{(F)}\qty(\lambda'',\lambda') + \mathcal{C}^{(F)}\qty(\lambda,\lambda')\\
+	&= \theta\qty(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \mathcal{C}\qty(\lambda''-\lambda') + \mathcal{C}^{(F)}\qty(\lambda,\lambda').
 \end{align}
 
 Now we can make use of the method of successive approximation~\cite{Zemyan2012} to numerically solve this equation (a Fredholm integral equation of the second kind).
@@ -750,7 +752,7 @@ If we have an integral equation of the form
 where $K(x,t)$ is a continuous integration kernel on the interval $[a,b]$, then it seems reasonable to assume that to lowest order the solution of the integral equation is $f(x)$, under the condition that $\omega$ is small.
 This gives a lowest order approximation $\phi_0(x) = f(x)$, with further substitution yielding 
 \begin{equation}
-  \phi(x) = f(x) + \omega \int_{a}^b K(x,t)\phi_0(t) \dd t,
+  \phi_1(x) = f(x) + \omega \int_{a}^b K(x,t)\phi_0(t) \dd t,
 \end{equation}
 which we hope to be more tractable than the original equation.
 In general the $n+1$-th approximation is defined in terms of the $n$-th approximation as
@@ -764,19 +766,19 @@ This converges as long as $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \
 
 Here we have 
 \begin{equation}
-  \mathcal{L}^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \mathcal{L}^{(F)}_n(\lambda, \lambda'') \mathcal{C} (\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}(\lambda, \lambda'),
+  \mathcal{L}^{(F)}_{n+1} \qty(\lambda, \lambda') = \theta\qty(\lambda_F - \abs{\lambda'}) \int_{-\lambda_F}^{\lambda_F} \mathcal{L}^{(F)}_n\qty(\lambda, \lambda'') \mathcal{C} \qty(\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}\qty(\lambda, \lambda'),
 \end{equation}
 which converges as long as 
 \begin{equation}
-\qty{(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c}))}^{1/2} < 1.
+{\qty(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c}))}^{1/2} < 1.
 \end{equation}
 If we only want to know the value of $\mathcal{L}^{(F)}$ at a single point we can use that at each iteration step $\mathcal{L}^{(F)}$ is a number, allowing us to take it out of the integral.
 We get
 \begin{gather}
-  \mathcal{L}^{(F)}_{n+1} (\lambda, \lambda') = \theta(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} (\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}(\lambda, \lambda')\\
-= - \frac{1}{\pi} \theta(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}(\lambda,\lambda'),
+  \mathcal{L}^{(F)}_{n+1} \qty(\lambda, \lambda') = \theta\qty(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} \qty(\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}\qty(\lambda, \lambda')\\
+= - \frac{1}{\pi} \theta\qty(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}\qty(\lambda,\lambda'),
 \end{gather}
-where \(\mathcal{L}^{(F)}_0(\lambda, \lambda')\) is 0. 
+where \(\mathcal{L}^{(F)}_0\qty(\lambda, \lambda')\) is 0. 
 \Cref{fig:lfplot} shows a numerical evaluation of \(\mathcal{L}^{(F)}\).
 \begin{figure}[tb!]
   \centering
@@ -789,11 +791,11 @@ where \(\mathcal{L}^{(F)}_0(\lambda, \lambda')\) is 0.
 For excited states there is no longer a Fermi level~\cite{Caux2015} (or the Fermi level goes to \(\infty\)), meaning that the truncated kernel \(\mathcal{C}^{(F)}\) becomes equal to the regular Lieb-Liniger kernel~\(\mathcal{C}\).
 The displacement function for type I and II excitations are respectively~\cite{Caux2015}
 \begin{align}
-	D_p(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta(\lambda-\lambda'') + \mathcal{L}(\lambda-\lambda'') \right]\mathcal{C}(\lambda''-\lambda'),
+	D_p\qty(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}\qty(\lambda-\lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda'),
 \end{align}
 and
 \begin{align}
-	D_h(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta(\lambda-\lambda'') + \mathcal{L}(\lambda - \lambda'') \right]\mathcal{C}(\lambda''-\lambda'),
+	D_h\qty\big(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}\qty(\lambda - \lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda'),
 \end{align}
 where \(\mathcal{L}\) is the inverse of the kernel \(\mathcal{C}\), defined by~\cite{Yang1969}
 \begin{align}
@@ -801,30 +803,30 @@ where \(\mathcal{L}\) is the inverse of the kernel \(\mathcal{C}\), defined by~\
 \end{align}
 or explicitly
 \begin{align}
-	\int_{-\infty}^{\infty} \dd \lambda' \left[ \delta(\lambda-\lambda') + \mathcal{L}(\lambda-\lambda') \right] \left[ \delta(\lambda') - \mathcal{C}(\lambda')\right] = \delta(\lambda), \quad \lambda, \lambda' \in \mathbb{R}.
+	\int_{-\infty}^{\infty} \dd \lambda' \left[ \delta\qty(\lambda-\lambda') + \mathcal{L}\qty(\lambda-\lambda') \right] \left[ \delta\qty(\lambda') - \mathcal{C}\qty(\lambda')\right] = \delta\qty\big(\lambda), \quad \lambda, \lambda' \in \mathbb{R}.
 \end{align}
 If we perform the integral and rearrange, we get an expression which simplifies the displacement functions:
 \begin{align}\label{eq:kernelinversion}
-	\int_{-\infty}^{\infty} \dd \lambda' \mathcal{L}(\lambda-\lambda') \mathcal{C}(\lambda') = -\mathcal{C}(\lambda) + \mathcal{L}(\lambda).
+	\int_{-\infty}^{\infty} \dd \lambda' \mathcal{L}\qty(\lambda-\lambda') \mathcal{C}\qty(\lambda') = -\mathcal{C}\qty\big(\lambda) + \mathcal{L}\qty(\lambda).
 \end{align}
 
 With this in hand, we have for particles:
 \begin{align}
-	D_p(\lambda, \lambda_p) &= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta(\lambda-\lambda'') + \mathcal{L}(\lambda-\lambda'') \right]\mathcal{C}(\lambda''-\lambda')\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}(\lambda-\lambda') + \int_{-\infty}^{\infty} \dd  \lambda'' \mathcal{L}(\lambda-\lambda'') \mathcal{C}(\lambda''-\lambda')\right]\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}(\lambda-\lambda') - \mathcal{C}(\lambda-\lambda') + \mathcal{L}(\lambda-\lambda')\right]\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}(\lambda_p)\infty} \dd \lambda' \mathcal{L}(\lambda-\lambda')\\
-	&=  \int_{\lambda-\lambda_p}^{-\textrm{sgn}(\lambda_p)\infty} \dd a \, \mathcal{L}(a),
+	D_p\qty(\lambda, \lambda_p) &= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}\qty(\lambda-\lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda')\\
+	&= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}\qty(\lambda-\lambda') + \int_{-\infty}^{\infty} \dd  \lambda'' \mathcal{L}\qty(\lambda-\lambda'') \mathcal{C}\qty(\lambda''-\lambda')\right]\\
+	&= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}\qty(\lambda-\lambda') - \mathcal{C}\qty(\lambda-\lambda') + \mathcal{L}\qty(\lambda-\lambda')\right]\\
+	&= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \mathcal{L}\qty(\lambda-\lambda')\\
+	&=  \int_{\lambda-\lambda_p}^{-\textrm{sgn}\qty(\lambda_p)\infty} \dd a \, \mathcal{L}\qty\big(a),
 \end{align}
 where we used \cref{eq:kernelinversion} in going from the second to the third line, and made the substitution \(a = \lambda-\lambda'\) in the last line.
 A similar derivation for type II excitations leads to
 \begin{align}
-	D_h(\lambda,\lambda_h) = \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a\, \mathcal{L}(a).
+	D_h\qty(\lambda,\lambda_h) = \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a\, \mathcal{L}(a).
 \end{align}
 
 
 \section{Form factors}
-As a final part of this chapter, we look at form factors for the Lieb-Liniger model, which we will require for calculation of dynamical structure functions (see \cref{chap:abacus}).
+Now we look at form factors for the Lieb-Liniger model, which we will require for calculation of dynamical structure functions (see \cref{chap:abacus}).
 Form factors or matrix elements can be obtained by using the algebraic Bethe ansatz (until now we used a coordinate representation of the wave function known as the coordinate Bethe ansatz).
 We will briefly introduce the algebraic Bethe ansatz. 
 
@@ -853,10 +855,10 @@ where
   A(\lambda) \ket{0} = a(\lambda)\ket{0},\qquad D(\lambda) \ket{0} = d(\lambda)\ket{0},
 \end{align}
 when acting on the vacuum \(\ket{0}\).
-Physical states may be build using \(B(\lambda)\) and \(C(\lambda)\):
+Physical states may be built using \(B(\lambda)\) and \(C(\lambda)\):
 \begin{align}
   \label{eq:42}
-  \ket{\{\lambda\}} = \prod_{j=1}^{N} B(\lambda_j) \ket{0} \quad \mathrm{and} \quad \bra{\{\lambda\}} = \bra{0} \prod_{j=1}^N C(\lambda_j).
+  \ket{\{\lambda\}} = \prod_{j=1}^{N} B\qty(\lambda_j) \ket{0} \quad \mathrm{and} \quad \bra{\{\lambda\}} = \bra{0} \prod_{j=1}^N C\qty(\lambda_j).
 \end{align}
 In the Lieb-Liniger model~\cite{Piroli2015}
 \begin{align}
@@ -887,7 +889,7 @@ Physical operators are defined in terms the field operator.
 To explicitly determine the action of the operators on states we use the commutation relations
 \begin{align}
   \label{eq:47}
-  [\Psi(0),B(\lambda)] = -i \sqrt{c} A(\lambda), \qquad [C(\lambda), \Psi^{\dag}(0)] = i \sqrt{c} D(\lambda).
+  \qty\big[\Psi(0),B(\lambda)] = -i \sqrt{c} A(\lambda), \qquad \qty[C(\lambda), \Psi^{\dag}(0)] = i \sqrt{c} D(\lambda).
 \end{align}
 This allows us to derive
 \begin{align}
@@ -906,16 +908,16 @@ We have only skimmed the surface of the ABA.\@
 References~\cite{Korepin1993} and~\cite{slavnov18_algeb_bethe_ansat} contain a (much) more thorough introduction.
 
 
-\subsection{Form factor for \(\rho\) operator}
+\subsection{Form factor for the \(\rho\) operator}
 
 Now we can calculate the form factor of the density operator.
 We only present here the result, referring to~\cite{slavnov90_noneq_time_curren_correl_funct} for the derivation.
 
 The density operator is~\cite{Nardis2015}
 \begin{align}
-  \hat{\rho}(x) = \sum_{j=1}^N \delta(x-x_j),
+  \hat{\rho}\qty\big(x) = \sum_{j=1}^N \delta\qty(x-x_j),
 \end{align}
-with \({\{x_j\}}_{j=1}^N\) the positions of the particles in the gas, or in terms of fields~\cite{slavnov90_noneq_time_curren_correl_funct}
+with \({\qty{x_j}}_{j=1}^N\) the positions of the particles in the gas, or in terms of fields~\cite{slavnov90_noneq_time_curren_correl_funct}
 \begin{align}
   \label{eq:44}
   \hat{\rho}(x) = \Psi^{\dag}(x)\Psi(x).
@@ -923,21 +925,21 @@ with \({\{x_j\}}_{j=1}^N\) the positions of the particles in the gas, or in term
 The form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
 \begin{multline}
   \label{eq:rho_form_factor}
-  \matrixel{\{\mu\}}{\hat{\rho}(0)}{\{\lambda\}} = \frac{\det(I_N +U)}{V^+(p) - V^-(p)}
-  \left(\sum_{j=1}^N(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+(\lambda_j) - V^-(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
+  \matrixel{\{\mu\}}{\hat{\rho}(0)}{\{\lambda\}} = \frac{\det\big(I_N +U)}{V^+(p) - V^-(p)}
+  \left(\sum_{j=1}^N\qty(\mu_j-\lambda_j)\right) \times\\ \prod_{j=1}^N\left(V^+\qty(\lambda_j) - V^-\qty(\lambda_j)\right)\prod_{j=1}^N\prod_{k=1}^N\left(\frac{\lambda_j-\lambda_k+ic}{\mu_j-\lambda_k}\right),
 \end{multline}
 with element of the matrix \(U\) given by
 \begin{align}
-  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+(\lambda_j) -V^-(\lambda_j)}\prod_{\substack{m=1\\m\neq j}}^N \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(K(\lambda_j, \lambda_k) - K(p, \lambda_k)\right),
+  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+\qty(\lambda_j) -V^-\qty(\lambda_j)}\prod_{\substack{m=1\\m\neq j}}^N \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(\mathcal{C}\qty(\lambda_j, \lambda_k) - \mathcal{C}\qty\big(p, \lambda_k)\right),
 \end{align}
 and 
 \begin{align}
   \label{eq:56}
-  V{(\lambda_j)}^{\pm} = \prod_{k=1}^N \frac{\mu_k-\lambda_j\pm ic}{\lambda_k-\lambda_j\pm ic}.
+  V{\qty(\lambda_j)}^{\pm} = \prod_{k=1}^N \frac{\mu_k-\lambda_j\pm ic}{\lambda_k-\lambda_j\pm ic}.
 \end{align}
 The parameter \(p\) is an arbitrary complex numbers which is not necessarily in the set of rapidities of the states.
 We will generally set it to zero, since that simplifies numerical evaluation of \cref{eq:rho_form_factor} and the form factor does not depend on their values.
-Note that for the Lieb-Liniger model \(V{(\lambda_j)}^{-} = {(V{(\lambda_j)}^{+})}^{*}\), since all rapidities are real in this case.
+Note that for the Lieb-Liniger model \(V{\qty(\lambda_j)}^{-} = {(V{\qty(\lambda_j)}^{+})}^{*}\), since all rapidities are real in this case.
 
 Including normalization we have for the form factors \(\mathcal{F}\)~\cite{Nardis2015}
 \begin{align}
@@ -972,16 +974,16 @@ We can construct \cref{eq:expval} from this given knowledge of the DSF for all e
 Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:\@
 \begin{equation}
   \label{eq:lehman}
-  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
+  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta\qty(\omega-E_{\mu}+E_0), 
 \end{equation}
 where we sum over intermediate eigenstates of the Hamiltonian under consideration, with $E_0$ the energy of the ground state $\ket{\lambda^0}$.
 We call the matrix elements $\mel{\lambda}{\mathcal{O}}{\mu}$ form factors.
 
-To calculate DSFs we require
+To calculate DSFs we require:
 \begin{itemize}
-  \item an orthonormal eigenstate basis
-  \item form factors for the operator $\mathcal{O}_k$ we are interested in
-  \item a way to do the summation over the intermediate states
+  \item an orthonormal eigenstate basis;
+  \item form factors for the operator $\mathcal{O}_k$ we are interested in;
+  \item a way to do the summation over the intermediate states.
 \end{itemize}
 The Bethe ansatz provides the first and second item.
 The summation proves to be more difficult, but for this we can use ABACUS (Algebraic Bethe Ansatz-based Computation of Universal Structure factors) to perform it numerically.
@@ -992,14 +994,14 @@ In fact, the accuracy can be measured using sum rules, and saturations above 99\
 
 \section{Numerically solving the Bethe equations}\label{sec:numer-solv-bethe}
 
-In general the computation of rapidities of Bethe integrable systems is a complex affair, with complex rapidities making the computation difficult.
+In general the computation of rapidities of Bethe integrable systems is non-trivial, with complex rapidities making the computation difficult.
 For the Lieb-Liniger model there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}), meaning there is a unique solution for a given set of quantum numbers.
 
 In this case we can use the matrix Newton method to calculate rapidities.
 To introduce this method we first look at the one-dimensional case.
 If we want to find the value of \(x\) that solves \(f(x)=0\), we can iteratively approximate this value by 
 \begin{equation}
-  x^{k+1} = x^k - \frac{f(x^k)}{f'(x^k)}, \qquad k = 0, 1, 2, \ldots,
+  x^{k+1} = x^k - \frac{f\qty(x^k)}{f'\qty(x^k)}, \qquad k = 0, 1, 2, \ldots,
 \end{equation}
 with given starting value \(x_0\).
 This converges quadratically (meaning on each iteration \(k+1\) the error \(\epsilon_{k+1}\) is of order \(\epsilon_k^2\)).
@@ -1008,20 +1010,20 @@ Now we can turn to the case at hand, where we solve the Bethe equations.
 These are coupled non-linear equations of the general form \(\mathbf{f(x)=0}\).
 In this case we can find the solution \(x\) by iteratively applying the formula
 \begin{equation}
-  \mathbf{x}^{k+1} = \mathbf{x}^k - {[J(\mathbf{x}^k)]}^{-1}\mathbf{f}(\mathbf{x}^k), \qquad k=0,1,2\ldots,
+  \mathbf{x}^{k+1} = \mathbf{x}^k - {\qty[J\qty(\mathbf{x}^k)]}^{-1}\mathbf{f}\qty(\mathbf{x}^k), \qquad k=0,1,2\ldots,
 \end{equation}
 where \(J\) is the Jacobian matrix of \(\mathbf{f}\) and \(\mathbf{x}_0 \in \mathbb{R}^n\).
 As in the single variable case this converges quadratically.
 
 To prevent the calculation of the inverse of the Jacobian, in practice Newton's method takes the form
 \begin{equation}\label{eq:practicalnewton}
-  J(\mathbf{x}^k)[\mathbf{x}^{k+1} - \mathbf{x}^k] = - \mathbf{f}(\mathbf{x}^k),
+  J(\mathbf{x}^k)\qty[\mathbf{x}^{k+1} - \mathbf{x}^k] = - \mathbf{f}\qty(\mathbf{x}^k),
 \end{equation}
-where, given \(\mathbf{x}^k\), we calculate \(J(\mathbf{x}^k)\) and \( \mathbf{f}(\mathbf{x}^k)\), and then solve the system of linear coupled equations to get \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to get \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
+where, given \(\mathbf{x}^k\), we calculate \(J\qty(\mathbf{x}^k)\) and \( \mathbf{f}\qty(\mathbf{x}^k)\), and then solve the system of linear coupled equations to get \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to get \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
 This linear system can be solved using LU decomposition~\cite{Press2007}.\footnote{In an LU decomposition we rewrite the set of linear equations:
   \begin{align}
     \label{eq:54}
-    \mathbf{A}\cdot\mathbf{x} = (\mathbf{L}\cdot\mathbf{U}) \cdot \mathbf{x} =\mathbf{L}\cdot(\mathbf{U}) \cdot \mathbf{x} = \mathbf{b},
+    \mathbf{A}\cdot\mathbf{x} = (\mathbf{L}\cdot\mathbf{U}) \cdot \mathbf{x} =\mathbf{L}\cdot(\mathbf{U} \cdot \mathbf{x}) = \mathbf{b},
   \end{align}
 decomposing \(\mathbf{L}\cdot\mathbf{U} = \mathbf{A}\) in a lower and an upper triangular matrix.
 The advantage of this is that we can now solve this system in two parts, first solving \(\mathbf{L}\cdot\mathbf{y} = \mathbf{b}\), and then solving \(\mathbf{U}\cdot\mathbf{x} = \mathbf{y}\), which is easier to do with a triangular matrix~\cite{Press2007}.
@@ -1031,15 +1033,15 @@ In ABACUS we are of course interested in the Bethe equations.
 Here we will specifically look at those of the Lieb-Liniger model.
 Recalling \cref{chap:bethe_ansatz}, the Bethe equations in logarithmic form are 
 \begin{align}
-  \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
+  \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi\qty(\lambda_j - \lambda_l) = \frac{2\pi}{L}I_j, \qquad j = 1,\ldots,N,
 \end{align}
 or
 \begin{align}
-  \frac{2\pi}{L}I_j - \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi(\lambda_j - \lambda_l) = B(\{\lambda\}),
+  \frac{2\pi}{L}I_j - \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi\qty(\lambda_j - \lambda_l) = B\qty\big(\{\lambda\}),
 \end{align}
 with
 \begin{equation}
-  \phi(\lambda_j - \lambda_l) = -2\arctan\left(\frac{\lambda_j-\lambda_l}{c}\right).
+  \phi\qty(\lambda_j - \lambda_l) = -2\arctan\left(\frac{\lambda_j-\lambda_l}{c}\right).
 \end{equation}
 
 If we recast this is the shape of \cref{eq:practicalnewton}, we get
@@ -1048,7 +1050,7 @@ If we recast this is the shape of \cref{eq:practicalnewton}, we get
 \end{equation}
 where we used that the Jacobian of the Bethe equations is equal to the Gaudin matrix (\cref{eq:gaudin})~\cite{Caux2009}.
 
-Additionally, damping may be employed while solving the system, with the updating of \(\lambda\) looking like
+Additionally, damping may be used while solving the system, with the updating of \(\lambda\) looking like
 \begin{align}
   \label{eq:dampednewton}
   \lambda^{k+1} = \lambda^k + \gamma \Delta \lambda.
@@ -1101,8 +1103,8 @@ With these principles we can start to define a protocol for scanning the Hilbert
 Starting from the lowest-energy state we generate states with low-lying particle-hole pair excitations in the Fermi interval (low-lying meaning the states are close to the center of the interval).
 If the contributions from these states to the chosen sum rule are large enough, further scanning of this state commences, with increasing complexity of the state in the form of more particle-hole pairs.
 
-In the context above, large enough means that the form factor associated with the state is above the so-called \textit{running threshold}, with initial value such that the number of intermediate states is of order \(N^2\).
-We save the form factors, and the threshold is lowered after a scan. 
+In the context above, large enough means that the form factor associated with the state is above the so-called ``\textit{running threshold}'', with initial value such that the number of intermediate states is of order \(N^2\).
+ABACUS saves the form factors, and the threshold is lowered after a scan. 
 A new scan is initiated of those sectors in the Hilbert space for which the average form factor is above the current running threshold.
 ABACUS thus keeps track of the already scanned states in the Hilbert space to gather knowledge on where to scan next and to avoid doubly counting states~\cite{Caux2009}.
 
@@ -1129,7 +1131,7 @@ For the density-density correlation function of the Lieb-Liniger model this beco
 
 \Cref{fig:lieb_density_dsf} shows the DSF in energy-momentum space for the density-density correlator of the Lieb-Liniger model obtained from ABACUS runs.
 In \cref{table:saturation} we see the efficiency of ABACUS.
-It presents the number of states necessary to reach a given saturation in the XXZ model\footnote{The XXZ model is another Bethe ansatz integrable model consisting of spins with Hamiltonian~\cite{Franchini2017}
+It presents the number of states necessary to reach a given saturation in the XXZ model\footnote{The XXZ model is another Bethe ansatz integrable model, consisting of spins, with Hamiltonian~\cite{Franchini2017}
     \begin{align}
       \label{eq:53}
       H = - J \sum_{n=1}^N\left[S_{n}^x S_{n+1}^x+S_n^y S_{n+1}^y + \Delta S_n^z S_{n+1}^z\right].
@@ -1175,7 +1177,7 @@ Although the algorithm is not perfect, only small fractions are necessary.
 \end{tabular}
 }
 \caption{Number of states required for a given sum rule saturation in the XXZ model with \(\Delta=0.6\) and \(S_{\mathrm{tot}}^z=0.1\).
-In parentheses are the fraction Hilbert space fraction this represents.
+In parentheses are the fraction of the Hilbert space fraction this represents.
 Table reproduced from~\cite{Caux2009}.
 }\label{table:saturation}
 \end{table}
@@ -1201,7 +1203,7 @@ CERN is exploring ways of tagging particles in LHC collisions using deep learnin
 Astronomy uses machine learning to classify objects in images and determine redshifts, which have to be automated due to the often large data sets resulting from even a single night of observations~\cite{ball10_data_minin_and_machin_learn_in_astron}.
 
 Condensed matter physics is now also benefitting from this field.
-Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wave function of spin systems by approximately encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy while avoiding the exponential number of parameters encountered when representing the Hilbert space.
+Recently, Carleo and Troyer~\cite{Carleo2017} proposed a way to find the ground state wave function of spin systems by approximately encoding the state of a system in a neural network. This allows for accurate approximations of the ground state energy while avoiding the exponential number of parameters encountered when representing the wave function.
 This technique has been extended to different systems such as the Hubbard model~\cite{Saito2017}.
 Phase transitions and order parameters have also been extracted from both static and periodically driven systems, using only measurable quantities such as the magnetization of individual spins~\cite{Nieuwenburg2017}.
 
@@ -1209,16 +1211,16 @@ Reinforcement learning has been used to design setups for optical experiments wh
 Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if it creates an `interesting' state~\cite{Dunjko2017}.
 
 Interesting links also exist between deep learning and physics on a more fundamental level.
-For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features in a similar way to the renormalization group~\cite{Mehta2014}. 
+For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features through coarse-graining, similar to the renormalization group~\cite{Mehta2014}. 
 
-In the rest of this chapter we will review some aspects of machine learning useful in the ABACUS algorithm.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see~\cite{Dunjko2017}).}
+In the rest of this chapter we will review some aspects of machine learning useful for solving Bethe ansatz solvable models.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see~\cite{Dunjko2017}).}
 
 
 \section{Machine learning: the basics}
 Today's world is awash in data.
 With the increase in computational power that has swept the world we are now being flooded by it.
 Making sense of this flood is becoming increasingly important and requires us to find patterns in the chaos.
-For numbers this is relatively easy: if we have an input set \(1,2,3\) and output set \(1,4,9\), some basic mathematics shows that the function \(f(x)=x^2\) links the inputs and outputs.
+For numbers this is relatively easy: if we have an input set \((1,2,3)\) and output set \((1,4,9)\), some basic mathematics shows that the function \(f(x)=x^2\) links the inputs and outputs.
 But what about more complex data?
 A picture of a cat (\cref{fig:cat}) may be instantly recognized by a human, but translating this recognition to a computer is non-trivial.
 Which pixels encode the ``catness'' of a picture as opposed to its ``dogness''?
@@ -1231,8 +1233,8 @@ Manually writing such a function proves to be difficult, with the resulting func
 \end{figure}
 
 \subsection{Neural networks}\label{sec:neural-networks}
-Neural network allow for the efficient approximation of functions which map inputs to outputs.
-Given an input \(x\) and an output \(t\) (for target), a neural net acts as a function which approximately maps the input to the output: \(f(x)\approx t\).
+Neural networks allow for the efficient approximation of functions which map inputs to outputs.
+Given an input \(x\) and an output \(t\) (for target), a neural net \(f\) acts as \(f(x)\approx t\).
 
 A neural net consists of layers, with each layer composed of nodes.
 Connections exists between these layers.
@@ -1246,15 +1248,15 @@ If we have an input \(x\) of size \(D\) to a network, the first layer looks like
 \end{align}
 with \(j=1,\ldots,M\) and superscript \((1)\) denoting it as the first layer.
 We call \(a_j\) the activation.
-\Cref{eq:57} constructs \(M\) linear combinations of the input.
 The parameters \(w_{ji}^{(1)}\) are called weights, with \(w_{j0}^{(1)}\) being called biases.
+\Cref{eq:57} constructs \(M\) linear combinations of the input.
 These linear combinations are then transformed with a differentiable, nonlinear activation function \(h(a_j)\)~\cite{Bishop2006}.
 The nonlinearity is key here, because it allows the system to act as a general function approximator~\cite{Sutton}.
 
 We can construct a second layer in the same manner:
 \begin{align}
   \label{eq:58}
-  a_k = \sum_{j=1}^M w_{kj}^{(2)}(h(a_j)) + w_{k0}^{(2)},
+  a_k = \sum_{j=1}^M w_{kj}^{(2)}\qty(h(a_j)) + w_{k0}^{(2)},
 \end{align}
 with \(k=1,\ldots,K\) and \(K\) the total number of outputs.
 Then an appropriate activation function is applied to the \(a_k\)'s to generate the network outputs \(y_k\).
@@ -1280,11 +1282,10 @@ The bias parameters can be absorbed in the weight parameters by defining an addi
 
 Now we get to training the model, or, in other words, tuning the network weights in such a way that the network can link inputs to outputs.
 The ultimate goal here is to get the network to generalize, providing useful predictions for data not present in the training set.
-
 If we have a training set \(\{\mathbf{x}_n\}\) and target set \(\{\mathbf{t}_n\}\), with \(n=1,\ldots,N\), during training we will minimize the error function\footnote{This is only one possible choice for the error function. For regression other choices include the mean square error and the absolute error.}
 \begin{align}
   \label{eq:61}
-  E(\mathbf{w}) = \frac{1}{2} \sum _{n=1}^N{\qty(\mathbf{y}(\mathbf{x_n}, \mathbf{w})-\mathbf{t}_n)}^2.
+  E(\mathbf{w}) = \frac{1}{2} \sum _{n=1}^N{\qty(\mathbf{y}\qty(\mathbf{x_n}, \mathbf{w})-\mathbf{t}_n)}^2.
 \end{align}
 Note that a problem that could occur during training is overfitting to the training set, meaning the error is small but the network does not perform well when given new samples.
 To detect this and be able to mitigate it we can use a validation set separate from the training set on which we determine the error~\cite{Bishop2006}.
@@ -1305,7 +1306,7 @@ A simple way to perform this iterative optimization is through gradient descent.
 Updates move the weights in the direction of the negative gradient:
 \begin{align}
   \label{eq:63}
-  \mathbf{w}^{(\tau+1)}=\mathbf{w}^{(\tau)}- \eta \nabla E(\mathbf{w}^{(\tau)}).
+  \mathbf{w}^{(\tau+1)}=\mathbf{w}^{(\tau)}- \eta \nabla E\qty(\mathbf{w}^{(\tau)}).
 \end{align}
 The parameter \(\eta > 0\) is known as the learning rate.\footnote{Parameters such as \(\eta\) are known as hyperparameters and influence the model during training.}
 Because the error is defined over the entire training set, at each iteration the entire set has to be processed when evaluating \(\nabla E\).
@@ -1318,7 +1319,7 @@ An online method exists where the error consist of a sum of errors on each data 
 Such stochastic gradient descent updates the weights for one data point at a time:
 \begin{align}
   \label{eq:65}
-    \mathbf{w}^{(\tau+1)}=\mathbf{w}^{(\tau)}- \eta \nabla E_n(\mathbf{w}^{(\tau)}).
+    \mathbf{w}^{(\tau+1)}=\mathbf{w}^{(\tau)}- \eta \nabla E_n\qty(\mathbf{w}^{(\tau)}).
 \end{align}
 An advantage of this method is that training is less susceptible to local minima, since a minimum of the entire data set is rarely the minimum of a single data point.
 
@@ -1339,16 +1340,16 @@ We have (noting that biases have been absorbed into the weights)
   \label{eq:66}
   \pdv{E_n}{w_{ji}} = \pdv{E_n}{a_j}\pdv{a_j}{w_{ji}}.
 \end{align}
-Introducing \(\delta_j = \pdv{E_n}{a_j}\) and \(\pdv{a_j}{w_{ji}}=z_i\) (\cref{eq:67}) gives
+Introducing \(\delta_j = \pdv{E_n}{a_j}\) and \(z_i=\pdv{a_j}{w_{ji}}\) (\cref{eq:67}) gives
 \begin{align}
   \label{eq:68}
   \pdv{E_n}{w_{ji}} = \delta_j z_i.
 \end{align}
-This means that to evaluate derivatives throughout the network only the values for \(\delta_j\) in each layer are required.
+This means that to evaluate derivatives throughout the network only the values for \(\delta_j\) and \(z_i\) in each layer are required.
 If the output layer has linear activation functions (\(y_k = \sum_i w_{ki}x_i\)), and the error is
 \begin{align}
   \label{eq:69}
-  E_n = \frac{1}{2} \sum_k {\qty(y_{nk}-t_{nk})}^2,
+  E_n = \frac{1}{2} \sum_j {\qty(y_{nj}-t_{nk})}^2,
 \end{align}
 we have \(\delta_j=y_{nj}-t_{nj}\).
 
@@ -1380,14 +1381,14 @@ The algorithm we will consider here is Q-learning.
 
 In Q-learning we learn an action-value function Q, which tells us what action is the most valuable to take from any given state.
 Q-learning has the advantage of being off-policy, meaning that the optimal action-value function \(q_*\) is approximated independently of the followed policy during training.
-As long as states are visited and the Q-function is updated, \(q_*\) is approximated.
+As long as states are visited and the \(Q\)-function is updated, \(q_*\) is approximated.
 
 Q-learning is a form of temporal-difference learning, looking at the reward of the next step to make an estimate of the optimal policy.
 It has the advantage that it has to look forward only a single time step to update its estimate of the optimal policy to follow.
 This is a form of bootstrapping: at every step the guess for the best action to take is based on a guess for what the best action in the next state is.
 
-Q-learning is also model-free, meaning that it does not know how the environment the model is interacting with changes based on its actions.
-All interaction with the environment is solely through rewards.
+Q-learning is also model-free, meaning that it does not know how the environment the agent is interacting with changes based on its actions.
+All knowledge about the environment is solely through rewards.
 
 In Q-learning, at any given step we update the following equation:
 \begin{align}
@@ -1410,8 +1411,8 @@ The problem with the tabular method is that exhaustively tabulating every possib
 The state space may be factorially large, meaning that almost every state will never before have been encountered.
 This means that we have to generalize to new states from previous experience.
 Here we can turn to function approximators like neural networks (\cref{sec:neural-networks}).
-Note that there is no proof of convergence to an optimal solution for this method as there is for the tabular method~\cite{watkins92_q_learn,Sutton}.
 We require neural networks which can deal with incremental data (such as stochastic gradient descent), since we update at each step.
+Note that there is no proof of convergence to an optimal solution for this method as there is for the tabular method~\cite{watkins92_q_learn,Sutton}.
 
 \begin{algorithm}[H]
   \caption{Q-learning}
@@ -1420,7 +1421,7 @@ We require neural networks which can deal with incremental data (such as stochas
      \For{epoch=1,M}
      \For{t=1,T}
      \State{Select random action $a_t$ with probability $\epsilon$}
-     \State{otherwise select $a_t = \max_a Q^*(s_t;\theta)$}
+     \State{otherwise select $a_t = \max_a Q(s_t;\theta)$}
      \State{Execute action $a_t$ and observe reward and state $s_t$}
      \State{Make a copy \(y\) of \(Q\)}
      \If{$s_t$ terminal state}
@@ -1439,7 +1440,7 @@ Note that we will not use the experience replay used in~\cite{mnih13_playin_atar
 \Cref{alg:qlearning} shows the algorithm.
 During each time step we choose a move according to an \(\epsilon\)-greedy policy.
 Then the chosen action is taken, the new state reached and the reward observed.
-In a copy of \(Q\) which we denote \(y\), we update the entry corresponding to the taken action, and then update the neural network to better match the state we want to reach.
+In a copy of \(Q\) which we denote \(y\), we update the entry corresponding to the taken action, and then update the neural network to better match the optimal policy we want to approximate.
 This gives the algorithm its off-policy nature.
 Note that the error is effectively a minimization of the rescaled change to the \(Q\)-value:
 \begin{align}
@@ -1497,7 +1498,7 @@ We do not use an additional UV cutoff.
 The generated data is used for training a neural network consisting of an input layer of size \(N\), two hidden layers of size \(N^2\) and an output layer of size \(N\).
 Apart from the output layer all layers use a hyperbolic tangent activation function.
 This architecture was arrived at by experimenting.
-More complex networks showed did not show improvements on rapidity estimation and took longer to train and to evaluate.
+More complex networks did not show improvements on rapidity estimation and took longer to train and to evaluate.
 We minimize the mean square error.
 
 \subsection{Results}
@@ -1549,7 +1550,7 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} are fo
   \subfloat{\includegraphics[width=0.70\textwidth]{time_5.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_10.pdf}}\\
   \subfloat{\includegraphics[width=0.70\textwidth]{time_20.pdf}}
-  \caption{Time in seconds until convergence for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. The black bars denote standard errors.}\label{fig:convtimes}
+  \caption{Time in seconds until convergence for \(N=5,10,20\). We average over 10 runs of 1000 sets of Bethe numbers. Only undamped methods are considered. The black bars denote standard errors.}\label{fig:convtimes}
 \end{figure}
 
 \section{Walking through state space}
@@ -1559,14 +1560,14 @@ Given a starting point in state space (usually the ground state), we want to exp
 
 Recalling the Lehman representation of the dynamic structure function (DSF, \cref{eq:lehman})
 \begin{equation}
-  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta(\omega-E_{\mu}+E_0), 
+  \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta\qty(\omega-E_{\mu}+E_0), 
 \end{equation}
 we note that if we want to evaluate the above expression, we in principle have to sum over the entire Hilbert space of the model in question (potentially a space of  infinite size) to capture all behaviour of the DSF.\@
 Due to the impracticality of this we instead consider states that contribute a lot to the above sum.
 In general these are states with a large matrix element.
 More precisely they are states with large contributions to the f-sum rule (see \cref{eq:fsumrule}):
 \begin{align}
-  \frac{1}{N}\sum_{\mu}(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2,
+  \frac{1}{N}\sum_{\mu}\qty(E_{\mu}-E_0)\abs{\mel{\lambda^0}{\rho}{\mu}}^2  = \frac{N}{L} k^2,
 \end{align}
 where we specified to the case of the density operator \(\rho = \Psi^{\dag}\Psi\) for the Lieb-Liniger model.
 This allows us to determine which fraction of states has been summed in a given slice of momentum \(k\).
@@ -1580,6 +1581,7 @@ This also moves complexity from the handcrafted function into a neural network.
 While the neural network in more opaque in how it arrives at solutions, it may still present a more systematic way of arriving at an algorithm.
 
 We use reinforcement learning as a way to iteratively come to an optimal state summation, inspired by the recent success of Google Deepmind in playing Go~\cite{silver16_master_game_go_with_deep,Silver2017a}, chess, and shogi~\cite{Silver2017}, and 1980s computer games~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
+We use the Lieb-Liniger model and find the DSF of the density-density correlation function.
 These methods are especially notable because they do not require handcrafting the inputs to the neural networks, but learn higher level representations from scratch.
 Specifically, we will use Q-learning as in the last two references.
 We refer to \cref{chap:machine_learning} for an general explanation of Q-learning and focus here only on the specifics relevant to Hilbert space scanning of the Lieb-Liniger model.
@@ -1590,8 +1592,7 @@ Note that the learning we use is tabula rasa, meaning that there is no pretraini
 When using neural networks, we need a concrete representation of the state.
 A vector of Bethe numbers has a resolution that is too low as it hides some of the degrees of freedom of the system, notably not covering the holes that appear between particles.
 Instead we use a binary encoding for Lieb-Liniger model states, mapping the Bethe numbers to a vector where 1s represent particles and 0s represent empty locations in Bethe number space.
-Because the vector has to have a finite size this representation does force the use of a UV-cutoff above which there are no Bethe numbers and which can not be occupied.
-We call this cutoff \(I_{\max}\).
+Because the vector has to have a finite size this representation does force the use of a UV cutoff \(I_{\max}\), above which there are no Bethe numbers and which can not be occupied.
 States in binary representation are then vectors of length $N_{\textrm{world}} = 2 I_{\max} + 1$.
 For example, the ground state of the $N=3$ state with $I_{\max} = 5$ is\footnote{Due to rounding errors when considering the half-integer Bethe numbers associated with even \(N\), this representation is currently only implemented for odd \(N\), and we only consider those from now on.}
 \begin{equation}
@@ -1602,7 +1603,7 @@ For example, the ground state of the $N=3$ state with $I_{\max} = 5$ is\footnote
 Moves are determined by a neural network consisting of an input layer of size \(N_{\textrm{world}}\), two hidden layers of size \(\lfloor N_{\textrm{world}}^{3/2}\rfloor\) and an output layer of size \(N_{\textrm{world}}^2\), with each layer having hyperbolic tangent activation functions.
 The network implements the idea of changing the \(Q\)-function from the form \(Q(s,a)\) to \(Q(s)\), with an output over all possible actions\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
 This simplifies the decision-making process in that only a single evaluation of the neural net is required for each step, instead of an evaluation for every possible actions.
-We calculate loss using the mean-square error.
+We calculate loss using the mean square error.
 
 A move is represented in the same way as AlphaZero uses in chess~\cite{Silver2017}, except ``playing'' on a one dimensional board instead of a two dimensional chess board.
 Moves are represented as a tuple, with the \(x\)-coordinate representing the location of the particle to remove and the \(y\)-coordinate being the new coordinate on which the particle is placed (note that in Python, due to the way nested arrays are indexed, the first coordinate corresponds to the vertical axis of a matrix).
@@ -1613,7 +1614,7 @@ Moves are selected based on the output of the neural net with the highest value,
 \item a move does not place a particle on an already occupied position;
 \item a new state does not have an integer momentum \(\frac{L}{2\pi}P > I_{\max}\) (see \cref{sec:exact}).
 \end{itemize}
-If the move with the largest Q-factor is illegal, the move with the next-highest Q-value is selected, until a legal move is encountered.
+If the move with the largest \(Q\)-factor is illegal, the move with the next-highest \(Q\)-value is selected, until a legal move is encountered.
 Note that during training we use \(\epsilon\)-greedy state selection, with random (legal) action being selected a fraction \(\epsilon\) of the time and \(Q\)-network mediated actions being chosen during the remaining \(1-\epsilon\) fraction.
 
 We also consider what happens when we minimize the number of particle-hole pairs.
@@ -1625,7 +1626,7 @@ To that end, we define the number of particle-hole pairs \(N_{\mathrm{ph}}\) as
 where \(s\) is the state for which to determine the number of particle-hole pairs and \(r\) is the reference state, in this case the ground state.
 \(J{(s)}_{s_i=1}\) denotes the set of indices for which \(s_i = 1\) (likewise for \(r\)).
 Both the state and the reference state are in the representation of \cref{eq:representation}.
-Effectively this measures the number of particles that have left the Fermi interval
+Effectively this measures the number of particles that have left the Fermi interval.
 It has the desired properties of being 0 when \(r=s\) and \(N_{\mathrm{ph}} = N\) when no two particles are in the same place for \(s\) and \(r\).
 
 
@@ -1635,12 +1636,12 @@ A problem now presents itself.
 In the representation discussed above the higher pseudo-momentum states are less well represented than lower momentum states, since there are more possible combinations that result in a small momentum.
 We see this if we consider for example a Lieb-Liniger model with \(c=1\), \(L=N=5\) and \(I_{\max} =12\).
 This choice of parameters allows for \(\binom{N_{\mathrm{world}}}{N}=\binom{25}{5}=53510\) possible combinations, concentrated around the origin.
-For this number of states we can feasibly generate all combinations and calculate the form factors of the associated states.
+For this number of states we can feasibly generate all combinations and calculate the density operator form factors of the associated states.
 Doing so for all possible permutations with individual particle momentum in the interval \((-12, 12)\) of length \(5\) results in a Gaussian distribution (\cref{fig:no_of_states}).
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.7\textwidth]{no_of_states}
-  \caption{The number of states in each momentum slice for the Lieb-Liniger model for \(N=5\) and \(I_{\max}=12\). Note that we dropped the prefactor \(\frac{2\pi}{L}\) for each entry.}\label{fig:no_of_states}
+  \caption{The number of states in each momentum slice for the Lieb-Liniger model for \(N=5\) and \(I_{\max}=12\). Note that we dropped the prefactor \(\frac{2\pi}{L}\) for each momentum.}\label{fig:no_of_states}
 \end{figure}
 The maximum possible state momentum is given by
 \begin{align}
@@ -1648,7 +1649,7 @@ The maximum possible state momentum is given by
   P_{\max} = \frac{2\pi}{L}\sum_{i=0}^{N-1}(I_{\max}-i) = \frac{\pi}{L}N (2 I_{\max} -N +1) = \frac{\pi}{L}N (N_{\mathrm{world}} -N),
 \end{align}
 which in this case is \(\frac{L}{2\pi}P_{\max} = 35\).
-If we calculate the sum rule saturations for each momentum slice, the saturations go to 0 as \(\frac{L}{2\pi}P\) becomes larger (\cref{fig:saturationsperslice}), falling off especially for \(\abs{\frac{L}{2\pi}P}>I_{\max}\).
+If we calculate the sum rule saturations for each momentum slice, the saturations go to 0 as \(\frac{L}{2\pi}P\) becomes larger (\cref{fig:saturationsperslice}), falling off especially quickly for \(\abs{\frac{L}{2\pi}P}>I_{\max}\).
 This is caused by the lack of states with larger momentum and proves especially problematic if we calculate total sum rule saturations over all states.
 The higher momentum slices will suppress the total possible attainable sum rule.
 \begin{figure}[tb!]
@@ -1673,7 +1674,6 @@ Looking at \cref{fig:meanffphpairs}, where we plot the mean form factor sizes fo
   \includegraphics[width=.7\textwidth]{ave_form_factor_ph_pairs.pdf}
   \caption{Mean form factor per number of particle-hole pairs.}\label{fig:meanffphpairs}
 \end{figure}
-
 We see the same pattern of exponential decay when plotting the mean sum rule saturation per \(N_{\mathrm{ph}}\) (\cref{fig:meansumrulesaturation}). 
 \begin{figure}[tb!]
   \centering
@@ -1682,7 +1682,7 @@ We see the same pattern of exponential decay when plotting the mean sum rule sat
 \end{figure}
 
 Even though the number of states with a given \(N_{\mathrm{ph}}\) increases for increasing \(N_{\mathrm{ph}}\), this only happens approximately linearly (\cref{fig:numberofstatesph}), meaning that only the states with \(N_{\mathrm{ph}}=1,2\) have a large contribution.
-This validates the use of \cref{eq:52} while training to select for states with large matrix elements.
+This validates the use of \cref{eq:52} while training to select states with large matrix elements.
 \begin{figure}[tb!]
   \centering
   \subfloat{\includegraphics[width=.7\textwidth]{no_states_ph_pairs.pdf}}
@@ -1695,7 +1695,7 @@ This validates the use of \cref{eq:52} while training to select for states with 
 \subsection{Numerical results}
 
 
-We consider six different possible ways of determining states:
+We consider six different possible ways of selecting states to sum:
 \begin{itemize}
 \item A neural network trained with and without checking the number of particle hole pairs for states;
 \item Random state selection. In this case we set \(\epsilon=1\) in the \(\epsilon\)-greedy algorithm and do not decrease it over the course of the run.
@@ -1762,18 +1762,18 @@ In other words, \(d\) measures the sum of the distances each particle has travel
 \end{figure}
 
 
-\Cref{fig:statestoconv} and \cref{fig:ffsizeproxy} show the results.
-We consider states with \(c=1\), \(L=N=5\) and \(I_{\max}=12\).
+\Cref{fig:statestoconv} and \cref{fig:ffsizeproxy} show the results for the number of states necessary for convergence and the size of the form factor.
+We consider states with \(c=1\), \(L=N=5\) and \(I_{\max}=12\), and sum the matrix elements of the density operator.
 \Cref{chap:qlearningresults} contains full results.
 The baseline measurement we use is a random exploration of the state space, with no checks on the number of particle-hole pairs during DSF calculation.
-As long as an action is valid, meaning it does not add or remove particles where that is not possible, revisit a state or create a state with too large a momentum.
+As long as an action is valid, meaning it does not add or remove particles where that is not possible, revisits a state, or creates a state with too large a momentum.
 Looking at \cref{fig:saturation_rand_True_check_train_False_check_eval_False} we see that none of the runs converge after 3000 steps.
 Average square form factor sizes are of order \(10^{-16}\), as seen in \cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}.
 
 
 
 If we enforce particle-hole pair minimization, the picture changes.
-Now only 728 states are necessary to reach saturation, and average form factor size is of order \(10^{-6}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
+Now only 728 states are necessary to reach saturation, and average form factor size is of order \(10^{-7}\) (\cref{fig:ff_sizes_rand_True_check_train_False_check_eval_False}).
 The source of randomness here is the random selection of the state with the lowest \(N_{\mathrm{ph}}\) from all states with the same value for \(N_{\mathrm{ph}}\).
 We see that enforcing particle-hole minimization is an important measure in selecting states with large form factors.
 Note the plateauing of the sum rule saturation that occurs for most runs (\cref{fig:saturation_rand_True_check_train_False_check_eval_False}). 
@@ -1782,7 +1782,7 @@ This probably happens because most of the large form factors have already been s
 
 Now we come to the results of using Q-learning.
 If \(N_{\mathrm{ph}}\)-minimization is used during both training and DSF calculation, we see the best results of all methods considered, with an average number of states to convergence of 545 (although again we often see a plateauing, \cref{fig:saturation_histories_rand_False_check_train_True_check_eval_True}).
-The average form factor also has the largest value at order $10^{-7}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
+The average form factor also has the largest value at $\num{6.53e-7}$, although the error is large (\cref{fig:ff_sizes_rand_False_check_train_True_check_eval_True}).
 
 
 
@@ -1797,18 +1797,18 @@ The average number of states required is 795 (\cref{fig:saturation_histories_ran
 This is worse than with \(N_{\mathrm{ph}}\)-minimization enabled in training, pointing to a possibility that the minimization leads the model to learn about states with large contributions and thus high rewards.
 
 Finally, we come to an evaluation with \(N_{\mathrm{ph}}\)-minimization disabled in both training and evaluation.
-Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) but the average form factor is of order \(10^{-12}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}), meaning learning still occurring.
+Here none of the five runs converge (\cref{fig:saturation_histories_rand_False_check_train_False_check_eval_False}) but the average form factor is of order \(10^{-12}\) (\cref{fig:ff_sizes_rand_False_check_train_False_check_eval_False}), meaning learning still occurs.
 The poor results of this method shows that using only the reward function to shape action selection does not provide enough feedback for learning.
 
 
-An illustration of the learned behaviour is visible when considering the trained model of the Q-function of a system with \(N=11\) and \(I_{\max}=20\).
-When evaluating the ground state (\cref{fig:binarygroundstate}), we see a structure occurring in the resulting Q-matrix (\cref{fig:qmatrix}, top).
+An illustration of the learned behaviour is visible when considering the trained model of the \(Q\)-function of a system with \(N=11\) and \(I_{\max}=20\).
+When evaluating the ground state (\cref{fig:binarygroundstate}), we see a structure occurring in the resulting \(Q\)-matrix (\cref{fig:qmatrix}, top).
 Unoccupied positions should not be selected for removal, while occupied positions should not be selected for particle placement.
-We see this occurring in the form of bands of high and low Q-factors.
-The horizontal yellow of high Q-factors band consists of actions that would take a particle from the Fermi interval and deposit it somewhere outside.
+We see this occurring in the form of bands of high and low \(Q\)-factors.
+The horizontal yellow of high \(Q\)-factors band consists of actions that would take a particle from the Fermi interval and deposit it somewhere outside.
 In contrast the vertical blue band corresponds to forbidden actions that would take a particle from an unoccupied position and place it on an already occupied site.
 These actions with two forbidden sub-actions are more strongly disfavored than the actions represented by the corner quadrants, which represent taking a particle from an unoccupied position and placing it at another unoccupied site.
-The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) Q-factors.
+The band structures are clearer when we highlight the 100 lowest (\cref{fig:qmatrix}, lower left) and highest (\cref{fig:qmatrix}, lower right) \(Q\)-factors.
 
 \begin{sloppypar}
 Finally, we compare with ABACUS.\@
@@ -1825,13 +1825,13 @@ The form factor size proxy has a value of \num{8.01e-05} (\cref{fig:abacusformfa
 This shows that ABACUS is highly efficient in summing matrix elements.
 
 In conclusion we can say that learning does occur when using Q-learning to sum matrix elements, but that this method is far outclassed by the current implementation of ABACUS.\@
-Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training for smaller systems.
+Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training, for smaller systems.
 
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_False.pdf}
-  \caption{Square form factors as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}\label{fig:ff_sizes_rand_True_check_train_False_check_eval_False}
+  \caption{Square density operator form factors as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}\label{fig:ff_sizes_rand_True_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1849,7 +1849,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_True.pdf}
-  \caption{Square form factors as a function of order of computation for random state selection while minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}
+  \caption{Square density operator form factors as a function of order of computation for random state selection while minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1861,7 +1861,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_True.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_True_check_eval_True}
+  \caption{Square density operator form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1873,7 +1873,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_True_check_eval_False.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_True_check_eval_False}
+  \caption{Square density operator form factors as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_True_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1885,7 +1885,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_True.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_False_check_eval_True}
+  \caption{Square density operator form factors as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_False_check_eval_True}
 \end{figure}
 
 
@@ -1899,7 +1899,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_False_check_train_False_check_eval_False.pdf}
-  \caption{Square form factors as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_False_check_eval_False}
+  \caption{Square density operator form factors as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for a selected DSF calculation.}\label{fig:ff_sizes_rand_False_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1910,14 +1910,14 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_no_highlight.pdf}}\\
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_worst_highlighted.pdf}}
   \subfloat{\includegraphics[width=.5\textwidth]{q_function_best_highlighted.pdf}}
-  \caption{Q-matrix for the Lieb-Liniger model ground state with \(N=11\) and \(I_{\max}=20\) (top). In the lower left image, the 100 lowest Q-factors are highlighted, while the 100 best are shown in the lower right image.}\label{fig:qmatrix}
+  \caption{\(Q\)-matrix for the Lieb-Liniger model ground state with \(N=11\) and \(I_{\max}=20\) (top). In the lower left image, the 100 lowest Q-factors are highlighted, with the 100 best are highlighted in the lower right image.}\label{fig:qmatrix}
 \end{figure}
 
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{abacus_ff_sq_12_5.pdf}
-  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}\label{fig:abacusformfactors_12_5}
+  \caption{Square density operator form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=5\), \(I_{\max}=12\), calculated with ABACUS.}\label{fig:abacusformfactors_12_5}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1935,7 +1935,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{abacus_ff_sq.pdf}
-  \caption{Squared form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}\label{fig:abacusformfactors}
+  \caption{Squared density operator form factor for the density operator of the Lieb-Liniger model, at \(c=1\), \(L=N=11\), \(I_{\max}=40\), calculated with ABACUS.}\label{fig:abacusformfactors}
 \end{figure}
 
 
@@ -1963,7 +1963,7 @@ The methods used in this thesis suffer from some difficulties.
 Firstly, while the Lieb-Liniger model is Markovian, the Hilbert space scanning used to calculate DSFs is not.
 This is because, to prevent overcounting, the entire history of previously-visited states must be taken into consideration during each state selection.
 This breaks the property of Markov processes that all relevant information to take the best action is present in the current state.
-DSF scanning is an example of a hidden state task, because not all relevant information required for selecting the best action is present when only considering the current state.
+DSF scanning is an example of a hidden state task.
 Applying reinforcement learning algorithms to non-Markovian tasks (which are the norm when considering real world control tasks) may lead to suboptimal performance~\cite{whitehead95_reinf_learn_non_markov_decis_proces}.
 But for the problem at hand the use of a history over states is essential.
 
@@ -1976,18 +1976,18 @@ Note though that convergence happens only in the \(t\to\infty\) limit, and thus 
 
 A number of issues with reinforcement learning more generally are present.
 On of those is that reinforcement learning is data inefficient.
-In~\cite{1710.02298} a study was made of performance in the Atari learning environment by combining different techniques beyond those used in~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
+In~\cite{1710.02298} a study was made of performance in Atari games by combining different techniques beyond those used in~\cite{mnih13_playin_atari_with_deep_reinf_learn,mnih15_human_level_contr_throug_deep_reinf_learn}.
 Even in the best case approximately 15 million frames (at 60 Hertz) were required to reach human-level performance, corresponding to three days of gametime.
 But this was already an improvement on the original work done in~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, where only one in four frames where used to improve computational efficiency and which required 38 days of gametime to train on 50 million sample frames.
 A similar data inefficiency is seen in~\cite{heess17_emerg_locom_behav_rich_envir}.
-Although the results are impressive (an agent learns to navigate a challenging environment consisting of hurdles and gaps using only a simple reward function), training took 100 hours of wall clock time on 64 workers~\cite[Figure 1]{heess17_emerg_locom_behav_rich_envir}.
+Although the results are impressive (an agent learns to navigate a challenging environment consisting of hurdles and gaps using only a simple reward function), training took 100 hours of wall clock time on 64 workers, for 6400 hours in total~\cite[Figure 1]{heess17_emerg_locom_behav_rich_envir}.
 This all in contrast to humans, who are often able to able to learn from a single example~\cite{marcus18_deep_learn}.
 
 This leads to the conjecture that a well-engineered handcrafted function may outperform a reinforcement learning solution, if such a function can be created.
 This is the case for ABACUS, where the applicability to large systems stems from the preliminary information provided by integrability, built into the algorithm~\cite{Caux2009}.
 Thus learning the structure of the form factor space by reinforcement would probably take an inordinate number of samples.
 
-At the same time state of the art machine learning setups are experiencing an large increase in compute power used.
+State of the art machine learning setups are also experiencing an large increase in compute power used.
 Data~\cite{amodei2018} compiled by the nonprofit OpenAI\footnote{OpenAI was founded with the goal of doing research in finding safe ways towards the realization of artificial general intelligence (see \href{https://openai.com/about/}{https://openai.com/about/}).} shows an increase of a factor 300000 in the number of petaflop/s-day\footnote{A petaflop/s-day is defined as doing $10^{15}$ neural network operations per second for one day, or approximately $10^{20}$ operations per day~\cite{amodei2018}.} used in training machine learning systems between 2012 and the end of 2017 (\cref{fig:increasedaiflops}). 
 This corresponds to a doubling time of 3.5 months and is the result of increased parallelism and monetary investments.
 This is far lower than the doubling time of 18 to 24 months predicted by Moore's law.
@@ -2006,7 +2006,7 @@ One example consisted of a simulated environment in which the goal was to evolve
 Instead of developing movement strategies, some creatures would evolve to have a long rigid body, which would fall over when the simulation started, causing large average ground velocities.
 
 Another example is seen in automated program repair, where a program fixes another buggy program automatically.
-A set of tests is written which the program has to pass.
+The developer writes a set of tests which the program has to pass.
 GenProg, which used digital evolution to generate debugging programs, fixed a sorting algorithm by always making it return an empty list, which the tests considered as sorted.
 
 Solutions may also depend on bugs in the simulation platform being used, acting in a way as automated bug discovery.
@@ -2016,14 +2016,14 @@ In a similar vein buggy collision detection was used by creatures to obtain free
 When the simulation picked this up and corrected it, the upward force led to forward locomotion~\cite{1803.03453}.\footnote{Reference~\cite{1803.03453} contains many more examples.} 
 
 Preventing such reward function hacking and undesired side effects is an emerging field of study within AI, foreshadowing the possible eventual emergence of artificial general intelligence~\cite{amodei16_concr_probl_ai_safet}.
-Concurrently we are seeing a political debate develop related to the ways in which AI may be used maliciously~\cite{brundage18_malic_use_artif_intel}.
+Concurrently we are seeing a political debate develop related to the ways in which AI may be used maliciously right now~\cite{brundage18_malic_use_artif_intel}.
 
 Reward function with a simple scoring also have difficulties when confronted with problems where there is a clear temporal structure.
 An example of this can be found in the game Montezuma's revenge, in which a tomb is traversed in search of treasure.
 This game has a temporal structure in that certain doors within the game are locked until the player retrieves the appropriate key.
 A reward function based only on score performs poorly in this game~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, because the agent is not able to causally reason about the actions required to maximize score.\footnote{There is now also progress in this field. OpenAI is working on agents which can beat professional players in the game Dota 2. Dota 2 is a five-on-five strategy game in which the goal is to destroy the other teams base. Games can last upwards of 45 minutes, and require long-term strategies to win. The agent is now able to win against amateur and semi-professional players and will match against a professional team during the yearly Dota 2 tournament ``The International'' in August 2018. Note that this agent does suffer from some of the other problems discussed above, notably used resources (100000 CPUs) and data inefficiency (each training day is equivalent to 180 years of game time). It also does not learn to play directly from pixels, but uses a data interface to get the value for each of the 20000 relevant variables in the games~\cite{OpenAIDota}.}
 
-We also see this in the DSF scanning developed here.
+We also see the difficulty of developing reward functions in the DSF scanning developed here.
 The obvious choice for the reward function is the absolute form factor squared for the operator under consideration.
 The problem with this approach comes from the many decades spanned by the form factors.
 This makes the rewards for many transitions small, meaning these rewards will often only register as noise.
@@ -2033,7 +2033,7 @@ In~\cite{1709.06560} a systematic study was made of factors impacting performanc
 They found that simple changes, such as changing the activation function used in neural networks, can have a large effect on model performance.
 This makes the comparison between different models difficult if those effects are not taken into account.
 
-Another source of non-determinism are the random seeds used to initialize weights of neural networks.
+A source of non-determinism are the random seeds used to initialize weights of neural networks.
 \Cref{fig:halfcheetahdifferentresults} shows two averages for performance in the HalfCheetah environment, each taken over a set of five random seeds.\footnote{HalfCheetah is a research environment for reinforcement learning in which a cheetah-like creature has the goal of learning to walk.}
 The exact seeds chosen make a large difference in performance.
 This may lead to inaccuracy when reporting on the performance of algorithms, because performance is often based on the average over five runs.
@@ -2044,7 +2044,7 @@ This may lead to inaccuracy when reporting on the performance of algorithms, bec
 \end{figure}
 
 
-\Cref{fig:halfcheetah} shows another aspect of performance influence by random seed.
+\Cref{fig:halfcheetah} shows another aspect of performance influenced by random seeds.
 We see the performance over time of a new exploration method developed in~\cite{houthooft16_vime} and applied to HalfCheetah.
 The solid line is the median reward at each iteration, averaged over ten random seeds, with the shaded area showing the quartiles.
 Notice that the lowest quartile (the white area beneath the light orange shaded area) lies close to zero even after 1000 training iterations.
@@ -2087,9 +2087,9 @@ Additionally the computation time added by the evaluations of the neural network
 We then developed a method to optimize summation of matrix elements using Q-learning.
 For this we developed a binary-encoded representation of Lieb-Liniger states, as well as a way to encode state transitions in a neural network.
 We considered some of the limitations of this representation, notably its bias towards low-momentum states.
-Furthermore we considered the relationship between the number of particle-hole pairs and the size of form factors.
+Furthermore we considered the relationship between the number of particle-hole pairs and the size of density operator form factors.
 
-We proceeded to deploy Q-learning to find optimal summation strategies.
+We proceeded to deploy Q-learning to find optimal summation strategies for the density operator.
 We found that random state selection led to poor performance, as expected.
 Activating particle-hole pair minimization increased performance, leading to better results, with larger form factors being found.
 Results from Q-learning show that particle-hole minimization is essential for learning to select high value states.
@@ -2107,18 +2107,18 @@ Finally, we considered shortcomings of Q-learning as applied to DSF summation an
 In this thesis we used supervised learning to offer an initial guess for the numerical evaluation of rapidities.
 Reinforcement learning may also be used in this.
 Given a set of Bethe numbers, the rapidities can be predicted, after which convergence to machine precision is achieved through Newton iterations.
-The number of iterations may be used as part of a reward function, with the goal to improve the rapidity predictions by minimizing Newton iterations.
+The number of iterations can be used as part of a reward function, with the goal to improve the rapidity predictions by minimizing Newton iterations.
 
 One of the limitations of the current approach to Q-learning is that the representation used requires a UV cutoff of the Bethe numbers to be able to represent possible moves in Hilbert space.
 Furthermore, the size of action space scales as \({(I_{\infty+} + I_{\infty-} + 1)}^2\), meaning that action space sizes quickly become too large for efficient computation, irrespective of the number of particles involved.
 This problem may be solved by using an alternative representation of actions in terms of continuous changes.
-This has recently been done in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
+This has recently been done with Q-learning in continuous control applications such as operating a simulated gripper to grab a ball, controlled only by applying torque to joints~\cite{lillicrap15_contin_contr_with_deep_reinf_learn,gu16_contin_deep_q_learn_with}.
 
 Another improvement may come from using experience replay~\cite{mnih15_human_level_contr_throug_deep_reinf_learn,mnih13_playin_atari_with_deep_reinf_learn}.
 This allows for a way to deal with high correlation between consecutive states, by saving a tuple consisting of the current state, the action taken, the observed reward and the new state.
-Training is then performed on mini-batches of this set of transitions.
+Training is then performed on small batches of this set of transitions.
 This has the advantage that data is used multiple times during training, improving efficiency.
-Furthermore the correlations between consecutive states are broken, reducing the variance of updates.
+Furthermore, the correlations between consecutive states are broken, reducing the variance of updates.
 We did not use it here because in DSF calculation states may only be seen once to prevent double counting, thus making individual states not independent of the states that came before.
 
 A further weakness in the current implementation is that only ``connected states'' can be reached from any given state.
@@ -2128,14 +2128,14 @@ The tree-like approach may be considered for further research.
 
 We note that the approach explored in this thesis is in principle usable in any model, not only Bethe ansatz integrable systems.
 This is the case as long as eigenstates and matrix elements are known, a suitable expression for the f-sum rule exists, and a representation of states and moves can be found that is usable for computation.
-Thus further research is warranted in this area, since not all models may have a system such as ABACUS in place to calculate DSFs.
+Thus further research is warranted in this area, since not all models have a system such as ABACUS in place to calculate DSFs.
 
 On another front progress in computing DSFs may be made by Moore's law and the passage of time (as well as the development of new algorithms).
 We are seeing an increase in the system sizes realizable with exact diagonalization, with the low-energy properties of up to 50 spin-1/2 particles now accessible exactly~\cite{wietek18_sublat_codin_algor_distr_memor}.
 
 Furthermore, the mapping between deep learning and the renormalization group~\cite{Mehta2014} should be further explored.
-This could provide provide insight into the working of neural networks.
-It may also provide clues to the optimum number of layers in a system for a given input set, the determination of which currently depends on experience (a ``gut'' feeling) and experimentation.
+This could provide insight into the working of neural networks.
+It may also provide clues to the optimum number of layers in a system for a given input set, the determination of which currently depends on experience and experimentation.
 
 Finally, the fields of machine learning and artificial intelligence in general are currently experiencing large changes and advances.
 New methods and techniques are constantly developed and may also be applicable to the problem of DSF calculation.\footnote{They may also lead to paperclip maximizers~\cite{tegmark}, uncooperative spaceship computers and Arnold Schwarzenegger being sent back in time.}
@@ -2145,7 +2145,7 @@ I would like to thank Jean-Sébastien Caux for his supervision and valuable sugg
 Thanks to Sam Kuypers for help in understanding some derivations.
 I would also like to thank Sam, along with the rest of the J-S master gang (Jorran de Wit and Rebekka Koch), for always being there to have lunch with and their willingness to hear me grumble about my project.
 On the same note I would like to thank all the other people in the master room, in particular Miró van der Worp, who was always organizing lectures and talks to help distract everyone from their thesis.
-11
+
 To my theatre friends I would like to say: thanks for being non-physicists and for all the parties.
 
 Finally, I would like to thank my parents, Erik and Mickey.
@@ -2176,17 +2176,17 @@ Integrating over an interval \(x_-\in[-\epsilon,\epsilon]\) we get
   \label{eq:18}
   -\frac{1}{2} \frac{\partial^2}{\partial x_+^2} \int_{-\epsilon}^{\epsilon} \psi \dd x_- - 2 \int_{-\epsilon}^{\epsilon} \frac{\partial^2}{\partial x_-^2}\psi \dd x_- + 2c\int_{-\epsilon}^{\epsilon} \delta(x_-)\psi \dd x_- = E\int_{-\epsilon}^{\epsilon} \psi \dd x_.
 \end{align}
-The first term on the left hand side becomes 0 on \(\lim_{\epsilon\to0^+}\) as well as the term on the right hand side, leaving us with
+The first term on the left hand side becomes 0 when taking \(\lim_{\epsilon\to0^+}\), as well as the term on the right hand side, leaving us with
 \begin{align}
   \label{eq:19}
-  \left.- \frac{\partial}{\partial x_-} \psi \right|_{x_-=-0^+}^{x_-=0^+}  + \left.c\psi\right|_{x_-=0} = 0.
+  \eval{- \frac{\partial}{\partial x_-} \psi }_{x_-=-0^+}^{x_-=0^+}  + \eval{c\psi}_{x_-=0} = 0.
 \end{align}
 
 Given that we are dealing with the bosonic case we require symmetric wave functions, \(\psi(x_1,x_2)=\psi(x_2,x_1)\).
 This simplifies the result to
 \begin{align}
   \label{eq:20}
-  \left.(\partial_{x_2} - \partial_{x_1} - c) \psi(x_1, x_2)\right|_{x_2-x_1=0^+} = 0.
+  \eval{\qty(\partial_{x_2} - \partial_{x_1} - c) \psi(x_1, x_2)}_{x_2-x_1=0^+} = 0.
 \end{align}
 
 \begin{savequote}[50mm]
@@ -2198,11 +2198,11 @@ It's an ancient and honorable term for the final step in any engineering project
 
 When computing the dynamical structure function numerically we need a way to measure what fraction of relevant states has been summed.
 For this we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation~\cite{pitaevskii}.
-We first derive the general formula and then find sum rules for specific operators.
+We first derive the general formula and then find sum rules for the density operator of the Lieb-Liniger model.
 
 Starting with the dynamic structure function we have
 \begin{align}
-  	\mathcal{S}(k,\omega) &= \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t e^{i\omega t}\expval{[\mathcal{O}_j(t),\mathcal{O}_{j'}^{\dagger}(0)]},
+  	\mathcal{S}(k,\omega) &= \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t e^{i\omega t}\expval{\qty[\mathcal{O}_j(t),\mathcal{O}_{j'}^{\dagger}(0)]},
 \end{align}
 where the expectation value \(\expval{\ldots} = \matrixel{\gamma}{\ldots}{\gamma}\) is over some state \(\gamma\), although any averaging will work, as long as we are consistent.
 Defining the Fourier transform
@@ -2211,42 +2211,42 @@ Defining the Fourier transform
 \end{equation}
 we can rewrite part of this equation:
 \begin{align}
-  \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \expval{[\mathcal{O}_j(t),\mathcal{O}_{j'}^{\dagger}(0)]} &= \frac{1}{2N^3} \sum_{j, j'}\sum_{k',k''} e^{ij(k'-k)}e^{ij'(k-k'')}  \expval{[\mathcal{O}_{k'}(t),\mathcal{O}_{k''}^{\dagger}(0)]}\\
-&= \frac{1}{2N} \sum_{k',k''} \delta_{k,k'}\delta_{k,k''}  \expval{[\mathcal{O}_{k'}(t),\mathcal{O}_{k''}^{\dagger}(0)]} \\
-&= \frac{1}{2N}  \expval{[\mathcal{O}_{k}(t),\mathcal{O}_{k}^{\dagger}(0)]}.
+  \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \expval{\qty[\mathcal{O}_j(t),\mathcal{O}_{j'}^{\dagger}(0)]} &= \frac{1}{2N^3} \sum_{j, j'}\sum_{k',k''} e^{ij(k'-k)}e^{ij'(k-k'')}  \expval{\qty[\mathcal{O}_{k'}(t),\mathcal{O}_{k''}^{\dagger}(0)]}\\
+&= \frac{1}{2N} \sum_{k',k''} \delta_{k,k'}\delta_{k,k''}  \expval{\qty[\mathcal{O}_{k'}(t),\mathcal{O}_{k''}^{\dagger}(0)]} \\
+&= \frac{1}{2N}  \expval{\qty[\mathcal{O}_{k}(t),\mathcal{O}_{k}^{\dagger}(0)]}.
 \end{align}
 
 Now we look at the first frequency moment:
 \begin{align}
   I_k &= \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega)\\
-  &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{[\mathcal{O}_k(t),\mathcal{O}_{k}^{\dagger}(0)]}\\
+  &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \expval{\qty[\mathcal{O}_k(t),\mathcal{O}_{k}^{\dagger}(0)]}\\
 &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \left(\matrixel{\gamma}{\mathcal{O}_k(t)\mathcal{O}_{k}^{\dagger}(0)}{\gamma} - \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)\mathcal{O}_k(t)}{\gamma}\right) \\
 &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{\mathcal{O}_k(t)}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}(0)}{\gamma} \right.\nonumber\\
 &\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}(0)}{\alpha}\matrixel{\alpha}{\mathcal{O}_k(t)}{\gamma}\right)\\
 &= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(\matrixel{\gamma}{e^{iHt}\mathcal{O}_k e^{-iHt}}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\
 &\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{e^{iHt}\mathcal{O}_k e^{-iHt}}{\gamma}\right)\\
-&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
-&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- e^{i(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right), \label{eq:fourierfreqmoment}
+&= \frac{1}{2N} \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \int_{-\infty}^{\infty} \dd t e^{i\omega t} \sum_{\alpha} \left(e^{-i\qty(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} \right.\nonumber\\ 
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\left.- e^{i\qty(E_{\alpha}-E_{\gamma})}\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right), \label{eq:fourierfreqmoment}
 \end{align}
 where we used the Heisenberg relation \(\mathcal{O}(t) = e^{iHt}\mathcal{O}e^{-iHt}\) and introduced a complete set of states \(\alpha\), \(\mathbbm{1}=\sum_{\alpha}\ket{\alpha}\bra{\alpha}\).
 
 With the identity
 \begin{equation}
-  \int_{-\infty}^{\infty} \dd t e^{i(\omega-\omega')t} = 2\pi \delta(\omega-\omega')
+  \int_{-\infty}^{\infty} \dd t e^{i\qty(\omega-\omega')t} = 2\pi \delta(\omega-\omega')
 \end{equation}
 we can rewrite \cref{eq:fourierfreqmoment} as 
 \begin{align}
-  \frac{1}{2N} \sum_{\alpha} \int_{-\infty}^{\infty}&\dd \omega  \left(\delta(\omega-E_{\alpha}+E_{\gamma})\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma}\right. \nonumber\\
-&\qquad\left.- \delta(\omega+E_{\alpha}-E_{\gamma})\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
-&=\frac{1}{2N} \sum_{\alpha} (E_{\alpha} - E_{\gamma}) \left(\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
-&=\frac{1}{2N} \sum_{\alpha}  \left(-\matrixel{\gamma}{[H,\mathcal{O}_k]}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{[H,\mathcal{O}_k]}{\gamma}\right)\\
-&=\frac{-1}{2N} \matrixel{\gamma}{[[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma},
+  \frac{1}{2N} \sum_{\alpha} \int_{-\infty}^{\infty}&\dd \omega  \left(\delta\qty(\omega-E_{\alpha}+E_{\gamma})\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma}\right. \nonumber\\
+&\qquad\left.- \delta\qty(\omega+E_{\alpha}-E_{\gamma})\matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
+&=\frac{1}{2N} \sum_{\alpha} \qty(E_{\alpha} - E_{\gamma}) \left(\matrixel{\gamma}{\mathcal{O}_k}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\mathcal{O}_k}{\gamma}\right)\\
+&=\frac{1}{2N} \sum_{\alpha}  \left(-\matrixel{\gamma}{[H,\mathcal{O}_k]}{\alpha}\matrixel{\alpha}{\mathcal{O}_{k}^{\dagger}}{\gamma} + \matrixel{\gamma}{\mathcal{O}_{k}^{\dagger}}{\alpha}\matrixel{\alpha}{\qty[H,\mathcal{O}_k]}{\gamma}\right)\\
+&=\frac{-1}{2N} \matrixel{\gamma}{\qty[\qty[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma},
 \end{align}
 where we used \(H\ket{\alpha}=E_{\alpha}\ket{\alpha}\) and \(\mathbbm{1}=\sum_{\alpha}\ket{\alpha}\bra{\alpha}\).
 
 We have thus derived~\cite{Cauxfsum}
 \begin{align}
-  \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{[[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma}.
+  \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{\qty[\qty[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma}.
 \end{align}
 
 
@@ -2259,13 +2259,13 @@ The Hamiltonian in second-quantized form is~\cite{Franchini2017}
   \label{eq:1}
   H = \int \dd x \left[\partial_x\psi^{\dag}(x) \partial_{x} \psi(x) + c \psi^{\dag}(x)\psi^{\dag}(x)\psi(x)\psi(x)\right],
 \end{equation}
-with commutator \([\psi(x), \psi^{\dagger}(x')] = \delta(x-x')\).
+with commutator \(\qty[\psi(x), \psi^{\dagger}(x')] = \delta\qty(x-x')\).
 Applying the Fourier transform \(\psi (x) = \frac{1}{L}\sum_{k} e^{ikx}\psi_k\), we get
 \begin{equation}
   \label{eq:2}
   H = \frac{1}{L} \sum_k k^2 \psi^{\dagger}_{k}\psi_k +\frac{c}{L^3} \sum_{k_1,k_2,q} \psi^{\dag}_{k_1+q} \psi^{\dag}_{k_2+q} \psi_{k_2} \psi_{k_1},
 \end{equation}
-with commutator \([\psi_k,\psi_{k'}^{\dag}]=\delta_{k,k'}\).
+with commutator \(\qty[\psi_k,\psi_{k'}^{\dag}]=\delta_{k,k'}\).
 \end{sloppypar}
 
 The dynamic structure function in this case becomes
@@ -2296,39 +2296,39 @@ The first commutator in \cref{eq:hamiltoniancom} is
 \begin{align}
   \label{eq:7}
   \left[\psi_{k_2}^{\dag}\psi_{k_2}, \psi_{k_1}^{\dag}\psi_{k_1+k}\right] &= \psi_{k_2}^{\dag}\psi_{k_2} \psi_{k_1}^{\dag}\psi_{k_1+k} - \psi_{k_1}^{\dag}\psi_{k_1+k}\psi_{k_2}^{\dag}\psi_{k_2}\\
-                                                                          &= \psi_{k_2}^{\dag}[\psi_{k_2}, \psi_{k_1}^{\dag}]\psi_{k_1+k} +  \psi_{k_2}^{\dag}\psi_{k_1}^{\dag}\psi_{k_2}\psi_{k_1+k}\nonumber\\
-                                                                          &\quad- \psi_{k_1}^{\dag}[\psi_{k_1+k},\psi_{k_2}^{\dag}]\psi_{k_2} - \psi_{k_1}^{\dag}\psi_{k_2}^{\dag}\psi_{k_1+k}\psi_{k_2}\\
+                                                                          &= \psi_{k_2}^{\dag}\qty[\psi_{k_2}, \psi_{k_1}^{\dag}]\psi_{k_1+k} +  \psi_{k_2}^{\dag}\psi_{k_1}^{\dag}\psi_{k_2}\psi_{k_1+k}\nonumber\\
+                                                                          &\quad- \psi_{k_1}^{\dag}\qty[\psi_{k_1+k},\psi_{k_2}^{\dag}]\psi_{k_2} - \psi_{k_1}^{\dag}\psi_{k_2}^{\dag}\psi_{k_1+k}\psi_{k_2}\\
                                                                           &= L \delta_{k_1,k_2} \psi_{k_2}^{\dag}\psi_{k_1+k} - L \delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2} .
 \end{align}
 
 The second commutator of \cref{eq:hamiltoniancom} is 
 \begin{align}
   \label{eq:8}
-  [\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}, \psi_{k_1}^{\dag}\psi_{k_1+k}] &= 
+  \qty[\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}, \psi_{k_1}^{\dag}\psi_{k_1+k}] &= 
 \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}\psi_{k_1}^{\dag}\psi_{k_1+k} \nonumber\\
 & \quad - \psi_{k_1}^{\dag}\psi_{k_1+k}\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}\\
-&=\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}[\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}]\psi_{k_1+k} \nonumber\\
+&=\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\qty[\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}]\psi_{k_1+k} \nonumber\\
 & \quad - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1}^{\dag}\psi_{k_4}\psi_{k_3}\psi_{k_1+k} \nonumber\\\
-& \quad - \psi_{k_1}^{\dag}[\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}]\psi_{k_4}\psi_{k_3} \nonumber\\
+& \quad - \psi_{k_1}^{\dag}\qty[\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}]\psi_{k_4}\psi_{k_3} \nonumber\\
 & \quad+ \psi_{k_1}^{\dag}\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\psi_{k_4}\psi_{k_3}\\
-&=\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}[\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}]\psi_{k_1+k} \nonumber\\
-& \quad - \psi_{k_1}^{\dag}[\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}]\psi_{k_4}\psi_{k_3}.
+&=\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\qty[\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}]\psi_{k_1+k} \nonumber\\
+& \quad - \psi_{k_1}^{\dag}\qty[\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}]\psi_{k_4}\psi_{k_3}.
 \end{align}
 
 We have 
 \begin{align}
   \label{eq:9}
-  [\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}] &= \psi_{k_3}\psi_{k_4} \psi_{k_1}^{\dag} - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
-                                           &= \psi_{k_3} [\psi_{k_4}, \psi_{k_1}^{\dag}] + \psi_{k_3} \psi_{k_1}^{\dag} \psi_{k_4} - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
-                                           &= L\psi_{k_3} \delta_{k_1, k_4} + [\psi_{k_3}, \psi_{k_1}^{\dag}] \psi_{k_4} + \psi^{\dag}_{k_1} \psi_{k_3} \psi_4  - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
+  \qty[\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}] &= \psi_{k_3}\psi_{k_4} \psi_{k_1}^{\dag} - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
+                                           &= \psi_{k_3} \qty[\psi_{k_4}, \psi_{k_1}^{\dag}] + \psi_{k_3} \psi_{k_1}^{\dag} \psi_{k_4} - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
+                                           &= L\psi_{k_3} \delta_{k_1, k_4} + \qty[\psi_{k_3}, \psi_{k_1}^{\dag}] \psi_{k_4} + \psi^{\dag}_{k_1} \psi_{k_3} \psi_4  - \psi^{\dag}_{k_1} \psi_{k_3} \psi_4\\
                                            &= L\psi_{k_3} \delta_{k_1, k_4} + L\psi_{k_4} \delta_{k_1,k_3}
 \end{align}
 and 
 \begin{align}
   \label{eq:10}
-  [\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}] &= \psi_{k_1+k}\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
-                                                        & = [\psi_{k_1+k},\psi_{k_3+q}^{\dag}] \psi_{k_4-q}^{\dag} + \psi_{k_3+q}^{\dag} \psi_{k_1+k} \psi_{k_4-q}^{\dag} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
-                                                        &= [\psi_{k_1+k},\psi_{k_3+q}^{\dag}] \psi_{k_4-q}^{\dag} + [\psi_{k_3+q}^{\dag}, \psi_{k_1+k} ]\psi_{k_4-q}^{\dag} \nonumber\\
+  \qty[\psi_{k_1+k},\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}] &= \psi_{k_1+k}\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
+                                                        & = \qty[\psi_{k_1+k},\psi_{k_3+q}^{\dag}] \psi_{k_4-q}^{\dag} + \psi_{k_3+q}^{\dag} \psi_{k_1+k} \psi_{k_4-q}^{\dag} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
+                                                        &= \qty[\psi_{k_1+k},\psi_{k_3+q}^{\dag}] \psi_{k_4-q}^{\dag} + \qty[\psi_{k_3+q}^{\dag}, \psi_{k_1+k} ]\psi_{k_4-q}^{\dag} \nonumber\\
 &\quad+ \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k} - \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_1+k}\\
                                                         &= L\delta_{k_1+k,k_3+q} \psi_{k_4-q}^{\dag} + L\delta_{k_1+k,k_4-q} \psi_{k_3+q}^{\dag}.
 \end{align}
@@ -2336,8 +2336,8 @@ With this the second part of the commutator is (suppressing prefactors)
 \begin{align}
   \label{eq:11}
    \sum_{k_1,k_3,k_4,q}  &\left(\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3}, \psi_{k_1}^{\dag}\psi_{k_1+k}\right)\\
-  &=L\sum_{k_1,k_3,k_4,q}  \left(\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}(\psi_{k_3} \delta_{k_1, k_4} + \psi_{k_4} \delta_{k_1,k_3})\psi_{k_1+k} \right.\nonumber\\
- &\quad \left.  - \psi_{k_1}^{\dag}(\delta_{k_1+k,k_3+q} \psi_{k_4-q}^{\dag} + \delta_{k_1+k,k_4-q} \psi_{k_3+q}^{\dag})\psi_{k_4}\psi_{k_3}\right)\\
+  &=L\sum_{k_1,k_3,k_4,q}  \left(\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\qty(\psi_{k_3} \delta_{k_1, k_4} + \psi_{k_4} \delta_{k_1,k_3})\psi_{k_1+k} \right.\nonumber\\
+ &\quad \left.  - \psi_{k_1}^{\dag}\qty(\delta_{k_1+k,k_3+q} \psi_{k_4-q}^{\dag} + \delta_{k_1+k,k_4-q} \psi_{k_3+q}^{\dag})\psi_{k_4}\psi_{k_3}\right)\\
  &=L\sum_{k_3,k_4,q} \left( \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_3} \psi_{k_4+k} +  \psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4} \psi_{k_3+k}\right.\nonumber\\
  & \quad \left. -  \psi_{k_3+q-k}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_3} \psi_{k_4} - \psi_{k_3+q}^{\dag}\psi_{k_4-q-k}^{\dag}\psi_{k_3} \psi_{k_4}\right)\\
 &= 0,
@@ -2349,28 +2349,28 @@ Thus we have
   \label{eq:13}
   [H, \rho_k] &= \frac{1}{L^2} \sum_{k_1,k_2} k_2^2  \left( \delta_{k_1,k_2} \psi_{k_2}^{\dag}\psi_{k_1+k} -  \delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2} \right) \\
               &= \frac{1}{L} \sum_{k_1} k_1^2  \left(\psi_{k_1}^{\dag}\psi_{k_1+k} -  \psi_{k_1-k}^{\dag}\psi_{k_1} \right) \\
-              &= \frac{1}{L} \sum_{k_1} {(k_1^2 -(k_1+k))}^2 \psi_{k_1}^{\dag}\psi_{k_1+k}\\
-              &= \frac{1}{L} \sum_{k_1} (-2kk_1+k^2) \psi_{k_1}^{\dag}\psi_{k_1+k}.
+              &= \frac{1}{L} \sum_{k_1} {\qty(k_1^2 -(k_1+k))}^2 \psi_{k_1}^{\dag}\psi_{k_1+k}\\
+              &= \frac{1}{L} \sum_{k_1} \qty(-2kk_1+k^2) \psi_{k_1}^{\dag}\psi_{k_1+k}.
 \end{align}
 
 Now we can calculate the rest of the right side of the sum rule:
 \begin{align}
   \label{eq:14}
-  [[H,\rho_k],\rho_{-k}] &= \frac{1}{L^2} \sum_{k_1}(-2kk_1+k^2) \sum_{k_2} [\psi_{k_1}^{\dag}\psi_{k_1+k}, \psi_{k_2}^{\dag}\psi_{k_2-k}],
+  [[H,\rho_k],\rho_{-k}] &= \frac{1}{L^2} \sum_{k_1}\qty(-2kk_1+k^2) \sum_{k_2} [\psi_{k_1}^{\dag}\psi_{k_1+k}, \psi_{k_2}^{\dag}\psi_{k_2-k}],
 \end{align}
 where
 \begin{align}
   \label{eq:15}
-   \sum_{k_2} [\psi_{k_1}^{\dag}\psi_{k_1+k}, \psi_{k_2}^{\dag}\psi_{k_2-k}] &=  \sum_{k_2} \left(\psi_{k_1}^{\dag}\psi_{k_1+k} \psi_{k_2}^{\dag}\psi_{k_2-k} - \psi_{k_2}^{\dag}\psi_{k_2-k}\psi_{k_1}^{\dag}\psi_{k_1+k} \right)\\
-                                                                             &= \sum_{k_2} \left(\psi_{k_1}^{\dag}[\psi_{k_1+k}, \psi_{k_2}^{\dag}]\psi_{k_2-k} + \psi_{k_1}^{\dag} \psi_{k_2}^{\dag}\psi_{k_1+k}\psi_{k_2-k} \right.\nonumber\\
-&\quad\left. - \psi_{k_2}^{\dag}[\psi_{k_2-k},\psi_{k_1}^{\dag}]\psi_{k_1+k} -\psi_{k_2}^{\dag}\psi_{k_1}^{\dag}\psi_{k_2-k}\psi_{k_1+k} \right) \\
+   \sum_{k_2} \qty[\psi_{k_1}^{\dag}\psi_{k_1+k}, \psi_{k_2}^{\dag}\psi_{k_2-k}] &=  \sum_{k_2} \left(\psi_{k_1}^{\dag}\psi_{k_1+k} \psi_{k_2}^{\dag}\psi_{k_2-k} - \psi_{k_2}^{\dag}\psi_{k_2-k}\psi_{k_1}^{\dag}\psi_{k_1+k} \right)\\
+                                                                             &= \sum_{k_2} \left(\psi_{k_1}^{\dag}\qty[\psi_{k_1+k}, \psi_{k_2}^{\dag}]\psi_{k_2-k} + \psi_{k_1}^{\dag} \psi_{k_2}^{\dag}\psi_{k_1+k}\psi_{k_2-k} \right.\nonumber\\
+&\quad\left. - \psi_{k_2}^{\dag}\qty[\psi_{k_2-k},\psi_{k_1}^{\dag}]\psi_{k_1+k} -\psi_{k_2}^{\dag}\psi_{k_1}^{\dag}\psi_{k_2-k}\psi_{k_1+k} \right) \\
                                                                              &= L\sum_{k_2} \left(\delta_{k_1+k,k_2}\psi_{k_1}^{\dag}\psi_{k_2-k} - \delta_{k_2-k,k_1}\psi_{k_2}^{\dag}\psi_{k_1+k}\right) \\
                                                                              &= L \left(\psi_{k_1}^{\dag}\psi_{k_1} - \psi_{k_1+k}^{\dag}\psi_{k_1+k}\right) .
 \end{align}
 Thus
 \begin{align}
-  [[H,\rho_k],\rho_{-k}] &= \frac{1}{L} \sum_{k_1}(-2kk_1+k^2) \left(\psi_{k_1}^{\dag}\psi_{k_1} - \psi_{k_1+k}^{\dag}\psi_{k_1+k}\right) \\
-                         &=  \frac{1}{L} \sum_{k_1}(-2kk_1-k^2 -k^2+2kk_1) \psi_{k_1}^{\dag}\psi_{k_1}\\
+  [[H,\rho_k],\rho_{-k}] &= \frac{1}{L} \sum_{k_1}\qty(-2kk_1+k^2) \left(\psi_{k_1}^{\dag}\psi_{k_1} - \psi_{k_1+k}^{\dag}\psi_{k_1+k}\right) \\
+                         &=  \frac{1}{L} \sum_{k_1}\qty(-2kk_1-k^2 -k^2+2kk_1) \psi_{k_1}^{\dag}\psi_{k_1}\\
                          &=  \frac{-2k}{L} \sum_{k_1}\psi_{k_1}^{\dag}\psi_{k_1}\\
                          &= -2kN,
 \end{align}
