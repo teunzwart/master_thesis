@@ -3,7 +3,6 @@
 *.out
 *.bak
 *.log
-masterthesis.pdf
 *.synctex.gz
 *.toc
 *.bbl
@@ -13,3 +12,5 @@ masterthesis.pdf
 auto/
 *-eps-converted-to.pdf
 *.pyg
+.bst
+.bib

@@ -585,13 +585,13 @@ which is valid for all \(\abs{\lambda_p}>\lambda_F\) and all \(\lambda\).
 We can use that
 \begin{align}
   \label{eq:35}
-  -\frac{1}{2\pi}\qty(\pi \mathrm{sgn}\qty(\lambda_p) + \phi\qty(\lambda'-\lambda_p)) &= \frac{1}{2\pi} \int_{\lambda_p}^{\mathrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi\qty(\lambda-\lambda') \\
-                                                                          &= - \int_{\lambda_p}^{\mathrm{sgn}\qty(\lambda_p)\infty}\dd \lambda' \mathcal{C}\qty(\lambda-\lambda'),
+  -\qty(\pi \mathrm{sgn}\qty(\lambda_p) + \phi\qty(\lambda'-\lambda_p)) = \int_{\lambda_p}^{\mathrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi\qty(\lambda-\lambda') 
+                                                                          = - \int_{\lambda_p}^{\mathrm{sgn}\qty(\lambda_p)\infty}\dd \lambda' \mathcal{C}\qty(\lambda-\lambda'),
 \end{align}
 leading to~\cite{Caux2015}
 \begin{align}
   \label{eq:particledisplacement}
-  	D_p\qty(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda').
+  	D_p\qty(\lambda, \lambda_p) = -\frac{1}{2\pi}  \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda').
 \end{align}
 
 For holes we have 
@@ -607,13 +607,13 @@ for which the solution is
 Rewriting using
 \begin{align}
   \label{eq:39}
-  \frac{1}{2\pi} \qty\big(\pi \mathrm{sgn}(\lambda_h) + \phi(\lambda-\lambda_h)) &= \frac{1}{2\pi} \int_{-\mathrm{sgn}\qty(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi\qty(\lambda - \lambda') \\
-                                                                         &= - \int_{-\mathrm{sgn}\qty(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}\qty(\lambda-\lambda')
+   \qty\big(\pi \mathrm{sgn}(\lambda_h) + \phi(\lambda-\lambda_h)) = \int_{-\mathrm{sgn}\qty(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \frac{\dd}{\dd\lambda'} \phi\qty(\lambda - \lambda') 
+                                                                         = -  \int_{-\mathrm{sgn}\qty(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}\qty(\lambda-\lambda')
 \end{align}
 gives
 \begin{align}
   \label{eq:40}
-  D_h\qty\big(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda'),
+  D_h\qty\big(\lambda, \lambda_h) = - \frac{1}{2\pi} \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda'),
 \end{align}
 which is valid for all \(\abs{\lambda_h}<\lambda_F\) and all \(\lambda\)~\cite{Caux2015}.
 
@@ -650,8 +650,8 @@ Since the kernel is symmetric,  the value of the integral does not depend on whe
 This only adds a sign-function in front of the integral:
 \begin{align}
 	\theta\qty\big(\lambda_F - \abs{\lambda}) \int_{-\textrm{sgn}\qty(\lambda_p)\abs{\lambda-\lambda_p}}^{ - \textrm{sgn}\qty(\lambda_p)\infty} \dd a\,\mathcal{C}\qty\big(a) &= - \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda}) \int_{\abs{\lambda-\lambda_p}}^{\infty} \dd a\,\mathcal{C}\qty\big(a)\\
-	&= - \frac{1}{2\pi} \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda})  \left( \pi - 2\atan(\frac{\abs{\lambda - \lambda_p}}{c})\right)\label{eq:dpdeltanonsimplified}\\
-	&= - \frac{1}{\pi} \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right),
+	&= - \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda})  \left( \pi - 2\atan(\frac{\abs{\lambda - \lambda_p}}{c})\right)\label{eq:dpdeltanonsimplified}\\
+	&= - 2 \textrm{sgn}\qty(\lambda_p) \theta\qty\big(\lambda_F - \abs{\lambda})  \atan\left(\frac{c}{\abs{\lambda-\lambda_p}}\right),
 \end{align}
 where the last equality is valid because the argument of the arctangent is strictly positive.
 The above expression would not be valid without the Heaviside function, since the integral can only be solved in the manner above when \(\abs{\lambda}< \lambda_F\).
@@ -664,8 +664,8 @@ We have
 	&= -  \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda'\mathcal{C}\qty(\lambda''-\lambda') \right]\\
 	&=   \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\int_{\lambda''-\lambda_p}^{\lambda''-\textrm{sgn}\qty(\lambda_p)\infty} \dd a\,\mathcal{C}\qty\big(a) \right]\\
 	&= -\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\int_{\abs{\lambda''-\lambda_p}}^{\infty} \dd a\,\mathcal{C}\qty\big(a) \right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\frac{\pi}{2} - \atan(\frac{\abs{\lambda''-\lambda_p}}{c})\right]\\
-	&= -\frac{1}{\pi}\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \atan(\frac{c}{\abs{\lambda''-\lambda_p}}),
+	&= -\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \left[\pi - 2\atan(\frac{\abs{\lambda''-\lambda_p}}{c})\right]\\
+	&= -2\textrm{sgn}\qty(\lambda_p) \int_{-\lambda_F}^{\lambda_F} \dd \lambda''   \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \atan(\frac{c}{\abs{\lambda''-\lambda_p}}),
 \end{align}
 where, as before, we argued that \(\abs{\lambda''} < \abs{\lambda_p}\) and thus that \(\lambda'' - \lambda_p\) always has the opposite sign from \(\lambda_p\).
 
@@ -682,7 +682,7 @@ Taking these results together, the displacement function for type I excitations 
 
 For type II excitations the idea is much the same as type I.\@ Recalling \cref{eq:40}, the displacement is
 \begin{equation}
-	D_h\qty(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda'),
+	D_h\qty(\lambda, \lambda_h) = -\frac{1}{2\pi}  \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left(\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \right)\mathcal{C}\qty(\lambda''-\lambda'),
 \end{equation}
 which is valid for all \(\lambda_h\) (if \(\abs{\lambda_h} < \lambda_F\)) and all \(\lambda\)~\cite{Caux2015}.
 The \(\delta\)-function part of this equation becomes
@@ -700,7 +700,7 @@ Because both \({\abs{\lambda_h} < \lambda_F}\) and \({\abs{\lambda} < \lambda_F}
 We get
 \begin{align}
 	  \theta(\lambda_F - \abs{\lambda}) \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a \, \mathcal{C}(a) 
-	  &= \frac{1}{\pi}\theta(\lambda_F - \abs{\lambda}) \left[ \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\frac{\pi}{2}\right].
+	  &= \theta(\lambda_F - \abs{\lambda}) \left[2 \atan(\frac{\lambda-\lambda_h}{c}) - \textrm{sgn}(\lambda_h)\pi\right].
 \end{align}
 
 For hole-like excitations, the part of the displacement function involving \(\mathcal{L}^{(F)}(\lambda,\lambda')\) becomes
@@ -708,7 +708,7 @@ For hole-like excitations, the part of the displacement function involving \(\ma
 	 - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} &\dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'') \mathcal{C}\qty(\lambda''-\lambda')\\
 	 &= - \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\left[ \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \mathcal{C}\qty(\lambda''-\lambda')\right]\\
 	 &= \int_{-\lambda_F}^{\lambda_F} \dd \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\left[ \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda''-\lambda_h} \dd a \, \mathcal{C}\qty\big(a)\right]\\
-	 &= \frac{1}{\pi}\int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\left[ \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}\qty\big(\lambda_h)\frac{\pi}{2}\right],
+	 &= \int_{-\lambda_F}^{\lambda_F} \dd  \lambda''  \mathcal{L}^{(F)}\qty(\lambda,\lambda'')\left[2 \atan(\frac{\lambda''-\lambda_h}{c}) - \textrm{sgn}\qty\big(\lambda_h)\pi\right],
 \end{align}
 assuming \(\lambda''\) finite.
 
@@ -770,13 +770,13 @@ Here we have
 \end{equation}
 which converges as long as 
 \begin{equation}
-{\qty(\frac{2\lambda_F}{\pi^2c^3} \atan(\frac{2\lambda_F}{c}))}^{1/2} < 1.
+{\qty(\frac{8\lambda_F}{c} \atan(\frac{2\lambda_F}{c}))}^{1/2} < 1.
 \end{equation}
 If we only want to know the value of $\mathcal{L}^{(F)}$ at a single point we can use that at each iteration step $\mathcal{L}^{(F)}$ is a number, allowing us to take it out of the integral.
 We get
 \begin{gather}
   \mathcal{L}^{(F)}_{n+1} \qty(\lambda, \lambda') = \theta\qty(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} \qty(\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}\qty(\lambda, \lambda')\\
-= - \frac{1}{\pi} \theta\qty(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}\qty(\lambda,\lambda'),
+= - 2 \theta\qty(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}\qty(\lambda,\lambda'),
 \end{gather}
 where \(\mathcal{L}^{(F)}_0\qty(\lambda, \lambda')\) is 0. 
 \Cref{fig:lfplot} shows a numerical evaluation of \(\mathcal{L}^{(F)}\).
