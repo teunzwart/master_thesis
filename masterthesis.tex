@@ -286,11 +286,11 @@ Since we must fulfill \cref{eq:lieblinigerboundary} the amplitudes have to obey 
 \end{align}
 The right-hand side of this equation has modulus 1, meaning we can write it as a phase:
 \begin{align}
-	\frac{A_{12}}{A_{21}} = -e^{i\phi(\lambda_1-\lambda_2)},
+	\frac{A_{12}}{A_{21}} = -e^{-i\phi(\lambda_1-\lambda_2)},
 \end{align}
 where~\cite{Korepin1993}
 \begin{align}
-  \phi(\lambda_1-\lambda_2) = i \log(\frac{\lambda_1-\lambda_2 + ic}{\lambda_1-\lambda_2-ic}),
+  \phi(\lambda_1-\lambda_2) = \frac{1}{i} \log(\frac{c+i(\lambda_1-\lambda_2)}{c-i(\lambda_1-\lambda_2)}),
 \end{align}
 or
 \begin{align}
@@ -298,7 +298,7 @@ or
 \end{align}
 if we assume the argument of \(\phi\) to be real~\cite{Panfil2014}.
 
-We can now write the two-particle wave function by setting \(A_{21}=1\) (and ignoring normalization for the moment) to get
+We can now write the two-particle wave function by setting \(A_{21}=e^{i\phi/2}\) (and ignoring normalization for the moment) to get
 \begin{equation}
 	\psi(x_1,x_2) = - e^{-\frac{i}{2}\phi(\lambda_1-\lambda_2)+i(\lambda_1x_1 + \lambda_2 x_2)} + e^{\frac{i}{2}\phi(\lambda_1-\lambda_2)+i(\lambda_2 x_1 + \lambda_1 x_2)}.
 \end{equation}
@@ -524,7 +524,7 @@ Expanding the term in brackets gives\footnote{The expansions goes as follows:
 or, by rearranging and turning the sums into integrals, extending \(d_j\to d(\lambda,q)\) to the continuum
 \begin{multline}
   \label{eq:28}
-  d(\lambda,q) \left(1+2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda'\mathcal{C}\qty(\lambda'-\lambda)\rho\qty(\lambda')\right) = \\-\pi -\phi\qty\big(\lambda-q) + 2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}\qty(\lambda'-\lambda) \rho\qty(\lambda') d\qty(\lambda',q).
+  d(\lambda,q) \left(1+2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda'\mathcal{C}\qty(\lambda-\lambda')\rho\qty(\lambda')\right) = \\-\pi -\phi\qty\big(\lambda-q) + 2\pi \int_{-\lambda_F}^{\lambda_F} \dd \lambda' \mathcal{C}\qty(\lambda-\lambda') \rho\qty(\lambda') d\qty(\lambda',q).
 \end{multline}
 If we use the Lieb equation and introduce \(D_p(\lambda,q)=d(\lambda,q)\rho(\lambda)\), which is the displacement function for particle-like excitations, we get the integral equation~\cite{Caux2015,Franchini2017}
 \begin{align}
@@ -556,7 +556,7 @@ We now turn to solving these equations.
 To that end we introduce the truncated kernel:
 \begin{align}
   \label{eq:inversetruncated}
-  \mathcal{C}^{(F)}\qty(\lambda,\lambda') = \theta\qty\big(\lambda_F-\abs{\lambda}) \mathcal{C}\qty(\lambda'-\lambda) \theta\qty\big(\lambda_F-\abs{\lambda}).
+  \mathcal{C}^{(F)}\qty(\lambda,\lambda') = \theta\qty\big(\lambda_F-\abs{\lambda}) \mathcal{C}\qty(\lambda-\lambda') \theta\qty\big(\lambda_F-\abs{\lambda}).
 \end{align}
 
 Its associated inverse is defined by
@@ -833,12 +833,12 @@ We will briefly introduce the algebraic Bethe ansatz.
 \subsection{The algebraic Bethe ansatz}
 
 In the algebraic Bethe ansatz (ABA) we define our operators in terms of fields.
-The quantized Hamiltonian of the Lieb-Liniger model is\footnote{See~\cite{feynman} for a derivation.}
+The quantized Hamiltonian of the Lieb-Liniger model is
 \begin{align}
   \label{eq:30}
   H = \int_0^L \dd x \left(\partial_x \Psi^{\dag}(x) \partial_x \Psi(x) + c \Psi^{\dag}(x)\Psi^{\dag}(x)\Psi(x)\Psi(x)\right),
 \end{align}
-with the field operators obeying the commutation relation \([\Psi^{\dag}(x),\Psi(y)] = \delta(x-y)\).
+with the field operators obeying the commutation relation \([\Psi(x),\Psi^{\dag}(y)] = \delta(x-y)\).
 
 In the ABA a fundamental object is the monodromy matrix, consisting of operators \(A(\lambda), B(\lambda), C(\lambda), D(\lambda)\):
 \begin{align}
@@ -885,7 +885,7 @@ with
   f(\lambda,\mu) = \frac{\lambda-\mu+ic}{\lambda-\mu}, \qquad g(\lambda,\mu) = \frac{ic}{\lambda-\mu}.
 \end{align}
 
-Physical operators are defined in terms the field operator.
+Physical operators are defined in terms of the field operator.
 To explicitly determine the action of the operators on states we use the commutation relations
 \begin{align}
   \label{eq:47}
@@ -913,16 +913,16 @@ References~\cite{Korepin1993} and~\cite{slavnov18_algeb_bethe_ansat} contain a (
 Now we can calculate the form factor of the density operator.
 We only present here the result, referring to~\cite{slavnov90_noneq_time_curren_correl_funct} for the derivation.
 
-The density operator is~\cite{Nardis2015}
+The density operator is
 \begin{align}
   \hat{\rho}\qty\big(x) = \sum_{j=1}^N \delta\qty(x-x_j),
 \end{align}
-with \({\qty{x_j}}_{j=1}^N\) the positions of the particles in the gas, or in terms of fields~\cite{slavnov90_noneq_time_curren_correl_funct}
+with \({\qty{x_j}}_{j=1}^N\) the positions of the particles in the gas, or in terms of fields
 \begin{align}
   \label{eq:44}
   \hat{\rho}(x) = \Psi^{\dag}(x)\Psi(x).
 \end{align}
-The form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
+The form factor is~\cite{slavnov90_noneq_time_curren_correl_funct}
 \begin{multline}
   \label{eq:rho_form_factor}
   \matrixel{\{\mu\}}{\hat{\rho}(0)}{\{\lambda\}} = \frac{\det\big(I_N +U)}{V^+(p) - V^-(p)}
@@ -956,8 +956,9 @@ Hilbert space is a big place.
 
 \chapter{The ABACUS algorithm}\label{chap:abacus}
 
-The ABACUS algorithm, developed by Caux et al.~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
-Despite some analytic progress~\cite{Nardis2016,Nardis2015,slavnov90_noneq_time_curren_correl_funct}, this is still mostly a numerical affair.
+The ABACUS algorithm, developed by Caux~\cite{Caux2005, Caux2007, Caux2007a, Caux2005a}, allows for the computation of dynamical correlation functions.
+Despite some analytic progress, this is still mostly a numerical affair.
+%REMOVED PER JS ~\cite{Nardis2016,Nardis2015,slavnov90_noneq_time_curren_correl_funct}
 
 Specifically we are interested in calculating two-point zero-temperature equilibrium\footnote{At the time of writing ABACUS is also capable of calculating correlation function at arbitrary temperature and out-of-equilibrium (having been developed further since the appearance of~\cite{Caux2009} in 2009), but we will not consider that here further.} correlation functions of the form
 \begin{equation}\label{eq:expval}
@@ -969,7 +970,7 @@ The equivalent Fourier transformed quantity is the dynamical structure factor (D
 \begin{equation}\label{eq:DSF}
 	\mathcal{S}(k,\omega) = \frac{1}{N} \sum_{j,j'=1}^{N} \exp^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t \exp^{i\omega t}\expval{\mathcal{O}_j(t)\mathcal{O}_{j'}^{\dagger}(0)}.
 \end{equation}
-We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because this quantity is directly accessible in experiments~\cite{Caux2009,Caux2007a}.
+We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because this quantity is directly accessible in experiments.%~\cite{Caux2009,Caux2007a}.
 
 Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann representation of the DSF:\@
 \begin{equation}
@@ -1135,7 +1136,7 @@ In \cref{table:saturation} we see the efficiency of ABACUS.
 It presents the number of states necessary to reach a given saturation in the XXZ model\footnote{The XXZ model is another Bethe ansatz integrable model, consisting of spins, with Hamiltonian~\cite{Franchini2017}
     \begin{align}
       \label{eq:53}
-      H = - J \sum_{n=1}^N\left[S_{n}^x S_{n+1}^x+S_n^y S_{n+1}^y + \Delta S_n^z S_{n+1}^z\right].
+      H =  J \sum_{n=1}^N\left[S_{n}^x S_{n+1}^x+S_n^y S_{n+1}^y + \Delta S_n^z S_{n+1}^z\right].
     \end{align}
 } and the fraction of the Hilbert space necessary to reach this saturation.
 Although the algorithm is not perfect, only small fractions are necessary.
@@ -1212,7 +1213,7 @@ Reinforcement learning has been used to design setups for optical experiments wh
 Since the setups are often difficult to design, reinforcement learning is used, where the computer receives a reward if it creates an `interesting' state~\cite{Dunjko2017}.
 
 Interesting links also exist between deep learning and physics on a more fundamental level.
-For example, an exact mapping was established between the variational renormalization group en deep learning, implying that deep learning works by extracting relevant data features through coarse-graining, similar to the renormalization group~\cite{Mehta2014}. 
+For example, an exact mapping was established between the variational renormalization group and deep learning, implying that deep learning works by extracting relevant data features through coarse-graining, similar to the renormalization group~\cite{Mehta2014}. 
 
 In the rest of this chapter we will review some aspects of machine learning useful for solving Bethe ansatz solvable models.\footnote{Note that we always talk here about applying machine learning to quantum mechanics, not about machine learning on quantum computers (see~\cite{Dunjko2017}).}
 
@@ -1296,7 +1297,7 @@ If we make a small step in weight vector space, \(\mathbf{w}+\delta\mathbf{w}\),
 The error function is a smooth continuous function, so its minimum will occur when \(\nabla E(\mathbf{w})=0\).
 Locating such a minimum is non-trivial due to the non-linear nature of the error function.
 Points with \(\nabla E(\mathbf{w})=0\) are often local minima, and in a two layer network with \(M\) hidden units such as described above any point in weight space is part of a set of \(M!2^M\) equivalent points.
-Finding an exact solution for the minimum is thus infeasible, prompting instead the use of iterative approaches of the form
+Finding an exact solution for the minimum is thus unfeasible, prompting instead the use of iterative approaches of the form
 \begin{align}
   \label{eq:62}
 \mathbf{w}^{(\tau+1)}=\mathbf{w}^{(\tau)}+\Delta \mathbf{w}^{(\tau)},
@@ -1312,7 +1313,7 @@ Updates move the weights in the direction of the negative gradient:
 The parameter \(\eta > 0\) is known as the learning rate.\footnote{Parameters such as \(\eta\) are known as hyperparameters and influence the model during training.}
 Because the error is defined over the entire training set, at each iteration the entire set has to be processed when evaluating \(\nabla E\).
 This is inefficient and means that training can only occur on an existing data set which can not change during training.
-An online method exists where the error consist of a sum of errors on each data point:
+An online method exists where the error consists of a sum of errors on each data point:
 \begin{align}
   \label{eq:64}
   E(\mathbf{w}) = \sum_{n=1}^{N} E_n(\mathbf{w}).
@@ -1520,6 +1521,7 @@ Notably it learned part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lamb
 The real question is whether the initial guesses of the neural network are better than those of the Naive Bethe approach.
 Comparing different initial guess methods in \cref{fig:iterations}, we see this being the case.
 We compare the average number of iterations to convergence over 1000 sets of Bethe numbers for each method.
+A lower number of iterations is better.
 The difference between Naive Bethe and ML is most pronounced for \(N=5\), being on average \(0.95\) iterations.
 This difference decreases to \(0.43-0.45\) iterations for \(N=10\) and to \(0.07-0.09\) iterations for \(N=20\).
 This decrease is probably due to the inability of the neural network to capture the increasing number of cross interactions of the rapidities with increasing system size.
@@ -1817,7 +1819,7 @@ When we use the same settings as above~(\(L=N=5, I_{\max}=12\)), we find that on
 We should note that, because ABACUS can scan within momentum slices, uniformly high saturations can be achieved (\cref{fig:abacus_saturations_12_5}).
 \end{sloppypar}
 
-If we consider a larger system the power ABACUS becomes even clearer.
+If we consider a larger system the power of ABACUS becomes even clearer.
 We calculate the density-density DSF for \(c=1\), \(L=N=11\) and \(I_{\max}=40\).
 This yields a state space of at least size \(\binom{81}{11}\approx 1.2\times 10^{13}\).
 The desired sum rule saturation of 99.9\% (\cref{fig:abacus_saturations}) is achieved with 9376 states, summed over approximately 7 seconds.
@@ -1982,7 +1984,7 @@ Even in the best case approximately 15 million frames (at 60 Hertz) were require
 But this was already an improvement on the original work done in~\cite{mnih15_human_level_contr_throug_deep_reinf_learn}, where only one in four frames where used to improve computational efficiency and which required 38 days of gametime to train on 50 million sample frames.
 A similar data inefficiency is seen in~\cite{heess17_emerg_locom_behav_rich_envir}.
 Although the results are impressive (an agent learns to navigate a challenging environment consisting of hurdles and gaps using only a simple reward function), training took 100 hours of wall clock time on 64 workers, for 6400 hours in total~\cite[Figure 1]{heess17_emerg_locom_behav_rich_envir}.
-This all in contrast to humans, who are often able to able to learn from a single example~\cite{marcus18_deep_learn}.
+This all in contrast to humans, who are often able to learn from a single example~\cite{marcus18_deep_learn}.
 
 This leads to the conjecture that a well-engineered handcrafted function may outperform a reinforcement learning solution, if such a function can be created.
 This is the case for ABACUS, where the applicability to large systems stems from the preliminary information provided by integrability, built into the algorithm~\cite{Caux2009}.
@@ -2201,6 +2203,7 @@ When computing the dynamical structure function numerically we need a way to mea
 For this we can use the f-sum rule, which is a model-independent equality linking an integral over the dynamic structure function to a commutator of the Hamiltonian of the system and the operator under investigation~\cite{pitaevskii}.
 We first derive the general formula and then find sum rules for the density operator of the Lieb-Liniger model.
 
+Consider a lattice model where \(N\) is the number of lattice sites and thus system size.
 Starting with the dynamic structure function we have
 \begin{align}
   	\mathcal{S}(k,\omega) &= \frac{1}{2N} \sum_{j,j'=1}^{N} e^{-ik(j-j')} \int_{-\infty}^{\infty}\dd t e^{i\omega t}\expval{\qty[\mathcal{O}_j(t),\mathcal{O}_{j'}^{\dagger}(0)]},
@@ -2247,6 +2250,7 @@ where we used \(H\ket{\alpha}=E_{\alpha}\ket{\alpha}\) and \(\mathbbm{1}=\sum_{\
 
 We have thus derived~\cite{Cauxfsum}
 \begin{align}
+\label{eq:generalfsum}
   \int_{-\infty}^{\infty}\frac{\dd \omega}{2\pi} \omega \mathcal{S}(k,\omega) = \frac{-1}{2N} \matrixel{\gamma}{\qty[\qty[H,\mathcal{O}_k],\mathcal{O}_{k}^{\dagger}]}{\gamma}.
 \end{align}
 
@@ -2283,7 +2287,7 @@ with the Fourier transform of the density operator being
          &= \frac{1}{L} \sum_{k_1} \psi_{k_1}^{\dag} \psi_{k_1+k}.
 \end{align}
 
-The f-sum rule becomes
+Adapting \cref{eq:generalfsum} to the Lieb-Liniger model, the f-sum rule becomes
 \begin{equation}
   \label{eq:5}
   \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega\mathcal{S} (k, \omega) = \frac{-1}{2L} \expval{[[H,\rho_k],\rho_{-k}]}.
@@ -2372,8 +2376,8 @@ Thus
 \begin{align}
   [[H,\rho_k],\rho_{-k}] &= \frac{1}{L} \sum_{k_1}\qty(-2kk_1+k^2) \left(\psi_{k_1}^{\dag}\psi_{k_1} - \psi_{k_1+k}^{\dag}\psi_{k_1+k}\right) \\
                          &=  \frac{1}{L} \sum_{k_1}\qty(-2kk_1-k^2 -k^2+2kk_1) \psi_{k_1}^{\dag}\psi_{k_1}\\
-                         &=  \frac{-2k}{L} \sum_{k_1}\psi_{k_1}^{\dag}\psi_{k_1}\\
-                         &= -2kN,
+                         &=  \frac{-2k^2}{L} \sum_{k_1}\psi_{k_1}^{\dag}\psi_{k_1}\\
+                         &= -2k^2N,
 \end{align}
 where we used 
 \begin{align}
@@ -2557,7 +2561,7 @@ S.~M.~Zemyan, \textit{The Classical Theory of Integral Equations}, Birkhäuser B
 
 
 
-\bibitem{feynman} 
+\bibitem{feynman} \textbf{REMOVE}
 R.~P.~Feynman, \emph{Statistical Mechanics: A Set of Lectures}, Westview Press, ISBN~9780201360769 (1998).
 
 
@@ -2605,7 +2609,7 @@ J.-S.~Caux and J.~Michel Maillet, \textit{Computation of Dynamical Correlation F
 
 
 
-\bibitem{Nardis2016} 
+\bibitem{Nardis2016} \textbf{REMOVE}
 J.~De Nardis and M.~Panfil, \textit{Exact correlations in the Lieb-Liniger model and detailed balance  out-of-equilibrium}, SciPost Phys. \textbf{1}, 015 (2016), \doi{10.21468/SciPostPhys.1.2.015}.
 
 
@@ -2658,7 +2662,7 @@ R.~Poplin \textit{et al.}, \textit{Creating a universal SNP and small indel vari
 
 
 \bibitem{Liu2017}
-Z.~Liu, S.~P.~Rodrigues and W.~Cai, \textit{Simulating the Ising Model with a Deep Convolutional Generative Adversarial Network}, arXiv:\href{https://arxiv.org/abs/1710.04987}{1710.04987}.
+M.-Y. Liu, T. Breuel and J. Kautz, \textit{Unsupervised Image-to-Image Translation Networks}, arXiv:\href{https://arxiv.org/abs/1703.00848}{1703.00848}.
 
 
 
