@@ -126,7 +126,7 @@
 \ 
 \vfill
 \noindent
-\textbf{Cover image:} Randall Munroe, \textit{Machine Learning}, xkcd, \href{https://xkcd.com/1838/}{https://xkcd.com/1838/}.
+\textbf{Cover image:} Randall Munroe, \textit{Machine Learning}, xkcd, \href{https://xkcd.com/1838}{https://xkcd.com/1838}.
 
 
 
@@ -151,7 +151,7 @@ In the distance, the cat hears the sound of lobster minds singing in the void, a
 
 Correlation functions play an important role in physics, but analytical results do not always exist.
 For Bethe ansatz solvable models the ABACUS algorithm can numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
-This occurs through summing of matrix elements in the Lehmann series representation of the DSF.\@
+This occurs through summing of matrix elements in the Lehmann representation of the DSF.\@
 This summing is not optimal, in that it does not sum matrix elements in strictly  monotonically decreasing order.
 
 In this thesis we apply reinforcement learning to the summing of matrix elements, hoping to develop a strategy that leads to more optimal summation than done by ABACUS.\@
@@ -186,7 +186,7 @@ If we quantize the system an equation known as the Bethe equation emerges, which
 Physical properties of Bethe ansatz solvable models have expressions in terms of rapidities~\cite{Korepin1993}.
 For this class of models the ABACUS algorithm~\cite{Caux2009} allows for the numerical evaluation of the Fourier transform of the correlation function, known as a dynamical structure function or DSF.\@
 
-The DSF can be evaluated by considering its Lehmann series representation:
+The DSF can be evaluated by considering its Lehmann representation:
 \begin{equation}\label{eq:lehmanintro}
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta\qty(\omega-E_{\mu}+E_0), 
 \end{equation}
@@ -304,10 +304,10 @@ We can now write the two-particle wave function by setting \(A_{21}=1\) (and ign
 \end{equation}
 Generalization to the whole domain (not just where \(x_1 < x_2\)) follows from requiring the wave function to be fully symmetric under coordinate exchange, yielding
 \begin{equation}
-  \psi\qty(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} {(-1)}^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_2 x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
+  \psi\qty(x_1,x_2) = \textrm{sgn}(x_2-x_1)\sum_{P\in\pi_2} {(-1)}^{[P]} e^{i\lambda_{P_1}x_1 + i \lambda_{P_2} x_2- \frac{i}{2} \textrm{sgn}(x_2-x_1)\phi(\lambda_{P_1}-\lambda_{P_2})}.
 \end{equation}
 The sum runs over the permutations of the set \((1,2)\)~\cite{Caux2015}.
-This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to 0.
+This wave function is antisymmetric under exchange of quasimomenta, meaning that any wave function in which \(\lambda_1=\lambda_2\) is equal to zero.
 
 
 Going to the many-particle state is now a straightforward generalization of the two-particle case.
@@ -436,11 +436,11 @@ Because \(\abs{\atan(x)-\atan(y)}\leq\abs{x-y}\), the left side has the same sig
 The norm of a Bethe eigenstate has an expression proportional to a determinant.
 This result was first conjectured by Gaudin and for the Lieb-Liniger model takes the form~\cite{Caux2007}
 \begin{align}
-  \braket{\{\lambda\}}{\{\lambda\}} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}} \det\qty(\mathcal{G}\qty(\{\lambda\})),
+  \braket{\{\lambda\}}{\{\lambda\}} = c^N \prod_{k=1}^N \prod_{j=k+1}^N \frac{\lambda_{jk}^2 + c^2}{\lambda_{jk}^2} \det\qty(\mathcal{G}\qty(\{\lambda\})),
 \end{align}
 where $\mathcal{G}(\{\lambda\})$ is the Gaudin matrix of the state, with elements
 \begin{align}\label{eq:gaudin}
-  \mathcal{G}{(\{\lambda\})}_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}\mathcal{C}\qty(\lambda_j-\lambda_m)\right) - \mathcal{C}\qty(\lambda_j, \lambda_k),
+  \mathcal{G}{(\{\lambda\})}_{jk} = \delta_{jk} \left(L + \sum_{m=1}^{N}\mathcal{C}\qty(\lambda_j-\lambda_m)\right) - \mathcal{C}\qty(\lambda_j- \lambda_k),
 \end{align}
 and \(\lambda_{jk} = \lambda_j-\lambda_k\).
 
@@ -465,7 +465,7 @@ This allows us to differentiate \cref{eq:contbethe} with respect to \(\lambda\) 
 
 If we now change the sum to an integral we get 
 \begin{align}
-  \frac{1}{L} \sum_l \mathcal{C}\qty(\lambda(x)- \lambda_l) \to \int_{-\lambda_F}^{\lambda_F} \mathcal{C}(\lambda,\mu) \rho(\mu) \dd \mu, 
+  \frac{1}{L} \sum_l \mathcal{C}\qty(\lambda(x)- \lambda_l) \to \int_{-\lambda_F}^{\lambda_F} \mathcal{C}(\lambda-\mu) \rho(\mu) \dd \mu, 
 \end{align}
 leading to~\cite{Korepin1993}
 \begin{align}
@@ -930,7 +930,7 @@ The form factor is~\cite{slavnov90_noneq_time_curren_correl_funct, Nardis2015}
 \end{multline}
 with element of the matrix \(U\) given by
 \begin{align}
-  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+\qty(\lambda_j) -V^-\qty(\lambda_j)}\prod_{\substack{m=1\\m\neq j}}^N \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(\mathcal{C}\qty(\lambda_j, \lambda_k) - \mathcal{C}\qty\big(p, \lambda_k)\right),
+  U_{jk} = i \frac{\mu_j-\lambda_j}{V^+\qty(\lambda_j) -V^-\qty(\lambda_j)}\prod_{\substack{m=1\\m\neq j}}^N \left(\frac{\mu_m - \lambda_j}{\lambda_m-\lambda_j}\right) \left(\mathcal{C}\qty(\lambda_j- \lambda_k) - \mathcal{C}\qty\big(p- \lambda_k)\right),
 \end{align}
 and 
 \begin{align}
@@ -971,7 +971,7 @@ The equivalent Fourier transformed quantity is the dynamical structure factor (D
 \end{equation}
 We can construct \cref{eq:expval} from this given knowledge of the DSF for all energies and momenta, but \cref{eq:DSF} is often more useful because this quantity is directly accessible in experiments~\cite{Caux2009,Caux2007a}.
 
-Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann series representation of the DSF:\@
+Calculating \cref{eq:DSF} is often still complicated, but by introducing the Fourier transform of the operators $\mathcal{O}_k=\sum_j \exp^{-ikj} \mathcal{O}_j$, and performing the time integrations, we get the Lehmann representation of the DSF:\@
 \begin{equation}
   \label{eq:lehman}
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta\qty(\omega-E_{\mu}+E_0), 
@@ -994,8 +994,9 @@ In fact, the accuracy can be measured using sum rules, and saturations above 99\
 
 \section{Numerically solving the Bethe equations}\label{sec:numer-solv-bethe}
 
+As we saw in the previous chapter, we need to know the rapidities of states in order to calculate form factors and energies.
 In general the computation of rapidities of Bethe integrable systems is non-trivial, with complex rapidities making the computation difficult.
-For the Lieb-Liniger model there is a simplifying condition, since the rapidities are all real and the Yang-Yang system of the model is convex (see \cref{th:convexity}), meaning there is a unique solution for a given set of quantum numbers.
+For the Lieb-Liniger model there is a simplifying condition, since the rapidities are all real and the Yang-Yang action of the model is convex (see \cref{th:convexity}), meaning there is a unique solution for a given set of quantum numbers.
 
 In this case we can use the matrix Newton method to calculate rapidities.
 To introduce this method we first look at the one-dimensional case.
@@ -1017,7 +1018,7 @@ As in the single variable case this converges quadratically.
 
 To prevent the calculation of the inverse of the Jacobian, in practice Newton's method takes the form
 \begin{equation}\label{eq:practicalnewton}
-  J(\mathbf{x}^k)\qty[\mathbf{x}^{k+1} - \mathbf{x}^k] = - \mathbf{f}\qty(\mathbf{x}^k),
+  J\qty(\mathbf{x}^k)\qty[\mathbf{x}^{k+1} - \mathbf{x}^k] = - \mathbf{f}\qty(\mathbf{x}^k),
 \end{equation}
 where, given \(\mathbf{x}^k\), we calculate \(J\qty(\mathbf{x}^k)\) and \( \mathbf{f}\qty(\mathbf{x}^k)\), and then solve the system of linear coupled equations to get \(\Delta\mathbf{x}=\mathbf{x}^{k+1} - \mathbf{x}^k\), which is added to \(\mathbf{x}^k\) to get \(\mathbf{x}^{k+1}\)~\cite{Sueli2003}. 
 This linear system can be solved using LU decomposition~\cite{Press2007}.\footnote{In an LU decomposition we rewrite the set of linear equations:
@@ -1037,16 +1038,16 @@ Recalling \cref{chap:bethe_ansatz}, the Bethe equations in logarithmic form are
 \end{align}
 or
 \begin{align}
-  \frac{2\pi}{L}I_j - \lambda_j + \frac{1}{L} \sum_{l=1}^N \phi\qty(\lambda_j - \lambda_l) = B\qty\big(\{\lambda\}),
+  \frac{2\pi}{L}I_j - \lambda_j - \frac{1}{L} \sum_{l=1}^N \phi\qty(\lambda_j - \lambda_l) = B\qty\big(\{\lambda\}),
 \end{align}
 with
 \begin{equation}
-  \phi\qty(\lambda_j - \lambda_l) = -2\arctan\left(\frac{\lambda_j-\lambda_l}{c}\right).
+  \phi\qty(\lambda_j - \lambda_l) = 2\arctan\left(\frac{\lambda_j-\lambda_l}{c}\right).
 \end{equation}
 
 If we recast this is the shape of \cref{eq:practicalnewton}, we get
 \begin{equation}
-  \mathcal{G}(\{\lambda^k\}) \Delta \lambda = -B(\{\lambda^k\}),
+  \mathcal{G}\qty(\qty{\lambda^k}) \Delta \lambda = -B\qty(\qty{\lambda^k}),
 \end{equation}
 where we used that the Jacobian of the Bethe equations is equal to the Gaudin matrix (\cref{eq:gaudin})~\cite{Caux2009}.
 
@@ -1086,9 +1087,9 @@ On machines implementing IEEE 754--2008 (the standard for floating-point arithme
 With the rapidities in hand (and the form factors and Gaudin norm readily computed therefrom, see~\cref{chap:bethe_ansatz}), we are now faced with the summation over states.
 At face value we may now hit a wall, since we are tasked with exploring a factorially large space and find eigenstates with monotonically decreasing absolute numerical form factor values.
 The dimensionality of the state space is equal to the number of allowed choices of quantum numbers because a Pauli-like principle is at work.
-For the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator), given $M$ particles and a UV cutoff for the upper bound, $I_{\infty+}$, and lower bound of the quantum number $I_{\infty-}$, the number of states is~\cite{Caux2009}\footnote{This is the number of states if particle Bethe numbers can not exceed the UV-cutoffs. In the current implementation of ABACUS scanning within a single momentum slice is possible, which may include states in which individual particles exceed \(I_{\max}\), but which sum to lie within the allowed interval. Therefore this number can now be seen as a lower limit on the size of the Hilbert space under consideration.}
+For the Lieb-Liniger model (where all rapidities are real, and for a particle preserving operator), given $N$ particles and a UV cutoff for the upper bound, $I_{\infty+}$, and lower bound of the quantum number $I_{\infty-}$, the number of states is~\cite{Caux2009}\footnote{This is the number of states if particle Bethe numbers can not exceed the UV cutoffs. In the current implementation of ABACUS scanning within a single momentum slice is possible, which may include states in which individual particles exceed \(I_{\max}\), but which sum to lie within the allowed interval. Therefore this number can now be seen as a lower limit on the size of the Hilbert space under consideration.}
 \begin{equation}
-  \binom{I_{\infty+} + I_{\infty-} + 1}{M} = \frac{(I_{\infty+} + I_{\infty-} + 1)!}{M!(I_{\infty+} + I_{\infty-} + 1 - M)!}.
+  \binom{I_{\infty+} + I_{\infty-} + 1}{N} = \frac{(I_{\infty+} + I_{\infty-} + 1)!}{N!(I_{\infty+} + I_{\infty-} + 1 - N)!}.
 \end{equation}
 Luckily, there are some principles that allow for the definition of an efficient algorithm for scanning the Hilbert space.
 
@@ -1270,14 +1271,14 @@ For regression (finding continuous variables) the output would be linear (\(y_k=
 Taking it all together we get a network that looks like (using a sigmoid as the last activation)
 \begin{align}
   \label{eq:60}
-  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=1}^M w_{kj}^{(2)}h\left(\sum_{i=1}^D w_{ji}^{(1)}+w_{j0}^{(1)}\right)+w_{k0}^{(2)}\right),
+  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=1}^M w_{kj}^{(2)}h\left(\sum_{i=1}^D w_{ji}^{(1)}x_i+w_{j0}^{(1)}\right)+w_{k0}^{(2)}\right),
 \end{align}
 with \(\mathbf{w}\) the set of all weight and bias parameters.
 Evaluation of \cref{eq:60} is known as forward propagation and the network is a feedforward network: there are no layers which feed back information to previous layers.
 
 The bias parameters can be absorbed in the weight parameters by defining an additional input variable \(x_0=1\), resulting in 
 \begin{align}
-  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=0}^M w_{kj}^{(2)}h\left(\sum_{i=0}^D w_{ji}^{(1)}\right)\right).
+  y_k(\mathbf{x},\mathbf{w}) = \sigma\left(\sum_{j=0}^M w_{kj}^{(2)}h\left(\sum_{i=0}^D w_{ji}^{(1)}x_i\right)\right).
 \end{align}
 
 Now we get to training the model, or, in other words, tuning the network weights in such a way that the network can link inputs to outputs.
@@ -1421,8 +1422,8 @@ Note that there is no proof of convergence to an optimal solution for this metho
      \For{epoch=1,M}
      \For{t=1,T}
      \State{Select random action $a_t$ with probability $\epsilon$}
-     \State{otherwise select $a_t = \max_a Q(s_t;\theta)$}
-     \State{Execute action $a_t$ and observe reward and state $s_t$}
+     \State{otherwise select $a_t = \max_a Q(s_t;\mathbf{w})$}
+     \State{Execute action $a_t$ and observe reward and state $s_{t+1}$}
      \State{Make a copy \(y\) of \(Q\)}
      \If{$s_t$ terminal state}
      \State{$y_j = (1-\alpha) Q(s_t;\mathbf{w}) + \alpha r_j$}
@@ -1528,14 +1529,14 @@ Damping does not appear to have a large impact on convergence, and we will from 
 
 When we compare the time until convergence, a different picture emerges.
 Looking at \cref{fig:convtimes} we see that the ML method is consistently slower than Naive Bethe, although the difference decreases as \(N\) increases.
-This is probably because during Newton iterations we use LU decompositions, which have an algorithmic complexity \(\mathcal{O}(N^3)\)~\cite{Press2007}.
-For large \(N\) this step outweighs the increased complexity introduced by the neural network compared to a naive guess, because the number of parameters determines the number of calculations necessary for evaluation in the neural network and is of order \(\mathcal{O}(N^2)\).
+This is probably because during Newton iterations we use LU decompositions, which have an algorithmic complexity \(\order{N^3}\)~\cite{Press2007}.
+For large \(N\) this step outweighs the increased complexity introduced by the neural network compared to a naive guess, because the number of parameters determines the number of calculations necessary for evaluation in the neural network and is of order \(\order{N^2}\).
 This also explains why the random initializations are generally slower. 
-The increased number of iterations with their associated operations of \(\mathcal{O}(N^3)\) makes reaching convergence take longer.
+The increased number of iterations with their associated operations of \(\order{N^3}\) makes reaching convergence take longer.
 Note that the durations in \cref{fig:convtimes} for machine learning do not capture the time required for data set generation and training, making the actual times required to get predictions for the rapidities longer than those reported.
 Machine learning thus does not aid in determining rapidities more efficiently.
 
-The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} are found in \cref{cha:rawvalues}.
+The raw values reported in \cref{fig:iterations,fig:convtimes} are found in \cref{cha:rawvalues}.
 
 \begin{figure}[ph]
   \centering
@@ -1558,7 +1559,7 @@ The raw values reported in \cref{fig:iterations} and \cref{fig:convtimes} are fo
 We now turn to exploring the state space of Bethe integrable models using machine learning.
 Given a starting point in state space (usually the ground state), we want to explore the state space in the most efficient way possible.
 
-Recalling the Lehman representation of the dynamic structure function (DSF, \cref{eq:lehman})
+Recalling the Lehmann representation of the dynamic structure function (DSF, \cref{eq:lehman})
 \begin{equation}
   \mathcal{S}(k,\omega) = \frac{2\pi}{N}\sum_{\mu}\abs{\mel{\lambda^0}{\mathcal{O}_k}{\mu}}^2 \delta\qty(\omega-E_{\mu}+E_0), 
 \end{equation}
@@ -1988,7 +1989,7 @@ This is the case for ABACUS, where the applicability to large systems stems from
 Thus learning the structure of the form factor space by reinforcement would probably take an inordinate number of samples.
 
 State of the art machine learning setups are also experiencing an large increase in compute power used.
-Data~\cite{amodei2018} compiled by the nonprofit OpenAI\footnote{OpenAI was founded with the goal of doing research in finding safe ways towards the realization of artificial general intelligence (see \href{https://openai.com/about/}{https://openai.com/about/}).} shows an increase of a factor 300000 in the number of petaflop/s-day\footnote{A petaflop/s-day is defined as doing $10^{15}$ neural network operations per second for one day, or approximately $10^{20}$ operations per day~\cite{amodei2018}.} used in training machine learning systems between 2012 and the end of 2017 (\cref{fig:increasedaiflops}). 
+Data~\cite{amodei2018} compiled by the nonprofit OpenAI\footnote{OpenAI was founded with the goal of doing research in finding safe ways towards the realization of artificial general intelligence (see \href{https://openai.com/about}{https://openai.com/about}).} shows an increase of a factor 300000 in the number of petaflop/s-day\footnote{A petaflop/s-day is defined as doing $10^{15}$ neural network operations per second for one day, or approximately $10^{20}$ operations per day~\cite{amodei2018}.} used in training machine learning systems between 2012 and the end of 2017 (\cref{fig:increasedaiflops}). 
 This corresponds to a doubling time of 3.5 months and is the result of increased parallelism and monetary investments.
 This is far lower than the doubling time of 18 to 24 months predicted by Moore's law.
 
@@ -2066,7 +2067,7 @@ Hierarchical structures also pose a problem, leading to difficulties when dealin
 \section{Conclusion}
 
 In this thesis we considered ways in which to numerically calculate the Fourier transform of correlation functions, known as dynamical structure functions or DSFs.
-In the Lehmann series representation DSFs are a sum over matrix elements.
+In the Lehmann representation DSFs are a sum over matrix elements.
 In Bethe ansatz integrable models these DSFs can be calculated with the ABACUS algorithm.
 The summation over these matrix elements is not fully optimal, meaning that matrix elements are not summed in strictly decreasing order.
 This results in inefficiency when considering finite compute times, since states with large contributions may be missed.
@@ -2143,14 +2144,14 @@ New methods and techniques are constantly developed and may also be applicable t
 \section{Acknowledgements}
 I would like to thank Jean-Sébastien Caux for his supervision and valuable suggestions.
 Thanks to Sam Kuypers for help in understanding some derivations.
-I would also like to thank Sam, along with the rest of the J-S master gang (Jorran de Wit and Rebekka Koch), for always being there to have lunch with and their willingness to hear me grumble about my project.
-On the same note I would like to thank all the other people in the master room, in particular Miró van der Worp, who was always organizing lectures and talks to help distract everyone from their thesis.
+I would also like to thank Sam, along with the rest of the J-S master's gang (Jorran de Wit and Rebekka Koch), for always being there to have lunch with and their willingness to hear me grumble about my project.
+On the same note I would like to thank all the other people in the master's room, in particular Miró van der Worp, who was always organizing lectures and talks to help distract everyone from their thesis.
 
 To my theatre friends I would like to say: thanks for being non-physicists and for all the parties.
 
 Finally, I would like to thank my parents, Erik and Mickey.
 Without their support over the past year I would never have finished this thesis.
-Erik, maybe I should have followed you advice: ``\textit{leer een echt vak}''~\cite{erik}.
+Erik, maybe I should have followed your advice: ``\textit{leer een echt vak}''~\cite{erik}.
 
 \appendix
 
@@ -2474,25 +2475,25 @@ V.~Mnih, K.~Kavukcuoglu, D.~Silver, A.~Graves, I.~Antonoglou, D.~Wierstra and M.
 
 
 \bibitem{mnih15_human_level_contr_throug_deep_reinf_learn}
-V.~Mnih et al., \textit{Human-level control through deep reinforcement learning}, Nature \textbf{518}, 529 (2015), \doi{10.1038/nature14236}.
+V.~Mnih \textit{et al.}, \textit{Human-level control through deep reinforcement learning}, Nature \textbf{518}, 529 (2015), \doi{10.1038/nature14236}.
 
 
 
 
 \bibitem{silver16_master_game_go_with_deep}
-D.~Silver et al., \textit{Mastering the game of Go with deep neural networks and tree search}, Nature \textbf{529}, 484 (2016), \doi{10.1038/nature16961}.
+D.~Silver \textit{et al.}, \textit{Mastering the game of Go with deep neural networks and tree search}, Nature \textbf{529}, 484 (2016), \doi{10.1038/nature16961}.
 
 
 
 
 \bibitem{Silver2017a}
-D.~Silver et al., \textit{Mastering the game of Go without human knowledge}, Nature \textbf{550}, 354 (2017), \doi{10.1038/nature24270}.
+D.~Silver \textit{et al.}, \textit{Mastering the game of Go without human knowledge}, Nature \textbf{550}, 354 (2017), \doi{10.1038/nature24270}.
 
 
 
 
 \bibitem{Silver2017} 
-D.~Silver et al., \textit{Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm}, arXiv:\href{https://arxiv.org/abs/1712.01815v1}{1712.01815v1}. 
+D.~Silver \textit{et al.}, \textit{Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm}, arXiv:\href{https://arxiv.org/abs/1712.01815v1}{1712.01815v1}. 
 
 
 
@@ -2639,7 +2640,7 @@ W.~H.~Press, S.~A.~Teukolsky, W.~T.~Vetterling and B.~P.~Flannery, \textit{Numer
 
 
 \bibitem{levinson11_towar}
-J.~Levinson et al., \textit{Towards fully autonomous driving: Systems and algorithms}, 2011 IEEE Intelligent Vehicles Symposium (IV) (2011), \doi{10.1109/ivs.2011.5940562}.
+J.~Levinson \textit{et al.}, \textit{Towards fully autonomous driving: Systems and algorithms}, 2011 IEEE Intelligent Vehicles Symposium (IV) (2011), \doi{10.1109/ivs.2011.5940562}.
 
 
 
@@ -2651,7 +2652,7 @@ R.~Poplin, A.~V.~Varadarajan, K.~Blumer, Y.~Liu, M.~V.~McConnell, G.~S.~Corrado,
 
 
 \bibitem{Poplin2016} 
-R.~Poplin et al., \textit{Creating a universal SNP and small indel variant caller with deep neural networks}, bioRxiv 092890 (2016), \doi{10.1101/092890}.
+R.~Poplin \textit{et al.}, \textit{Creating a universal SNP and small indel variant caller with deep neural networks}, bioRxiv 092890 (2016), \doi{10.1101/092890}.
 
 
 
@@ -2718,14 +2719,14 @@ C.~J.~C.~H.~Watkins and P.~Dayan, \textit{Q-learning}, Mach. Learn. \textbf{8}, 
 
 
 \bibitem{chollet2015keras} 
-F.~Chollet et al., \emph{Keras}, \href{https://keras.io}{https://keras.io} (2015).
+F.~Chollet \textit{et al.}, \emph{Keras}, \href{https://keras.io}{https://keras.io} (2015).
 
 
 
 
 
 \bibitem{tensorflow2015-whitepaper} 
-M.~Abadi et al., \emph{{TensorFlow}: Large-scale machine learning on heterogeneous systems}, \href{https://www.tensorflow.org/}{https://www.tensorflow.org/} (2015).
+M.~Abadi \textit{et al.}, \emph{{TensorFlow}: Large-scale machine learning on heterogeneous systems}, \href{https://www.tensorflow.org}{https://www.tensorflow.org} (2015).
 
 
 
@@ -2738,12 +2739,12 @@ S.~D.~Whitehead and L.-J.~Lin, \textit{Reinforcement learning of non-Markov deci
 
 
 \bibitem{1710.02298} 
-M.~Hessel et al., \textit{Rainbow: Combining Improvements in Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1710.02298}{1710.02298}.
+M.~Hessel \textit{et al.}, \textit{Rainbow: Combining Improvements in Deep Reinforcement Learning}, arXiv:\href{https://arxiv.org/abs/1710.02298}{1710.02298}.
 
 
 
 \bibitem{heess17_emerg_locom_behav_rich_envir}
-N.~Heess et al., \textit{Emergence of Locomotion Behaviours in Rich Environments}, arXiv:\href{https://arxiv.org/abs/1707.02286}{1707.02286}.
+N.~Heess \textit{et al.}, \textit{Emergence of Locomotion Behaviours in Rich Environments}, arXiv:\href{https://arxiv.org/abs/1707.02286}{1707.02286}.
 
 
 
@@ -2754,11 +2755,11 @@ G.~Marcus, \textit{Deep Learning: A Critical Appraisal}, arXiv:\href{https://arx
 
 
 \bibitem{amodei2018}
-D.~Amodei and D.Hernandez, \textit{AI and Compute}, \href{https://blog.openai.com/ai-and-compute/}{https://blog.openai.com/ai-and-compute/} (2018).
+D.~Amodei and D.~Hernandez, \textit{AI and Compute}, \href{https://blog.openai.com/ai-and-compute}{https://blog.openai.com/ai-and-compute} (2018).
 
 
 \bibitem{1803.03453}
-J.~Lehman et al., \textit{The Surprising Creativity of Digital Evolution: A Collection of Anecdotes from the Evolutionary Computation and Artificial Life Research Communities}, arXiv:\href{https://arxiv.org/abs/1803.03453}{1803.03453}. 
+J.~Lehman \textit{et al.}, \textit{The Surprising Creativity of Digital Evolution: A Collection of Anecdotes from the Evolutionary Computation and Artificial Life Research Communities}, arXiv:\href{https://arxiv.org/abs/1803.03453}{1803.03453}. 
 
 
 
@@ -2770,7 +2771,7 @@ D.~Amodei, C.~Olah, J.~Steinhardt, P.~Christiano, J.~Schulman and D.~Mané, \tex
 
 
 \bibitem{brundage18_malic_use_artif_intel}
-M.~Brundage et al., \textit{The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation}, arXiv:\href{https://arxiv.org/abs/1802.07228}{1802.07228}. 
+M.~Brundage \textit{et al.}, \textit{The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation}, arXiv:\href{https://arxiv.org/abs/1802.07228}{1802.07228}. 
 
 
 
@@ -2779,7 +2780,7 @@ M.~Brundage et al., \textit{The Malicious Use of Artificial Intelligence: Foreca
 P.~Henderson, R.~Islam, P.~Bachman, J.~Pineau, D.~Precup and D.~Meger, \textit{Deep Reinforcement Learning that Matters}, arXiv:\href{https://arxiv.org/abs/1709.06560}{1709.06560}. 
 
 \bibitem{OpenAIDota}
-OpenAI, \textit{OpenAI Five}, \href{https://blog.openai.com/openai-five/}{https://blog.openai.com/openai-five/} (2018).
+OpenAI, \textit{OpenAI Five}, \href{https://blog.openai.com/openai-five}{https://blog.openai.com/openai-five} (2018).
 
 
 
@@ -2835,6 +2836,8 @@ J.-S.~Caux, \emph{The f-sum rule}, unpublished (2011).
 
 \end{thebibliography}
 
-
+\newpage
+\thispagestyle{empty}
+\ 
 
 \end{document}
