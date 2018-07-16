@@ -12,5 +12,5 @@
 auto/
 *-eps-converted-to.pdf
 *.pyg
-.bst
-.bib
+*.bst
+*.bib
