@@ -151,7 +151,7 @@ In the distance, the cat hears the sound of lobster minds singing in the void, a
 
 Correlation functions play an important role in physics, but analytical results do not always exist.
 For Bethe ansatz solvable models the ABACUS algorithm can numerically find Fourier transformed correlation functions known as dynamical structure functions or DSFs.
-This occurs through summing of matrix elements in the Lehmann representation of the DSF.\@
+This occurs through the summation of matrix elements in the Lehmann representation of the DSF.\@
 This summing is not optimal, in that it does not sum matrix elements in strictly  monotonically decreasing order.
 
 In this thesis we apply reinforcement learning to the summing of matrix elements, hoping to develop a strategy that leads to more optimal summation than done by ABACUS.\@
@@ -628,7 +628,7 @@ With this we can rewrite the differential equations for the displacement functio
 Using \cref{eq:inversetruncated} we can write the particle displacement integral equation as 
 \begin{align}
   \label{eq:33}
-  \qty(1 - \mathcal{C}^{(F)}) * D_p\qty(\lambda, \lambda_p) = -\frac{\theta\qty\big(\lambda_F-\abs{\lambda})}{2\pi} \qty(\pi\textrm{sgn}\qty(\lambda_p)) + \phi\qty(\lambda-\lambda_p)
+  \qty(1 - \mathcal{C}^{(F)}) * D_p\qty(\lambda, \lambda_p) = -\frac{\theta\qty\big(\lambda_F-\abs{\lambda})}{2\pi} \qty(\pi\textrm{sgn}\qty(\lambda_p) + \phi\qty(\lambda-\lambda_p))
 \end{align}
 for which the solution is 
 \begin{align}
@@ -832,7 +832,7 @@ We get
   \mathcal{L}^{(F)}_{n+1} \qty(\lambda, \lambda') = \theta\qty(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} \qty(\lambda'-\lambda'') \dd \lambda'' + \mathcal{C}^{(F)}\qty(\lambda, \lambda')\\
 = - 2 \theta\qty(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}\qty(\lambda,\lambda'),
 \end{gather}
-where \(\mathcal{L}^{(F)}_0\qty(\lambda, \lambda')\) is 0. 
+where \(\mathcal{L}^{(F)}_0\qty(\lambda, \lambda')=0\). 
 \Cref{fig:lfplot} shows a numerical evaluation of \(\mathcal{L}^{(F)}\).
 \begin{figure}[tb!]
   \centering
@@ -853,7 +853,7 @@ and
 
 
 \section{Form factors}
-Now we look at form factors for the Lieb-Liniger model, which we will require for calculation of dynamical structure functions (see \cref{chap:abacus}).
+Now we look at form factors for the Lieb-Liniger model, which we will require for calculating dynamical structure functions (see \cref{chap:abacus}).
 Form factors or matrix elements can be obtained by using the algebraic Bethe ansatz (until now we used a coordinate representation of the wave function known as the coordinate Bethe ansatz).
 We will briefly introduce the algebraic Bethe ansatz. 
 
@@ -1741,7 +1741,7 @@ Due to the representation of the states and the cutoff used, direct comparison w
 Required sum rule saturation is set at 83\%.
 In the considered subspace the maximum achievable saturation is \(83.5\%\), due to the lower number of states with higher momenta (\cref{sec:exact}). 
 Therefore \(83\%\) corresponds to approximately \(83/83.5\approx99.5\%\) total achievable sum rule saturation.
-We average the number of states necessary over 5 runs with random initial seed.
+We average the number of states necessary over five runs with random initial seed.
 If training occurs we do so for 25 epochs of 500 states.
 We set \(\epsilon=0.1\) and do not change it during training.
 We do not start from full exploration (\(\epsilon=1\)) because many states will contribute little to sum rule saturations, leading to poor results.
@@ -1864,22 +1864,22 @@ In conclusion we can say that learning does occur when using Q-learning to sum m
 Of special note is the speed at which ABACUS operates, summing 10000 states in 7 seconds, while evaluation of approximately 2000 states takes 20 seconds, preceded by 600 seconds of training, for smaller systems.
 
 
-\begin{figure}[tb!]
+\begin{figure}[p]
   \centering
   \includegraphics[width=0.7\textwidth]{ff_sizes_rand_True_check_train_False_check_eval_False.pdf}
   \caption{Square density operator form factors as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for a selected DSF calculation.}\label{fig:ff_sizes_rand_True_check_train_False_check_eval_False}
 \end{figure}
 
-\begin{figure}[tb!]
+\begin{figure}[p]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_False.pdf}
-  \caption{Saturation as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for 5 runs of DSF calculation.}\label{fig:saturation_rand_True_check_train_False_check_eval_False}
+  \caption{Saturation as a function of order of computation for random state selection without minimizing \(N_{\mathrm{ph}}\) for five runs of DSF calculation.}\label{fig:saturation_rand_True_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_True_check_train_False_check_eval_True.pdf}
-  \caption{Saturation as a function of order of computation for random state selection while minimizing \(N_{\mathrm{ph}}\) for 5 runs of DSF calculation.}
+  \caption{Saturation as a function of order of computation for random state selection while minimizing \(N_{\mathrm{ph}}\) for five runs of DSF calculation.}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1891,7 +1891,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_True.pdf}
-  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for 5 runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_True_check_eval_True}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during both training and DSF calculation, for five runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_True_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1903,7 +1903,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_True_check_eval_False}
-  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for 5 runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.4\%$ saturation after 3000 states.}\label{fig:saturation_histories_rand_False_check_train_True_check_eval_False}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while minimizing \(N_{\mathrm{ph}}\) during training but not during DSF calculation, for five runs of DSF calculation. Note that one of the DSF calculation runs did not converge, reaching $\sim79.4\%$ saturation after 3000 states.}\label{fig:saturation_histories_rand_False_check_train_True_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1915,7 +1915,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_True.pdf}
-  \caption{Saturation as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for 5 runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_False_check_eval_True}
+  \caption{Saturation as a function of order of computation for Q-learning state selection while not minimizing \(N_{\mathrm{ph}}\) during training but with minimization during DSF calculation, for five runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_False_check_eval_True}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1929,7 +1929,7 @@ Of special note is the speed at which ABACUS operates, summing 10000 states in 7
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{saturation_histories_rand_False_check_train_False_check_eval_False.pdf}
-  \caption{Saturation as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for 5 runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_False_check_eval_False}
+  \caption{Saturation as a function of order of computation for Q-learning state selection without minimizing \(N_{\mathrm{ph}}\) during either training and DSF calculation, for five runs of DSF calculation.}\label{fig:saturation_histories_rand_False_check_train_False_check_eval_False}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -2479,11 +2479,11 @@ Here we present the raw values for the number of states necessary to reach 83\% 
     & \multicolumn{2}{c}{Particle-hole minimization} & \\\midrule
     Method & training & DSF calculation & Number of states & Form factor size proxy \\\midrule
     Random & --- & Yes & \num{728(131)} & \num{1.31(60)e-07} \\
-    & --- & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{2.79(143)e-16} \\\midrule
+    & --- & No & 3000\footnote{No convergence occured for any of the five runs after summing state contributions.} & \num{2.79(143)e-16} \\\midrule
     Q-learning & Yes & Yes & \num{545(151)} & \num{6.53(634)e-07}\\
     & & No & \num{1475(909)}\footnote{One out of five runs did not converge, reaching $\sim79.4\%$ saturation after 3000 steps.} & \num{1.73(294)e-08}\\
     & No & Yes & \num{795(212)} & \num{2.28(334)e-07}\\
-    & & No & 3000\footnote{No convergence occured for any of the 5 runs after summing state contributions.} & \num{1.56(310)e-12}\\
+    & & No & 3000\footnote{No convergence occured for any of the five runs after summing state contributions.} & \num{1.56(310)e-12}\\
   \end{tabular}
   \caption{Number of states required to reach convergence and size of form factor size proxy for the methods under consideration. The reported errors are standard errors.}\label{tab:noofstates}
 \end{table}
