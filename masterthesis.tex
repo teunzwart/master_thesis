@@ -160,6 +160,60 @@ We find that the algorithm is able to learn to sum in such a way that it gives p
 As a corollary we also use supervised learning to try to optimize the numerical evaluation of Bethe ansatz parameters known as rapidities, but find that any advantage this method has declines considerably with system size.
 The evaluation time added by the neural network makes this method unfit for finding rapidities.
 
+\section*{Popular summary}
+\addcontentsline{toc}{section}{Popular summary}
+
+Correlation functions play an important role in physics.
+They tell us how strongly microscopic variables, such as the magnetization of density, at different times and locations are related in a model.
+Calculating these functions is impossible for many systems and has to be done with a computer.
+One way to do this is to transform the correlation function to a form in which we perform a summation of so-called matrix elements.
+Every matrixelement is related to a state in which the model we are interested in can be.
+The problem is that, to be certain that all information is considered, you need to sum the matrix elements of all states of the model.
+In many systems the number of states is large or infinite.
+
+It turns out that only a small fraction of all states has to be considered to get a very good approximation of the correlation functions.
+This makes the calculation practical to perform.
+The ABACUS algorithm can do this summation for a class of systems that are ``Bethe ansatz solvable'', which means an exact solution exists.
+In the ideal case ABACUS could start with the largest matrix element and then continue with progressively smaller matrix elements.
+Then a calculation could be stopped knowing that all important contributions up to that point have been taken into account.
+Due to the complex relation between states and matrix elements, this turns out to be difficult to do.
+
+The subject of this thesis is the optimization of the summation such that only important matrix elements are summed.
+For this we use reinforcement learning.
+Reinforcement learning is a form of machine learning in which an algorithm has an interaction with the environment and sees the results of this interaction in the form of a reward, after which the interaction is changed to optimize for higher rewards.
+In the past few years this class of algorithms has known many successes, among which is beating the world champion in the Japanes boardgame Go.
+
+In this thesis we trained a reinforcement learning algorithm to select states with large matrix elements, given the current state the system is occupying.
+The algorithm was able to find large matrix elements, especially when compared to randomly selected states.
+Compared with ABACUS however, ABACUS turned out to perform better.
+
+\section*{Populaire samenvatting}
+\addcontentsline{toc}{section}{Populaire samenvatting}
+
+Correlatiefuncties spelen een belangrijke rol in de natuurkunde.
+Ze vertellen ons hoe sterk microscopische variabelen, zoals de magnetisatie of de dichtheid, op verschillende plekken en tijden in een materiaal of model, aan elkaar gerelateerd zijn.
+Het berekenen van deze functies is voor veel modellen onmogelijk en moet daarom met de computer worden gedaan.
+Een manier om dit te doen is door de correlatiefunctie te transformeren naar een vorm waarin we een optelling van zogenaamde matrixelementen uitvoeren.
+Ieder matrixelement is gerelateerd aan een toestand waarin het systeem waarin we geïnteresseerd zijn zich kan bevinden.
+Het probleem is dat, om zeker te weten dat je alle informatie hebt, je voor alle toestanden van het systeem de matrixelementen moet optellen.
+In veel systemen is dit een groot of zelfs oneindig aantal.
+
+Het blijkt echter dat maar een kleine fractie van alle toestanden hoeft te worden overwogen om een heel goede benadering voor de correlatiefunctie te krijgen.
+Dit is wat de berekening praktisch maakt om uit te voeren.
+Het ABACUS algoritme kan dit doen voor een klasse systemen die ``Bethe ansatz solvable'' zijn, wat wil zeggen dat er een exacte oplossing voor bestaat.
+In het ideale geval zou ABACUS met het grootste matrixelement beginnen en daarna steeds kleine matrixelementen vinden.
+Zo kan een berekening afgebroken worden in de wetenschap dat alle belangrijke bijdragen tot dat punt zijn meegenomen.
+Door de complexe relatie tussen toestanden en matrixelementen blijkt het niet makkelijk om dit te doen.
+
+Het onderwerp van deze scriptie is het optimaliseren van deze optelling zodat alleen belangrijke matrixelementen worden meegenomen.
+Hiervoor gebruiken we reinforcement learning.
+Reinforcement learning is een vorm van machine learning waarin een algoritme een interactie met de omgeving heeft en de resultaten van die interactie ziet in de vorm van een beloning, waarna deze de interactie zo aanpast dat wordt geoptimaliseerd voor hogere beloningen.
+In de afgelopen jaren hebben deze algoritmen veel successen gekend, waaronder het verslaan van de wereldkampioen in het Japanse bordspel Go.
+
+In deze scriptie trainden we een reinforcement learning algoritme om toestanden te selecteren met grote matrixelementen, gegeven een huidige toestand waarin het systeem zich bevond.
+Het algoritme bleek inderdaad in staat om grote matrixelementen te vinden, zeker in vergelijking met een willekeurige selectie van toestanden.
+In vergelijking met ABACUS bleek echter dat ABACUS beter functioneerde. 
+
 \tableofcontents
 
 
@@ -556,7 +610,7 @@ We now turn to solving these equations.
 To that end we introduce the truncated kernel:
 \begin{align}
   \label{eq:inversetruncated}
-  \mathcal{C}^{(F)}\qty(\lambda,\lambda') = \theta\qty\big(\lambda_F-\abs{\lambda}) \mathcal{C}\qty(\lambda-\lambda') \theta\qty\big(\lambda_F-\abs{\lambda}).
+  \mathcal{C}^{(F)}\qty(\lambda,\lambda') = \theta\qty\big(\lambda_F-\abs{\lambda'}) \mathcal{C}\qty(\lambda-\lambda') \theta\qty\big(\lambda_F-\abs{\lambda}).
 \end{align}
 
 Its associated inverse is defined by
@@ -677,7 +731,7 @@ Taking these results together, the displacement function for type I excitations 
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{dpplot.pdf}
-  \caption{$D_p(\lambda,\lambda_p)$ plotted for \(c=1\), \(\lambda_F=1\), \(\lambda_p=1.5\).}\label{fig:dpplot}
+  \caption{$D_p(\lambda,\lambda_p)$ plotted for \(c=4\), \(\lambda_F=1\), \(\lambda_p=1.5\).}\label{fig:dpplot}
 \end{figure}
 
 For type II excitations the idea is much the same as type I.\@ Recalling \cref{eq:40}, the displacement is
@@ -721,7 +775,7 @@ with an example plotted in \cref{fig:dhplot}.
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{dhplot.pdf}
-  \caption{$D_h(\lambda,\lambda_h)$ plotted for \(c=1\), \(\lambda_F=1\), \(\lambda_h=0.5\).}\label{fig:dhplot}
+  \caption{$D_h(\lambda,\lambda_h)$ plotted for \(c=4\), \(\lambda_F=1\), \(\lambda_h=0.5\).}\label{fig:dhplot}
 \end{figure}
 
 \subsection{Calculating \(\mathcal{L}^{(F)}\)}
@@ -759,7 +813,7 @@ In general the $n+1$-th approximation is defined in terms of the $n$-th approxim
 \begin{equation}
   \phi_{n+1}(x) = f(x) + \omega \int_{a}^b K(x,t)\phi_n(t) \dd t.
 \end{equation}
-This converges as long as $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \rVert_2$ the $L_2$-norm:
+A sufficient but not necessary criterium for convergence is $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \rVert_2$ the $L_2$-norm:
 \begin{equation}
   \lVert K \rVert_2 = {\qty( \int_{a}^b \int_a^b \abs{K(x,t)}^2 \dd x \dd t)}^{1/2}.
 \end{equation}
@@ -775,7 +829,7 @@ which converges as long as
 If we only want to know the value of $\mathcal{L}^{(F)}$ at a single point we can use that at each iteration step $\mathcal{L}^{(F)}$ is a number, allowing us to take it out of the integral.
 We get
 \begin{gather}
-  \mathcal{L}^{(F)}_{n+1} \qty(\lambda, \lambda') = \theta\qty(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} \qty(\lambda''-\lambda') \dd \lambda'' + \mathcal{C}^{(F)}\qty(\lambda, \lambda')\\
+  \mathcal{L}^{(F)}_{n+1} \qty(\lambda, \lambda') = \theta\qty(\lambda_F - \abs{\lambda'})  \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \int_{-\lambda_F}^{\lambda_F} \mathcal{C} \qty(\lambda'-\lambda'') \dd \lambda'' + \mathcal{C}^{(F)}\qty(\lambda, \lambda')\\
 = - 2 \theta\qty(\lambda_F - \abs{\lambda'}) \mathcal{L}^{(F)}_n\qty(\lambda, \lambda') \left[ \atan(\frac{\lambda'+\lambda_F}{c}) - \atan(\frac{\lambda'-\lambda_F}{c})\right] + \mathcal{C}^{F}\qty(\lambda,\lambda'),
 \end{gather}
 where \(\mathcal{L}^{(F)}_0\qty(\lambda, \lambda')\) is 0. 
@@ -783,45 +837,18 @@ where \(\mathcal{L}^{(F)}_0\qty(\lambda, \lambda')\) is 0.
 \begin{figure}[tb!]
   \centering
   \includegraphics[width=0.7\textwidth]{lfplot.pdf}
-  \caption{\(\mathcal{L}^{(F)}(\lambda,\lambda')\) plotted for \(c=1\), \(\lambda_F = 1\), \(\lambda'=0\).}\label{fig:lfplot}
+  \caption{\(\mathcal{L}^{(F)}(\lambda,\lambda')\) plotted for \(c=4\), \(\lambda_F = 1\), \(\lambda'=0\).}\label{fig:lfplot}
 \end{figure}
 
 \subsection{Excited states}
 
-For excited states there is no longer a Fermi level~\cite{Caux2015} (or the Fermi level goes to \(\infty\)), meaning that the truncated kernel \(\mathcal{C}^{(F)}\) becomes equal to the regular Lieb-Liniger kernel~\(\mathcal{C}\).
-The displacement function for type I and II excitations are respectively~\cite{Caux2015}
+For excited states the displacement functions for type I and II excitations are respectively~\cite{Caux2015}
 \begin{align}
-	D_p\qty(\lambda, \lambda_p) = - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}\qty(\lambda-\lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda'),
+	D_p\qty(\lambda, \lambda_p) = -\frac{1}{2\pi} \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd  \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}^{(F)}\qty(\lambda-\lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda'),
 \end{align}
 and
 \begin{align}
-	D_h\qty\big(\lambda, \lambda_h) = - \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\infty}^{\infty} \dd \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}\qty(\lambda - \lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda'),
-\end{align}
-where \(\mathcal{L}\) is the inverse of the kernel \(\mathcal{C}\), defined by~\cite{Yang1969}
-\begin{align}
-	(1+\mathcal{L})*(1-\mathcal{C})(\lambda) = \delta(\lambda),
-\end{align}
-or explicitly
-\begin{align}
-	\int_{-\infty}^{\infty} \dd \lambda' \left[ \delta\qty(\lambda-\lambda') + \mathcal{L}\qty(\lambda-\lambda') \right] \left[ \delta\qty(\lambda') - \mathcal{C}\qty(\lambda')\right] = \delta\qty\big(\lambda), \quad \lambda, \lambda' \in \mathbb{R}.
-\end{align}
-If we perform the integral and rearrange, we get an expression which simplifies the displacement functions:
-\begin{align}\label{eq:kernelinversion}
-	\int_{-\infty}^{\infty} \dd \lambda' \mathcal{L}\qty(\lambda-\lambda') \mathcal{C}\qty(\lambda') = -\mathcal{C}\qty\big(\lambda) + \mathcal{L}\qty(\lambda).
-\end{align}
-
-With this in hand, we have for particles:
-\begin{align}
-	D_p\qty(\lambda, \lambda_p) &= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \int_{-\infty}^{\infty} \dd  \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}\qty(\lambda-\lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda')\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}\qty(\lambda-\lambda') + \int_{-\infty}^{\infty} \dd  \lambda'' \mathcal{L}\qty(\lambda-\lambda'') \mathcal{C}\qty(\lambda''-\lambda')\right]\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \left[\mathcal{C}\qty(\lambda-\lambda') - \mathcal{C}\qty(\lambda-\lambda') + \mathcal{L}\qty(\lambda-\lambda')\right]\\
-	&= - \int_{\lambda_p}^{\textrm{sgn}\qty(\lambda_p)\infty} \dd \lambda' \mathcal{L}\qty(\lambda-\lambda')\\
-	&=  \int_{\lambda-\lambda_p}^{-\textrm{sgn}\qty(\lambda_p)\infty} \dd a \, \mathcal{L}\qty\big(a),
-\end{align}
-where we used \cref{eq:kernelinversion} in going from the second to the third line, and made the substitution \(a = \lambda-\lambda'\) in the last line.
-A similar derivation for type II excitations leads to
-\begin{align}
-	D_h\qty(\lambda,\lambda_h) = \int_{\textrm{sgn}(\lambda_h)\infty}^{\lambda-\lambda_h} \dd a\, \mathcal{L}(a).
+	D_h\qty\big(\lambda, \lambda_h) = -\frac{1}{2\pi} \int_{-\textrm{sgn}(\lambda_h)\infty}^{\lambda_h} \dd \lambda' \int_{-\lambda_F}^{\lambda_F} \dd \lambda'' \left[\delta\qty(\lambda-\lambda'') + \mathcal{L}\qty(\lambda - \lambda'') \right]\mathcal{C}\qty(\lambda''-\lambda').
 \end{align}
 
 
@@ -860,7 +887,7 @@ Physical states may be built using \(B(\lambda)\) and \(C(\lambda)\):
   \label{eq:42}
   \ket{\{\lambda\}} = \prod_{j=1}^{N} B\qty(\lambda_j) \ket{0} \quad \mathrm{and} \quad \bra{\{\lambda\}} = \bra{0} \prod_{j=1}^N C\qty(\lambda_j).
 \end{align}
-In the Lieb-Liniger model~\cite{Piroli2015}
+In the Lieb-Liniger model we have~\cite{slavnov89_calcul_scalar_produc_wave_funct,slavnov90_noneq_time_curren_correl_funct}
 \begin{align}
   \label{eq:43}
   a(\lambda) = e^{-i\frac{L}{2}\lambda}, \qquad d(\lambda) = e^{i\frac{L}{2}\lambda}.
@@ -897,7 +924,7 @@ This allows us to derive
   \Psi(0) \prod_{k=1}^N B(\lambda_k) \ket{0} &= -i\sqrt{c} \sum_{k=1}^N\Lambda_k a(\lambda_k) \prod_{\substack{m=1\\m\neq k}}^N B(\lambda_m) \ket{0},\\
   \bra{0} \prod_{k=1}^N C(\lambda_k) \Psi^{\dag}(0) &= i \sqrt{c} \sum_{k=1}^N \bra{0} \prod_{\substack{m=1\\m\neq k}}^N C(\lambda_m) \widetilde{\Lambda} d(\lambda_k),
 \end{align}
-with~\cite{Piroli2015}
+with~\cite{slavnov89_calcul_scalar_produc_wave_funct}
 \begin{align}
   \label{eq:49}
   \Lambda_k = \prod_{\substack{m=1\\m\neq k}}^N f(\lambda_k,\lambda_m), \qquad \widetilde{\Lambda}_k = \prod_{\substack{m=1\\m\neq k}}^N f(\lambda_m,\lambda_k).
@@ -1163,7 +1190,7 @@ Although the algorithm is not perfect, only small fractions are necessary.
 \begin{table}[tb!]
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{ccccc}
+\begin{tabular}{lrrrr}
   & N = 50 & N = 100 & N = 200 & N = 400 \\
 \midrule
 90\% & 235 (\num{4.9e-12}) & 944 (\num{6.8e-26}) & 8772 (\num{5.3e-54}) & 117373 (\num{3.5e-111})\\
@@ -1521,7 +1548,7 @@ Notably it learned part of \cref{th:equalisequal}: if \(I_j >I_k\), then \(\lamb
 The real question is whether the initial guesses of the neural network are better than those of the Naive Bethe approach.
 Comparing different initial guess methods in \cref{fig:iterations}, we see this being the case.
 We compare the average number of iterations to convergence over 1000 sets of Bethe numbers for each method.
-A lower number of iterations is better.
+A lower number of iterations is better, with a fractional number of iterations possible due to averaging.
 The difference between Naive Bethe and ML is most pronounced for \(N=5\), being on average \(0.95\) iterations.
 This difference decreases to \(0.43-0.45\) iterations for \(N=10\) and to \(0.07-0.09\) iterations for \(N=20\).
 This decrease is probably due to the inability of the neural network to capture the increasing number of cross interactions of the rapidities with increasing system size.
@@ -1669,6 +1696,7 @@ Thus ABACUS, when considering states, can always get high saturations in every m
 ABACUS also has the advantage that it can scan within a individual slice.
 Due to this when calculating the f-sum rule saturation we only consider states for which \(\frac{L}{2\pi}P \in [-I_{\max},I_{\max}]\).
 If we take all states in this interval and use \(N = 5\), \(I_{\max}=12\) the total sum rule saturation is approximately 83.5\%.
+We will later consider this to be 100\% in our given subspace.
 
 Furthermore we look at sum rule and form factor contributions for states with different number of particle-hole excitations, as calculated with~\cref{eq:52}.
 Looking at \cref{fig:meanffphpairs}, where we plot the mean form factor sizes for each possible number of particle-hole pairs, we see that it decreases exponentially as \(N_{\mathrm{ph}}\) increases.
@@ -1686,6 +1714,9 @@ We see the same pattern of exponential decay when plotting the mean sum rule sat
 
 Even though the number of states with a given \(N_{\mathrm{ph}}\) increases for increasing \(N_{\mathrm{ph}}\), this only happens approximately linearly (\cref{fig:numberofstatesph}), meaning that only the states with \(N_{\mathrm{ph}}=1,2\) have a large contribution.
 This validates the use of \cref{eq:52} while training to select states with large matrix elements.
+Note that due to the system size considered the number of states with a given number of particle-hole pairs falls off at some point.
+This is strictly a consequence of the system size considered. 
+In larger systems there are always more state with \(n+1\) pairs than with \(n\) pairs.
 \begin{figure}[tb!]
   \centering
   \subfloat{\includegraphics[width=.7\textwidth]{no_states_ph_pairs.pdf}}
@@ -1707,7 +1738,9 @@ For both methods we calculate the DSFs both with and without minimizing \(N_{\ma
 The measure we use to compare methods is how many states are required to reach a given f-sum rule saturation.
 Due to the representation of the states and the cutoff used, direct comparison with ABACUS is difficult (\cref{sec:exact}), but we do give some results for a rough estimate of relative performance.
 
-Required sum rule saturation is set at 83\%, which in the given subspace corresponds to approximately \(83/83.5\approx99.5\%\) (\cref{sec:exact}).
+Required sum rule saturation is set at 83\%.
+In the considered subspace the maximum achievable saturation is \(83.5\%\), due to the lower number of states with higher momenta (\cref{sec:exact}). 
+Therefore \(83\%\) corresponds to approximately \(83/83.5\approx99.5\%\) total achievable sum rule saturation.
 We average the number of states necessary over 5 runs with random initial seed.
 If training occurs we do so for 25 epochs of 500 states.
 We set \(\epsilon=0.1\) and do not change it during training.
@@ -2292,7 +2325,7 @@ Adapting \cref{eq:generalfsum} to the Lieb-Liniger model, the f-sum rule becomes
   \label{eq:5}
   \int_{-\infty}^{\infty} \frac{\dd \omega}{2\pi} \omega\mathcal{S} (k, \omega) = \frac{-1}{2L} \expval{[[H,\rho_k],\rho_{-k}]}.
 \end{equation}
-Calculating the right-hand side of the sum rule, we start with the first commutator:
+Calculating the right-hand side of the sum rule, we start with the  commutator:
 \begin{multline}
   \label{eq:hamiltoniancom}
   [H, \rho_k] = \frac{1}{L} \sum_{k_1} \left(\frac{1}{L} \sum_{k_2}k_2^2\left[\psi_{k_2}^{\dag}\psi_{k_2}, \psi_{k_1}^{\dag}\psi_{k_1+k}\right] \right.\\\left.+\frac{c}{L^3} \sum_{k_3, k_4, q} \left[\psi_{k_3+q}^{\dag}\psi_{k_4-q}^{\dag}\psi_{k_4}\psi_{k_3},\psi_{k_1}^{\dag}\psi_{k_1+k}\right]  \right).
@@ -2561,28 +2594,17 @@ S.~M.~Zemyan, \textit{The Classical Theory of Integral Equations}, Birkhäuser B
 
 
 
-\bibitem{feynman} \textbf{REMOVE}
-R.~P.~Feynman, \emph{Statistical Mechanics: A Set of Lectures}, Westview Press, ISBN~9780201360769 (1998).
-
-
-
-
-
-\bibitem{Piroli2015} 
-L.~Piroli and P.~Calabrese, \textit{Exact formulas for the form factors of local operators in the Lieb-Liniger model}, J. Phys. A:\ Math. Theor. \textbf{48}, 454002 (2015), \doi{10.1088/1751-8113/48/45/454002}.
-
-
-
-
-\bibitem{slavnov18_algeb_bethe_ansat} 
-N.~A.~Slavnov, \textit{Algebraic Bethe ansatz}, arXiv:\href{https://arxiv.org/abs/1804.07350}{1804.07350}.
-
-
 
 
 \bibitem{slavnov90_noneq_time_curren_correl_funct}
 N.~A.~Slavnov, \textit{Nonequal-time current correlation function in a one-dimensional Bose gas}, Theor. Math. Phys. \textbf{82}, 273 (1990), \doi{10.1007/bf01029221}.
 
+\bibitem{slavnov89_calcul_scalar_produc_wave_funct}
+N.~A.~Slavnov, \textit{Calculation of Scalar Products of Wave Functions and Form Factors in the Framework of the Alcebraic Bethe Ansatz}, Theor. Math. Phys. \textbf{79}, 502 (1989), \doi{10.1007/bf01016531}.
+
+
+\bibitem{slavnov18_algeb_bethe_ansat} 
+N.~A.~Slavnov, \textit{Algebraic Bethe ansatz}, arXiv:\href{https://arxiv.org/abs/1804.07350}{1804.07350}.
 
 
 
@@ -2606,11 +2628,6 @@ J.-S.~Caux and P.~Calabrese, \textit{Dynamical density-density correlations in t
 \bibitem{Caux2005a}
 J.-S.~Caux and J.~Michel Maillet, \textit{Computation of Dynamical Correlation Functions of Heisenberg Chains in a Magnetic Field}, Phys. Rev. Lett. \textbf{95}, 077201 (2005), \doi{10.1103/PhysRevLett.95.077201}.
 
-
-
-
-\bibitem{Nardis2016} \textbf{REMOVE}
-J.~De Nardis and M.~Panfil, \textit{Exact correlations in the Lieb-Liniger model and detailed balance  out-of-equilibrium}, SciPost Phys. \textbf{1}, 015 (2016), \doi{10.21468/SciPostPhys.1.2.015}.
 
 
 
@@ -2840,8 +2857,5 @@ J.-S.~Caux, \emph{The f-sum rule}, unpublished (2011).
 
 \end{thebibliography}
 
-\newpage
-\thispagestyle{empty}
-\ 
 
 \end{document}
