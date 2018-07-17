@@ -167,7 +167,7 @@ Correlation functions play an important role in physics.
 They tell us how strongly microscopic variables, such as the magnetization of density, at different times and locations are related in a model.
 Calculating these functions is impossible for many systems and has to be done with a computer.
 One way to do this is to transform the correlation function to a form in which we perform a summation of so-called matrix elements.
-Every matrixelement is related to a state in which the model we are interested in can be.
+Every matrix element is related to a state in which the model we are interested in can be.
 The problem is that, to be certain that all information is considered, you need to sum the matrix elements of all states of the model.
 In many systems the number of states is large or infinite.
 
@@ -181,7 +181,7 @@ Due to the complex relation between states and matrix elements, this turns out t
 The subject of this thesis is the optimization of the summation such that only important matrix elements are summed.
 For this we use reinforcement learning.
 Reinforcement learning is a form of machine learning in which an algorithm has an interaction with the environment and sees the results of this interaction in the form of a reward, after which the interaction is changed to optimize for higher rewards.
-In the past few years this class of algorithms has known many successes, among which is beating the world champion in the Japanes boardgame Go.
+In the past few years this class of algorithms has known many successes, among which is beating the world champion in the Japanese board game Go.
 
 In this thesis we trained a reinforcement learning algorithm to select states with large matrix elements, given the current state the system is occupying.
 The algorithm was able to find large matrix elements, especially when compared to randomly selected states.
@@ -813,7 +813,7 @@ In general the $n+1$-th approximation is defined in terms of the $n$-th approxim
 \begin{equation}
   \phi_{n+1}(x) = f(x) + \omega \int_{a}^b K(x,t)\phi_n(t) \dd t.
 \end{equation}
-A sufficient but not necessary criterium for convergence is $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \rVert_2$ the $L_2$-norm:
+A sufficient but not necessary criterion for convergence is $\abs{\omega} \lVert K \rVert_2 < 1$, with $\lVert K \rVert_2$ the $L_2$-norm:
 \begin{equation}
   \lVert K \rVert_2 = {\qty( \int_{a}^b \int_a^b \abs{K(x,t)}^2 \dd x \dd t)}^{1/2}.
 \end{equation}
